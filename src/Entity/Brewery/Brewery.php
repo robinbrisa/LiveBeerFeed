@@ -13,7 +13,6 @@ class Brewery
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -21,32 +20,27 @@ class Brewery
     /**
      * @ORM\Column(type="string")
      */
-    private $brewery_name;
+    private $name;
     
     /**
      * @ORM\Column(type="string")
      */
-    private $brewery_slug;
+    private $slug;
     
     /**
      * @ORM\Column(type="string")
      */
-    private $brewery_label;
+    private $label;
     
     /**
      * @ORM\Column(type="string")
      */
     private $country_name;
-    
+        
     /**
      * @ORM\Column(type="boolean")
      */
-    private $brewery_in_production;
-    
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $brewery_active;
+    private $active;
     
     /**
      * @ORM\Column(type="boolean")
@@ -54,57 +48,129 @@ class Brewery
     private $is_independent;
     
     /**
-     * @ORM\OneToOne(targetEntity="ClaimedStatus")
-     * @ORM\JoinColumn(name="claimed_status_id", referencedColumnName="id")
-     */
-    private $claimed_status;
-    
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $beer_count;
-    
+        
     /**
-     * @ORM\OneToOne(targetEntity="Contact")
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="id")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $contact;
+    private $type;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $brewery_type;
+    private $type_id;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $brewery_type_id;
+    private $count;
     
     /**
-     * @ORM\OneToOne(targetEntity="Location")
-     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")
+     * @ORM\Column(type="decimal", scale=2, nullable=true)
      */
-    private $location;
+    private $rating_score;
     
     /**
-     * @ORM\OneToOne(targetEntity="Rating")
-     * @ORM\JoinColumn(name="rating_id", referencedColumnName="id")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $rating;
+    private $description;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $brewery_description;
+    private $total_count;
     
     /**
-     * @ORM\OneToOne(targetEntity="Stats")
-     * @ORM\JoinColumn(name="stats_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $stats;
+    private $unique_count;
     
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Beer\Beer", mappedBy="brewery")
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $monthly_count;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $weekly_count;
+    
+    /**
+     * @ORM\Column(type="decimal", nullable=true)
+     */
+    private $age_on_service;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $twitter;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $facebook;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $instagram;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $url;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $address;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $city;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $state;
+    
+    /**
+     * @ORM\Column(type="decimal", scale=4, nullable=true)
+     */
+    private $latitude;
+    
+    /**
+     * @ORM\Column(type="decimal", scale=4, nullable=true)
+     */
+    private $longitude;
+    
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $is_claimed;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $claimed_slug;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $follower_count;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="claim_user_id", referencedColumnName="id")
+     */
+    private $claim_user;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Beer\Beer", mappedBy="brewery", cascade={"persist"})
      */
     private $beers;
     
@@ -124,4 +190,861 @@ class Brewery
      * @ORM\Column(type="boolean", options={"default":false})
      */
     private $internal_data_gathered;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Set id
+     *
+     * @param integer $id
+     *
+     * @return Brewery
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Brewery
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Brewery
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return Brewery
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set countryName
+     *
+     * @param string $countryName
+     *
+     * @return Brewery
+     */
+    public function setCountryName($countryName)
+    {
+        $this->country_name = $countryName;
+
+        return $this;
+    }
+
+    /**
+     * Get countryName
+     *
+     * @return string
+     */
+    public function getCountryName()
+    {
+        return $this->country_name;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     *
+     * @return Brewery
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set isIndependent
+     *
+     * @param boolean $isIndependent
+     *
+     * @return Brewery
+     */
+    public function setIsIndependent($isIndependent)
+    {
+        $this->is_independent = $isIndependent;
+
+        return $this;
+    }
+
+    /**
+     * Get isIndependent
+     *
+     * @return boolean
+     */
+    public function getIsIndependent()
+    {
+        return $this->is_independent;
+    }
+
+    /**
+     * Set beerCount
+     *
+     * @param integer $beerCount
+     *
+     * @return Brewery
+     */
+    public function setBeerCount($beerCount)
+    {
+        $this->beer_count = $beerCount;
+
+        return $this;
+    }
+
+    /**
+     * Get beerCount
+     *
+     * @return integer
+     */
+    public function getBeerCount()
+    {
+        return $this->beer_count;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Brewery
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set typeId
+     *
+     * @param integer $typeId
+     *
+     * @return Brewery
+     */
+    public function setTypeId($typeId)
+    {
+        $this->type_id = $typeId;
+
+        return $this;
+    }
+
+    /**
+     * Get typeId
+     *
+     * @return integer
+     */
+    public function getTypeId()
+    {
+        return $this->type_id;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Brewery
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set internalCreatedAt
+     *
+     * @param \DateTime $internalCreatedAt
+     *
+     * @return Brewery
+     */
+    public function setInternalCreatedAt($internalCreatedAt)
+    {
+        $this->internal_created_at = $internalCreatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get internalCreatedAt
+     *
+     * @return \DateTime
+     */
+    public function getInternalCreatedAt()
+    {
+        return $this->internal_created_at;
+    }
+
+    /**
+     * Set internalUpdatedAt
+     *
+     * @param \DateTime $internalUpdatedAt
+     *
+     * @return Brewery
+     */
+    public function setInternalUpdatedAt($internalUpdatedAt)
+    {
+        $this->internal_updated_at = $internalUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get internalUpdatedAt
+     *
+     * @return \DateTime
+     */
+    public function getInternalUpdatedAt()
+    {
+        return $this->internal_updated_at;
+    }
+
+    /**
+     * Set internalDataGathered
+     *
+     * @param boolean $internalDataGathered
+     *
+     * @return Brewery
+     */
+    public function setInternalDataGathered($internalDataGathered)
+    {
+        $this->internal_data_gathered = $internalDataGathered;
+
+        return $this;
+    }
+
+    /**
+     * Get internalDataGathered
+     *
+     * @return boolean
+     */
+    public function getInternalDataGathered()
+    {
+        return $this->internal_data_gathered;
+    }
+    
+    /**
+     * Set count
+     *
+     * @param integer $count
+     *
+     * @return Brewery
+     */
+    public function setCount($count)
+    {
+        $this->count = $count;
+        
+        return $this;
+    }
+    
+    /**
+     * Get count
+     *
+     * @return integer
+     */
+    public function getCount()
+    {
+        return $this->count;
+    }
+    
+    /**
+     * Set ratingScore
+     *
+     * @param string $ratingScore
+     *
+     * @return Brewery
+     */
+    public function setRatingScore($ratingScore)
+    {
+        $this->rating_score = $ratingScore;
+        
+        return $this;
+    }
+    
+    /**
+     * Get ratingScore
+     *
+     * @return string
+     */
+    public function getRatingScore()
+    {
+        return $this->rating_score;
+    }
+    
+    /**
+     * Set totalCount
+     *
+     * @param integer $totalCount
+     *
+     * @return Brewery
+     */
+    public function setTotalCount($totalCount)
+    {
+        $this->total_count = $totalCount;
+        
+        return $this;
+    }
+    
+    /**
+     * Get totalCount
+     *
+     * @return integer
+     */
+    public function getTotalCount()
+    {
+        return $this->total_count;
+    }
+    
+    /**
+     * Set uniqueCount
+     *
+     * @param integer $uniqueCount
+     *
+     * @return Brewery
+     */
+    public function setUniqueCount($uniqueCount)
+    {
+        $this->unique_count = $uniqueCount;
+        
+        return $this;
+    }
+    
+    /**
+     * Get uniqueCount
+     *
+     * @return integer
+     */
+    public function getUniqueCount()
+    {
+        return $this->unique_count;
+    }
+    
+    /**
+     * Set monthlyCount
+     *
+     * @param integer $monthlyCount
+     *
+     * @return Brewery
+     */
+    public function setMonthlyCount($monthlyCount)
+    {
+        $this->monthly_count = $monthlyCount;
+        
+        return $this;
+    }
+    
+    /**
+     * Get monthlyCount
+     *
+     * @return integer
+     */
+    public function getMonthlyCount()
+    {
+        return $this->monthly_count;
+    }
+    
+    /**
+     * Set weeklyCount
+     *
+     * @param integer $weeklyCount
+     *
+     * @return Brewery
+     */
+    public function setWeeklyCount($weeklyCount)
+    {
+        $this->weekly_count = $weeklyCount;
+        
+        return $this;
+    }
+    
+    /**
+     * Get weeklyCount
+     *
+     * @return integer
+     */
+    public function getWeeklyCount()
+    {
+        return $this->weekly_count;
+    }
+    
+    /**
+     * Set ageOnService
+     *
+     * @param string $ageOnService
+     *
+     * @return Brewery
+     */
+    public function setAgeOnService($ageOnService)
+    {
+        $this->age_on_service = $ageOnService;
+        
+        return $this;
+    }
+    
+    /**
+     * Get ageOnService
+     *
+     * @return string
+     */
+    public function getAgeOnService()
+    {
+        return $this->age_on_service;
+    }
+    
+    /**
+     * Set twitter
+     *
+     * @param string $twitter
+     *
+     * @return Brewery
+     */
+    public function setTwitter($twitter)
+    {
+        $this->twitter = $twitter;
+        
+        return $this;
+    }
+    
+    /**
+     * Get twitter
+     *
+     * @return string
+     */
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+    
+    /**
+     * Set facebook
+     *
+     * @param string $facebook
+     *
+     * @return Brewery
+     */
+    public function setFacebook($facebook)
+    {
+        $this->facebook = $facebook;
+        
+        return $this;
+    }
+    
+    /**
+     * Get facebook
+     *
+     * @return string
+     */
+    public function getFacebook()
+    {
+        return $this->facebook;
+    }
+    
+    /**
+     * Set instagram
+     *
+     * @param string $instagram
+     *
+     * @return Brewery
+     */
+    public function setInstagram($instagram)
+    {
+        $this->instagram = $instagram;
+        
+        return $this;
+    }
+    
+    /**
+     * Get instagram
+     *
+     * @return string
+     */
+    public function getInstagram()
+    {
+        return $this->instagram;
+    }
+    
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return Brewery
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+        
+        return $this;
+    }
+    
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+    
+    /**
+     * Set address
+     *
+     * @param string $breweryAddress
+     *
+     * @return Brewery
+     */
+    public function setAddress($breweryAddress)
+    {
+        $this->address = $breweryAddress;
+        
+        return $this;
+    }
+    
+    /**
+     * Get address
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+    
+    /**
+     * Set city
+     *
+     * @param string $breweryCity
+     *
+     * @return Brewery
+     */
+    public function setCity($breweryCity)
+    {
+        $this->city = $breweryCity;
+        
+        return $this;
+    }
+    
+    /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+    
+    /**
+     * Set state
+     *
+     * @param string $breweryState
+     *
+     * @return Brewery
+     */
+    public function setState($breweryState)
+    {
+        $this->state = $breweryState;
+        
+        return $this;
+    }
+    
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+    
+    /**
+     * Set latitude
+     *
+     * @param string $breweryLatitude
+     *
+     * @return Brewery
+     */
+    public function setLatitude($breweryLatitude)
+    {
+        $this->latitude = $breweryLatitude;
+        
+        return $this;
+    }
+    
+    /**
+     * Get latitude
+     *
+     * @return string
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+    
+    /**
+     * Set Longitude
+     *
+     * @param string $breweryLongitude
+     *
+     * @return Brewery
+     */
+    public function setLongitude($breweryLongitude)
+    {
+        $this->longitude = $breweryLongitude;
+        
+        return $this;
+    }
+    
+    /**
+     * Get Longitude
+     *
+     * @return string
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+    
+    /**
+     * Set isClaimed
+     *
+     * @param boolean $isClaimed
+     *
+     * @return Brewery
+     */
+    public function setIsClaimed($isClaimed)
+    {
+        $this->is_claimed = $isClaimed;
+        
+        return $this;
+    }
+    
+    /**
+     * Get isClaimed
+     *
+     * @return boolean
+     */
+    public function getIsClaimed()
+    {
+        return $this->is_claimed;
+    }
+    
+    /**
+     * Set claimedSlug
+     *
+     * @param string $claimedSlug
+     *
+     * @return Brewery
+     */
+    public function setClaimedSlug($claimedSlug)
+    {
+        $this->claimed_slug = $claimedSlug;
+        
+        return $this;
+    }
+    
+    /**
+     * Get claimedSlug
+     *
+     * @return string
+     */
+    public function getClaimedSlug()
+    {
+        return $this->claimed_slug;
+    }
+    
+    /**
+     * Set followerCount
+     *
+     * @param integer $followerCount
+     *
+     * @return Brewery
+     */
+    public function setFollowerCount($followerCount)
+    {
+        $this->follower_count = $followerCount;
+        
+        return $this;
+    }
+    
+    /**
+     * Get followerCount
+     *
+     * @return integer
+     */
+    public function getFollowerCount()
+    {
+        return $this->follower_count;
+    }
+    
+    /**
+     * Set claimUser
+     *
+     * @param integer $claim_user
+     *
+     * @return Brewery
+     */
+    public function setClaimUser($claim_user)
+    {
+        $this->claim_user = $claim_user;
+        
+        return $this;
+    }
+    
+    /**
+     * Get claimUser
+     *
+     * @return integer
+     */
+    public function getClaimUser()
+    {
+        return $this->claim_user;
+    }
+    
+    /**
+     * Add beer
+     *
+     * @param \App\Entity\Beer\Beer $beer
+     *
+     * @return Brewery
+     */
+    public function addBeer(\App\Entity\Beer\Beer $beer)
+    {
+        $this->beers[] = $beer;
+
+        return $this;
+    }
+
+    /**
+     * Remove beer
+     *
+     * @param \App\Entity\Beer\Beer $beer
+     */
+    public function removeBeer(\App\Entity\Beer\Beer $beer)
+    {
+        $this->beers->removeElement($beer);
+    }
+
+    /**
+     * Get beers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBeers()
+    {
+        return $this->beers;
+    }
 }

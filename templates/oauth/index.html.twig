@@ -1,0 +1,6 @@
+{# templates/oauth/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+Click here to authenticate : <a href="https://untappd.com/oauth/authenticate/?client_id={{ untappd_api_client_id }}&response_type=code&redirect_url={{ untappd_api_oauth_redirect_url }}">HERE</a>
+{% endblock %}

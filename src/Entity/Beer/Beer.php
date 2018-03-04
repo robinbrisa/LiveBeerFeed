@@ -20,92 +20,72 @@ class Beer
     /**
      * @ORM\Column(type="string")
      */
-    private $beer_name;
+    private $name;
     
     /**
      * @ORM\Column(type="string")
      */
-    private $beer_label;
+    private $label;
     
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="decimal", scale=4, nullable=true)
      */
-    private $beer_abv;
+    private $abv;
     
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="decimal", scale=4, nullable=true)
      */
-    private $beer_ibu;
+    private $ibu;
     
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $beer_description;
+    private $description;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="Style", inversedBy="beers")
+     * @ORM\JoinColumn(name="style_id", referencedColumnName="id")
      */
-    private $beer_style;
+    private $style;
     
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_in_production;
+    private $active;
     
     /**
      * @ORM\Column(type="string")
      */
-    private $beer_slug;
+    private $slug;
     
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $in_homebrew;
-    
-    /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $created_at;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $rating_count;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", scale=2, nullable=true)
      */
     private $rating_score;
     
     /**
-     * @ORM\OneToOne(targetEntity="Stats")
-     * @ORM\JoinColumn(name="stats_id", referencedColumnName="id")
-     */
-    private $stats;
-    
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $total_count;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $monthly_count;
     
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $total_user_count;
-    
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $user_count;
-    
-    /**.
-     * @ManyToOne(targetEntity="Brewery\Brewery", inversedBy="beers")
-     * @JoinColumn(name="brewery_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Brewery\Brewery", inversedBy="beers", cascade={"persist"})
+     * @ORM\JoinColumn(name="brewery_id", referencedColumnName="id")
      */
     private $brewery;
         
@@ -139,5 +119,548 @@ class Beer
     /**
      * @ORM\Column(type="boolean", options={"default":false})
      */
-    private $internal_data_gathered;
+    private $internal_data_gathered = false;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->vintages = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->parent = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set id
+     *
+     * @param integer $id
+     *
+     * @return Beer
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Beer
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return Beer
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set abv
+     *
+     * @param string $abv
+     *
+     * @return Beer
+     */
+    public function setAbv($abv)
+    {
+        $this->abv = $abv;
+
+        return $this;
+    }
+
+    /**
+     * Get abv
+     *
+     * @return string
+     */
+    public function getAbv()
+    {
+        return $this->abv;
+    }
+
+    /**
+     * Set ibu
+     *
+     * @param string $ibu
+     *
+     * @return Beer
+     */
+    public function setIbu($ibu)
+    {
+        $this->ibu = $ibu;
+
+        return $this;
+    }
+
+    /**
+     * Get ibu
+     *
+     * @return string
+     */
+    public function getIbu()
+    {
+        return $this->ibu;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Beer
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set style
+     *
+     * @param string $style
+     *
+     * @return Beer
+     */
+    public function setStyle($style)
+    {
+        $this->style = $style;
+
+        return $this;
+    }
+
+    /**
+     * Get style
+     *
+     * @return string
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     *
+     * @return Beer
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Beer
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Beer
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set ratingCount
+     *
+     * @param integer $ratingCount
+     *
+     * @return Beer
+     */
+    public function setRatingCount($ratingCount)
+    {
+        $this->rating_count = $ratingCount;
+
+        return $this;
+    }
+
+    /**
+     * Get ratingCount
+     *
+     * @return integer
+     */
+    public function getRatingCount()
+    {
+        return $this->rating_count;
+    }
+
+    /**
+     * Set ratingScore
+     *
+     * @param integer $ratingScore
+     *
+     * @return Beer
+     */
+    public function setRatingScore($ratingScore)
+    {
+        $this->rating_score = $ratingScore;
+
+        return $this;
+    }
+
+    /**
+     * Get ratingScore
+     *
+     * @return integer
+     */
+    public function getRatingScore()
+    {
+        return $this->rating_score;
+    }
+
+    /**
+     * Set totalCount
+     *
+     * @param integer $totalCount
+     *
+     * @return Beer
+     */
+    public function setTotalCount($totalCount)
+    {
+        $this->total_count = $totalCount;
+
+        return $this;
+    }
+
+    /**
+     * Get totalCount
+     *
+     * @return integer
+     */
+    public function getTotalCount()
+    {
+        return $this->total_count;
+    }
+
+    /**
+     * Set monthlyCount
+     *
+     * @param integer $monthlyCount
+     *
+     * @return Beer
+     */
+    public function setMonthlyCount($monthlyCount)
+    {
+        $this->monthly_count = $monthlyCount;
+
+        return $this;
+    }
+
+    /**
+     * Get monthlyCount
+     *
+     * @return integer
+     */
+    public function getMonthlyCount()
+    {
+        return $this->monthly_count;
+    }
+
+    /**
+     * Set brewery
+     *
+     * @param \App\Entity\Brewery\Brewery $brewery
+     *
+     * @return Beer
+     */
+    public function setBrewery(\App\Entity\Brewery\Brewery $brewery = null)
+    {
+        $this->brewery = $brewery;
+        
+        return $this;
+    }
+    
+    /**
+     * Get brewery
+     *
+     * @return \App\Entity\Brewery\Brewery
+     */
+    public function getBrewery()
+    {
+        return $this->brewery;
+    }
+    
+    /**
+     * Set internalCreatedAt
+     *
+     * @param \DateTime $internalCreatedAt
+     *
+     * @return Beer
+     */
+    public function setInternalCreatedAt($internalCreatedAt)
+    {
+        $this->internal_created_at = $internalCreatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get internalCreatedAt
+     *
+     * @return \DateTime
+     */
+    public function getInternalCreatedAt()
+    {
+        return $this->internal_created_at;
+    }
+
+    /**
+     * Set internalUpdatedAt
+     *
+     * @param \DateTime $internalUpdatedAt
+     *
+     * @return Beer
+     */
+    public function setInternalUpdatedAt($internalUpdatedAt)
+    {
+        $this->internal_updated_at = $internalUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get internalUpdatedAt
+     *
+     * @return \DateTime
+     */
+    public function getInternalUpdatedAt()
+    {
+        return $this->internal_updated_at;
+    }
+
+    /**
+     * Set internalDataGathered
+     *
+     * @param boolean $internalDataGathered
+     *
+     * @return Beer
+     */
+    public function setInternalDataGathered($internalDataGathered)
+    {
+        $this->internal_data_gathered = $internalDataGathered;
+
+        return $this;
+    }
+
+    /**
+     * Get internalDataGathered
+     *
+     * @return boolean
+     */
+    public function getInternalDataGathered()
+    {
+        return $this->internal_data_gathered;
+    }
+
+    /**
+     * Add vintage
+     *
+     * @param \App\Entity\Beer\Vintage $vintage
+     *
+     * @return Beer
+     */
+    public function addVintage(\App\Entity\Beer\Vintage $vintage)
+    {
+        $this->vintages[] = $vintage;
+
+        return $this;
+    }
+
+    /**
+     * Remove vintage
+     *
+     * @param \App\Entity\Beer\Vintage $vintage
+     */
+    public function removeVintage(\App\Entity\Beer\Vintage $vintage)
+    {
+        $this->vintages->removeElement($vintage);
+    }
+
+    /**
+     * Get vintages
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVintages()
+    {
+        return $this->vintages;
+    }
+
+    /**
+     * Add parent
+     *
+     * @param \App\Entity\Beer\Vintage $parent
+     *
+     * @return Beer
+     */
+    public function addParent(\App\Entity\Beer\Vintage $parent)
+    {
+        $this->parent[] = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Remove parent
+     *
+     * @param \App\Entity\Beer\Vintage $parent
+     */
+    public function removeParent(\App\Entity\Beer\Vintage $parent)
+    {
+        $this->parent->removeElement($parent);
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Add checkin
+     *
+     * @param \App\Entity\Checkin\Checkin $checkin
+     *
+     * @return Beer
+     */
+    public function addCheckin(\App\Entity\Checkin\Checkin $checkin)
+    {
+        $this->checkins[] = $checkin;
+
+        return $this;
+    }
+
+    /**
+     * Remove checkin
+     *
+     * @param \App\Entity\Checkin\Checkin $checkin
+     */
+    public function removeCheckin(\App\Entity\Checkin\Checkin $checkin)
+    {
+        $this->checkins->removeElement($checkin);
+    }
+
+    /**
+     * Get checkins
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCheckins()
+    {
+        return $this->checkins;
+    }
 }

@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Repository\Venue;
+namespace App\Repository\Beer;
 
-use App\Entity\Venue\Stats;
+use App\Entity\Beer\Style;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Stats|null find($id, $lockMode = null, $lockVersion = null)
- * @method Stats|null findOneBy(array $criteria, array $orderBy = null)
- * @method Stats[]    findAll()
- * @method Stats[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Style|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Style|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Style[]    findAll()
+ * @method Style[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class StatsRepository extends ServiceEntityRepository
+class StyleRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Stats::class);
+        parent::__construct($registry, Style::class);
     }
 
     /*

@@ -34,4 +34,100 @@ class Vintage
      */
     private $is_variant;
     
+
+    /**
+     * Set isVintage
+     *
+     * @param boolean $isVintage
+     *
+     * @return Vintage
+     */
+    public function setIsVintage($isVintage)
+    {
+        $this->is_vintage = $isVintage;
+
+        return $this;
+    }
+
+    /**
+     * Get isVintage
+     *
+     * @return boolean
+     */
+    public function getIsVintage()
+    {
+        return $this->is_vintage;
+    }
+
+    /**
+     * Set isVariant
+     *
+     * @param boolean $isVariant
+     *
+     * @return Vintage
+     */
+    public function setIsVariant($isVariant)
+    {
+        $this->is_variant = $isVariant;
+
+        return $this;
+    }
+
+    /**
+     * Get isVariant
+     *
+     * @return boolean
+     */
+    public function getIsVariant()
+    {
+        return $this->is_variant;
+    }
+
+    /**
+     * Set parentId
+     *
+     * @param \App\Entity\Beer\Beer $parentId
+     *
+     * @return Vintage
+     */
+    public function setParentId(\App\Entity\Beer\Beer $parentId)
+    {
+        $this->parent_id = $parentId;
+
+        return $this;
+    }
+
+    /**
+     * Get parentId
+     *
+     * @return \App\Entity\Beer\Beer
+     */
+    public function getParentId()
+    {
+        return $this->parent_id;
+    }
+
+    /**
+     * Set vintageId
+     *
+     * @param \App\Entity\Beer\Beer $vintageId
+     *
+     * @return Vintage
+     */
+    public function setVintageId(\App\Entity\Beer\Beer $vintageId)
+    {
+        $this->vintage_id = $vintageId;
+
+        return $this;
+    }
+
+    /**
+     * Get vintageId
+     *
+     * @return \App\Entity\Beer\Beer
+     */
+    public function getVintageId()
+    {
+        return $this->vintage_id;
+    }
 }
