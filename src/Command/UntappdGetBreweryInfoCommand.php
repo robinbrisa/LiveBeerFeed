@@ -11,20 +11,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\UntappdAPI;
 use App\Service\UntappdAPISerializer;
 
-class UntappdGetUserinfoCommand extends Command
+class UntappdGetBreweryInfoCommand extends Command
 {
-    protected static $defaultName = 'untappd:get:user:info';
+    protected static $defaultName = 'untappd:get:brewery:info';
     private $untappdAPI;
     private $untappdAPISerializer;
     
     protected function configure()
     {
         $this
-            ->setDescription('Gets user information and stores it into the database')
-            ->addArgument('username', InputArgument::REQUIRED, 'The username');
+        ->setDescription('Gets user information and stores it into the database')
+        ->addArgument('id', InputArgument::REQUIRED, 'The username');
         ;
     }
-
+    
     public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer) {
         $this->untappdAPI = $untappdAPI;
         $this->untappdAPISerializer = $untappdAPISerializer;
@@ -35,15 +35,15 @@ class UntappdGetUserinfoCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $username = $input->getArgument('username');
+        $id = $input->getArgument('id');
         
-        if ($response = $this->untappdAPI->getUserInfo($username)) {
-            $output->writeln(sprintf('Successfully received user information.'));
-            $userData = $response->body->response->user;
-            $this->untappdAPISerializer->handleUserObject($userData);
-            $io->success('User ' . $username . ' has been created/updated.');
+        if ($response = $this->untappdAPI->getBreweryInfo($id)) {
+            $output->writeln(sprintf('Successfully received brewery information.'));
+            $breweryData = $response->body->response->brewery;
+            $brewery = $this->untappdAPISerializer->handleBreweryObject($breweryData);
+            $io->success('Brewery ' . $brewery->getName() . ' has been created/updated.');
         } else {
-            $output->writeln(sprintf('Couldn\'t get user information.'));
+            $output->writeln(sprintf('Couldn\'t get brewery information.'));
         }
     }
 }

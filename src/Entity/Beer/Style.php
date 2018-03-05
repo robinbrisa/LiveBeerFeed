@@ -5,7 +5,7 @@ namespace App\Entity\Beer;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="beer_style")
+ * @ORM\Table(name="beer_style", indexes={@ORM\Index(name="name_idx", columns={"name"})})
  * @ORM\Entity(repositoryClass="App\Repository\Beer\StyleRepository")
  */
 class Style
@@ -26,7 +26,6 @@ class Style
      * @ORM\OneToMany(targetEntity="Beer", mappedBy="style")
      */
     private $beers;
-    // ...
     
     public function __construct() {
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();

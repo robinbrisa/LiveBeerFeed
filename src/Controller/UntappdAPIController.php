@@ -29,7 +29,6 @@ class UntappdAPIController extends Controller
     public function get_brewery_info($id, UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
     {
         $response = $untappdAPI->getBreweryInfo($id)->body;
-        dump($response);
         $brewery = $untappdAPISerializer->handleBreweryObject($response->response->brewery);
         
         return $this->json([

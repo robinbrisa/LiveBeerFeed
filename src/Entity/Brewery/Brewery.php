@@ -74,7 +74,7 @@ class Brewery
     private $rating_score;
     
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
     
