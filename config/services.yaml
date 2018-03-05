@@ -35,3 +35,4 @@ services:
             $untappdAPIClientID: '%untappd_api_client_id%'
             $untappdAPIClientSecret: '%untappd_api_client_secret%'
             $untappdAPIOAuthRedirectURL: '%untappd_api_oauth_redirect_url%'
+            

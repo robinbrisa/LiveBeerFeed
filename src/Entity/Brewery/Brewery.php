@@ -28,6 +28,11 @@ class Brewery
     private $slug;
     
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $created_at;
+    
+    /**
      * @ORM\Column(type="string")
      */
     private $label;
@@ -51,21 +56,17 @@ class Brewery
      * @ORM\Column(type="integer", nullable=true)
      */
     private $beer_count;
-        
+    
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Type", inversedBy="beers")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
      */
     private $type;
     
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $type_id;
-    
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $count;
+    private $ratings_count;
     
     /**
      * @ORM\Column(type="decimal", scale=2, nullable=true)
@@ -96,11 +97,6 @@ class Brewery
      * @ORM\Column(type="integer", nullable=true)
      */
     private $weekly_count;
-    
-    /**
-     * @ORM\Column(type="decimal", nullable=true)
-     */
-    private $age_on_service;
     
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -269,7 +265,31 @@ class Brewery
     {
         return $this->slug;
     }
-
+    
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Brewery
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+        
+        return $this;
+    }
+    
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+    
     /**
      * Set label
      *
@@ -415,30 +435,6 @@ class Brewery
     }
 
     /**
-     * Set typeId
-     *
-     * @param integer $typeId
-     *
-     * @return Brewery
-     */
-    public function setTypeId($typeId)
-    {
-        $this->type_id = $typeId;
-
-        return $this;
-    }
-
-    /**
-     * Get typeId
-     *
-     * @return integer
-     */
-    public function getTypeId()
-    {
-        return $this->type_id;
-    }
-
-    /**
      * Set description
      *
      * @param string $description
@@ -535,27 +531,27 @@ class Brewery
     }
     
     /**
-     * Set count
+     * Set ratingsCount
      *
-     * @param integer $count
+     * @param integer $ratingsCount
      *
      * @return Brewery
      */
-    public function setCount($count)
+    public function setRatingsCount($ratingsCount)
     {
-        $this->count = $count;
+        $this->ratings_count = $ratingsCount;
         
         return $this;
     }
     
     /**
-     * Get count
+     * Get ratingsCount
      *
      * @return integer
      */
-    public function getCount()
+    public function getRatingsCount()
     {
-        return $this->count;
+        return $this->ratings_count;
     }
     
     /**
@@ -676,30 +672,6 @@ class Brewery
     public function getWeeklyCount()
     {
         return $this->weekly_count;
-    }
-    
-    /**
-     * Set ageOnService
-     *
-     * @param string $ageOnService
-     *
-     * @return Brewery
-     */
-    public function setAgeOnService($ageOnService)
-    {
-        $this->age_on_service = $ageOnService;
-        
-        return $this;
-    }
-    
-    /**
-     * Get ageOnService
-     *
-     * @return string
-     */
-    public function getAgeOnService()
-    {
-        return $this->age_on_service;
     }
     
     /**

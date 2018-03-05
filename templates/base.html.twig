@@ -6,7 +6,7 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}Code is {{ authCode }}{% endblock %}
+        {% block body %}You are {{ userinfo.response.user.user_name }}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>

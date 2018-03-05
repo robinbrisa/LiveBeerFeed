@@ -7,6 +7,9 @@ use Unirest;
 class UntappdAPI
 {
     private $untappdAPIUrl;
+    private $untappdAPIClientID;
+    private $untappdAPIClientSecret;
+    private $untappdAPIOAuthRedirectURL;
     
     public function __construct($untappdAPIUrl, $untappdAPIClientID, $untappdAPIClientSecret, $untappdAPIOAuthRedirectURL)
     {
@@ -34,34 +37,45 @@ class UntappdAPI
             'code' => $code
         );
         $response = Unirest\Request::get('https://untappd.com/oauth/authorize/', $headers, $query);
-        dump($response);
-        if ($response->body->meta->http_code == 200) {
-            return $response->body->access_token;
-        } else {
-            return false;
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
         }
+        return $response->body->response->access_token;
     }
     
     /**
      * This method will return the user information for a selected user.
      *
      * @param string $username The username that you wish to call the request upon.
+     * @param string $accessToken The authenticated user's access token. If $username is null, this function will return info for the authenticated user
      * @param string $compact You can pass "true" here only show the user infomation, and remove the "checkins", "media", "recent_brews", etc attributes
      *
      * @return string Returns a JSON object containing the user information
      */
-    public function getUserInfo($username, $compact = "false")
+    public function getUserInfo($username, $accessToken = null, $compact = "false")
     {
         $headers = array('Accept' => 'application/json');
-        $query = array(
-            'client_id' => $this->clientID, 
-            'client_secret' => $this->clientSecret, 
-            'compact' => $compact
-        );
-        $response = Unirest\Request::get($this->APIUrl . '/v4/user/info/' . $username, $headers, $query);
+        $query = array('compact' => $compact);
+        $path = '/v4/user/info/';
+        if (!is_null($username)) {
+            $path = $path . $username;
+        }
+        if (is_null($accessToken)) {
+            if (is_null($username)) {
+                throw new \Exception("Username can't be null when the request isn't authenticated.");
+            }
+            $query['client_id'] = $this->clientID;
+            $query['client_secret'] = $this->clientSecret;
+        } else {
+            $query['access_token'] = $accessToken;
+        }
+        $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
-    
+        
     /**
      * This method will return a list of the user's wish listed beers.
      *
@@ -83,6 +97,9 @@ class UntappdAPI
             'sort' => $sort
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/wishlist/' . $username, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -105,6 +122,9 @@ class UntappdAPI
             'limit' => $limit
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/friends/' . $username, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -127,6 +147,9 @@ class UntappdAPI
             'limit' => $limit
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/badges/' . $username, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -151,6 +174,9 @@ class UntappdAPI
             'sort' => $sort
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/beers/' . $username, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -171,6 +197,9 @@ class UntappdAPI
             'compact' => $compact
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/brewery/info/' . $breweryID, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -191,6 +220,9 @@ class UntappdAPI
             'compact' => $compact
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/beer/info/' . $beerID, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -211,6 +243,9 @@ class UntappdAPI
             'compact' => $compact
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/venue/info/' . $venueID, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -236,6 +271,9 @@ class UntappdAPI
             'sort' => $sort
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/beer/', $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -259,6 +297,9 @@ class UntappdAPI
             'limit' => $limit
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/brewery/', $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
     
@@ -266,26 +307,40 @@ class UntappdAPI
      * This method allows you the obtain all the check-in feed of the selected user. 
      *
      * @param string $username The username that you wish to call the request upon.
-     * @param integer $offset The numeric offset that you what results to start
+     * @param string $accessToken The authenticated user's access token. If $username is null, this function will return info for the authenticated user
+     * @param integer $max_id The checkin ID that you want the results to start with
+     * @param integer $min_id Returns only checkins that are newer than this value
      * @param integer $limit The number of results to return, max of 50, default is 25
      *
      * @return string Returns a JSON object containing the search results
      */
-    public function getUserActivityFeed($username, $max_id = null, $min_id = null, $limit = 25)
+    public function getUserActivityFeed($username, $accessToken = null, $max_id = null, $min_id = null, $limit = 25)
     {
         $headers = array('Accept' => 'application/json');
-        $query = array(
-            'client_id' => $this->clientID,
-            'client_secret' => $this->clientSecret,
-            'limit' => $limit
-        );
+        $query = array('limit' => $limit);
         if (!is_null($max_id)) {
             $query['max_id'] = $max_id;
         }
         if (!is_null($min_id)) {
             $query['min_id'] = $min_id;
         }
-        $response = Unirest\Request::get($this->APIUrl . '/v4/user/checkins/' . $username, $headers, $query);
+        $path = '/v4/user/checkins/';
+        if (!is_null($username)) {
+            $path = $path . $username;
+        }
+        if (is_null($accessToken)) {
+            if (is_null($username)) {
+                throw new \Exception("Username can't be null when the request isn't authenticated.");
+            }
+            $query['client_id'] = $this->clientID;
+            $query['client_secret'] = $this->clientSecret;
+        } else {
+            $query['access_token'] = $accessToken;
+        }
+        $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
         return $response;
     }
 }

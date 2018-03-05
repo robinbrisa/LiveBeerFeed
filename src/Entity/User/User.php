@@ -88,7 +88,7 @@ class User
     private $untappd_url;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $account_type;
     
@@ -178,9 +178,9 @@ class User
     private $badge_relation;
     
     /**
-     * @ORM\Column(name="internal_untappd_token", type="string", nullable=true)
+     * @ORM\Column(name="internal_untappd_access_token", type="string", nullable=true)
      */
-    private $internal_untappd_token;
+    private $internal_untappd_access_token;
     
     /**
      * @Gedmo\Timestampable(on="create")
@@ -200,9 +200,14 @@ class User
     private $internal_data_gathered = false;
     
     /**
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    private $internal_full_history_gathered = false;
+    
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $internal_full_activity_scan_max_id;
+    private $internal_full_history_last_max_id;
     
     /**
      * Constructor
@@ -215,7 +220,7 @@ class User
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->toasts = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+        
     public function addFriend(User $friend, $date)
     {
         $fs = new Friendship();
@@ -1111,6 +1116,67 @@ class User
     public function getFacebook()
     {
         return $this->facebook;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function getInternalFullHistoryGathered()
+    {
+        return $this->internal_full_history_gathered;
+    }
+    
+    /**
+     * @param boolean $internalFullHistoryGathered
+     */
+    public function setInternalFullHistoryGathered($internalFullHistoryGathered)
+    {
+        $this->internal_full_history_gathered = $internalFullHistoryGathered;
+        
+        return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getInternalFullHistoryLastMaxId()
+    {
+        return $this->internal_full_history_last_max_id;
+    }
+    
+    
+    /**
+     * @param mixed $internalFullHistoryLastMaxId
+     */
+    public function setInternalFullHistoryLastMaxId($internalFullHistoryLastMaxId)
+    {
+        $this->internal_full_history_last_max_id = $internalFullHistoryLastMaxId;
+        
+        return $this;
+    }
+    
+    /**
+     * Set internalUntappdAccessToken
+     *
+     * @param string $internalUntappdAccessToken
+     *
+     * @return User
+     */
+    public function setInternalUntappdAccessToken($internalUntappdAccessToken)
+    {
+        $this->internal_untappd_access_token = $internalUntappdAccessToken;
+        
+        return $this;
+    }
+    
+    /**
+     * Get twitter
+     *
+     * @return string
+     */
+    public function getInternalUntappdAccessToken()
+    {
+        return $this->internal_untappd_access_token;
     }
     
     /**
