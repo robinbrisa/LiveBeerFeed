@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User\User as User;
+use App\Entity\User\Friendship as Friendship;
 use App\Entity\Checkin\Checkin as Checkin;
 use App\Entity\Checkin\Source as Source;
 use App\Entity\Checkin\Toast as Toast;
@@ -106,12 +107,26 @@ class UntappdAPISerializer
         return $beersCollection;
     }
     
+    public function handleFriendsArray(User $user, $friends) {
+        foreach ($friends as $friendData) {
+            $friend = $this->buildUserWithLowInformation($friendData->user);
+            $this->em->persist($friend);
+            if (!$this->em->getRepository('\App\Entity\User\Friendship')->findOneBy(array('user' => $user, 'friend' => $friend))) {
+                $user->addFriend($friend, \DateTime::createFromFormat(DATE_RFC2822, $friendData->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get())));
+            }
+        }
+        $this->em->persist($user);
+        return $user;
+    }
+    
     private function buildUserWithLowInformation($user) {
         $output = $this->em->getRepository('\App\Entity\User\User')->find($user->uid);
         if (!$output) {
             $output = new User();
             $output->setId($user->uid);
             $output->setInternalDataGathered(false);
+            $output->setIsSupporter(false);
+            $output->setIsModerator(false);
         }
         $output->setUserName($user->user_name);
         $output->setFirstName($user->first_name);
@@ -120,6 +135,7 @@ class UntappdAPISerializer
         $output->setLocation($user->location);
         $output->setUserAvatar($user->user_avatar);
         if (isset($user->account_type)) { $output->setAccountType($user->account_type); }
+        if (isset($user->is_supporter)) { $output->setIsSupporter($user->is_supporter); }
         $this->em->persist($output);
         return $output;
     }

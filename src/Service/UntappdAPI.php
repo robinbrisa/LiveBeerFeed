@@ -107,21 +107,33 @@ class UntappdAPI
      * This method will return a list of the user's friends.
      *
      * @param string $username The username that you wish to call the request upon.
+     * @param string $accessToken The authenticated user's access token. If $username is null, this function will return info for the authenticated user
      * @param integer $offset The numeric offset that you what results to start
-     * @param integer $limit The number of records that you will return
+     * @param integer $limit The number of records that you will return (max 25)
      *
      * @return string Returns a JSON object containing the user wishlist
      */
-    public function getUserFriends($username, $offset = 0, $limit = 25)
+    public function getUserFriends($username, $accessToken = null, $offset = 0, $limit = 25)
     {
         $headers = array('Accept' => 'application/json');
         $query = array(
-            'client_id' => $this->clientID,
-            'client_secret' => $this->clientSecret,
             'offset' => $offset,
             'limit' => $limit
         );
-        $response = Unirest\Request::get($this->APIUrl . '/v4/user/friends/' . $username, $headers, $query);
+        $path = '/v4/user/friends/';
+        if (!is_null($username)) {
+            $path = $path . $username;
+        }
+        if (is_null($accessToken)) {
+            if (is_null($username)) {
+                throw new \Exception("Username can't be null when the request isn't authenticated.");
+            }
+            $query['client_id'] = $this->clientID;
+            $query['client_secret'] = $this->clientSecret;
+        } else {
+            $query['access_token'] = $accessToken;
+        }
+        $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         }

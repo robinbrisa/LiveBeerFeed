@@ -148,12 +148,12 @@ class User
     private $date_joined;
     
     /**
-     * @ORM\OneToMany(targetEntity="Friendship", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Friendship", mappedBy="user", orphanRemoval=true)
      */
     private $friends;
     
     /**
-     * @ORM\OneToMany(targetEntity="Friendship", mappedBy="friend")
+     * @ORM\OneToMany(targetEntity="Friendship", mappedBy="friend", cascade={"persist"})
      */
     private $friendsWithUser;
     
@@ -210,6 +210,11 @@ class User
     private $internal_full_history_last_max_id;
     
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $internal_friendlist_last_offset;
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -234,12 +239,17 @@ class User
     public function addFriendship(Friendship $friendship)
     {
         $this->friends->add($friendship);
-        $friendship->friend->addFriendshipWithUser($friendship);
+        $friendship->getFriend()->addFriendshipWithUser($friendship);
     }
     
     public function addFriendshipWithUser(Friendship $friendship)
     {
         $this->friendsWithUser->add($friendship);
+    }
+    
+    public function resetFriends() {
+        $this->friends = new \Doctrine\Common\Collections\ArrayCollection();
+        return $this->friends;
     }
     
     /**
@@ -1151,6 +1161,25 @@ class User
     public function setInternalFullHistoryLastMaxId($internalFullHistoryLastMaxId)
     {
         $this->internal_full_history_last_max_id = $internalFullHistoryLastMaxId;
+        
+        return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getInternalFriendlistLastOffset()
+    {
+        return $this->internal_friendlist_last_offset;
+    }
+    
+    
+    /**
+     * @param mixed $internalFriendlistLastOffset
+     */
+    public function setInternalFriendlistLastOffset($internalFriendlistLastOffset)
+    {
+        $this->internal_friendlist_last_offset = $internalFriendlistLastOffset;
         
         return $this;
     }

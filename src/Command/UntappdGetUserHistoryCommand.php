@@ -61,7 +61,7 @@ class UntappdGetUserHistoryCommand extends Command
         
         if ($input->getOption('force')) {
             $maxID = null;
-            $output->writeln(sprintf('Force option applied, restarting full history', $maxID));
+            $output->writeln(sprintf('Force option applied, restarting full history'));
             $user->setInternalFullHistoryGathered(false);
         }
         
