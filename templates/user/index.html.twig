@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.getUserName }}'s profile{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <div class="container">
+    	
+    </div>
+    <h1>{{ user.getUserName }}</h1>
+
+    <ul>
+        <li>Badges: {{ user.getTotalBadges }}</li>
+        <li>Received toasts: {{ stats.toasts_received }}</li>
+        <li>Done toasts: {{ stats.toasts_done }}</li>
+    </ul>
+</div>
+{% endblock %}

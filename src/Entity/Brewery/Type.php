@@ -5,6 +5,7 @@ namespace App\Entity\Brewery;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="brewery_type")
  * @ORM\Entity(repositoryClass="App\Repository\Brewery\TypeRepository")
  */
 class Type
