@@ -11,9 +11,15 @@
         <div class="avatar-wrapper">
         	<img src="{{ user.getUserAvatar }}" title="{{ user.getUserName }}" />
         </div>
-        {{ user.getUserName }}
+        <span class="user-full-name">{{ user.getFirstName }} {{ user.getLastName }}</span>
+        <span class="user-details">{{ user.getUsername }}</span>
+        <span class="user-details">{{ user.getLocation }}</span>
     </div>
 
+    <div class="chart-container">
+    	<canvas id="ratingsChart"></canvas>
+	</div>
+	
     <ul>
         <li>{% if user.getIsModerator %}Is moderator{% endif %}</li>
         <li>{% if user.getIsSupporter %}Is supporter{% endif %}</li>
@@ -34,10 +40,6 @@
         <li>Checkin with most toasts: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_toasts.getId }}" target="_blank">{{ stats.most_toasts.getBeer.getName }} ({{ stats.most_toasts.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_toasts.getTotalToasts }} toasts</li>
         <li>Checkin with most comments: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_comments.getId }}" target="_blank">{{ stats.most_comments.getBeer.getName }} ({{ stats.most_comments.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_comments.getTotalComments }} comments</li>
     </ul>
-    
-    <div class="chart-container">
-    	<canvas id="ratingsChart"></canvas>
-	</div>
 	
     {% block javascripts %}
         {{ parent() }}

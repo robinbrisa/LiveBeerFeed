@@ -7,17 +7,30 @@ body {
 .chart-container {
     width: 700px;
     height: 300px;
+    margin-right: 15px;
+    float: right;
 }
 
 .profile-title {
-	height: 80px;
-	font-size: 40px;
-	line-height: 80px;
-	margin-bottom: 15px;
+	height: 115px;
+	margin-bottom: 20px;
+	padding: 20px;
+	background-color: #ddd;
 }
 
 .profile-title .avatar-wrapper {
 	margin: 0 10px;
+}
+
+.user-full-name {
+	font-size: 30px;
+	display: block;
+	line-height: 38px;
+}
+
+.user-details {
+	font-size:14px;
+	display: block;
 }
 
 .avatar-wrapper {
