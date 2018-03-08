@@ -58,7 +58,7 @@ class Brewery
     private $beer_count;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedBy="beers")
+     * @ORM\ManyToOne(targetEntity="Type", inversedBy="breweries")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
      */
     private $type;

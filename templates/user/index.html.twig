@@ -7,12 +7,60 @@
     <div class="container">
     	
     </div>
-    <h1>{{ user.getUserName }}</h1>
+    <div class="profile-title">
+        <div class="avatar-wrapper">
+        	<img src="{{ user.getUserAvatar }}" title="{{ user.getUserName }}" />
+        </div>
+        {{ user.getUserName }}
+    </div>
 
     <ul>
+        <li>{% if user.getIsModerator %}Is moderator{% endif %}</li>
+        <li>{% if user.getIsSupporter %}Is supporter{% endif %}</li>
         <li>Badges: {{ user.getTotalBadges }}</li>
+        <li>Friends: {{ user.getTotalFriends }}</li>
+        <li>Checkins: {{ user.getTotalCheckins }}</li>
+        <li>Unique beers: {{ user.getTotalBeers }}</li>
+        <li>Created beers: {{ user.getTotalCreatedBeers }}</li>
+        <li>Uploaded photos: {{ user.getTotalPhotos }}</li>
         <li>Received toasts: {{ stats.toasts_received }}</li>
-        <li>Done toasts: {{ stats.toasts_done }}</li>
+        <li>Sent toasts: {{ stats.comments_done }}</li>
+        <li>Received comments: {{ stats.comments_received }}</li>
+        <li>Sent comments: {{ stats.toasts_done }}</li>
+        <li>Average rating: {{ stats.rating_avg|round(2) }}/5</li>
+        <li>Checkins with no ratings: {{ stats.ratings_by_score["null"] }} ( {{ (stats.ratings_by_score["null"]*100/user.getTotalCheckins)|round(2) }}%)</li>
+        <li>Most checked in beer: <a href="https://untappd.com/b/{{ stats.most_checked_in_beer[0].getBeer.getSlug }}/{{ stats.most_checked_in_beer[0].getBeer.getId }}" target="_blank">{{ stats.most_checked_in_beer[0].getBeer.getName }}</a> ({{ stats.most_checked_in_beer.total }} checkins)
+        <li>Most checked in brewery: <a href="https://untappd.com/w/{{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getSlug }}/{{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getId }}" target="_blank">{{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getName }}</a> ({{ stats.most_checked_in_brewery.total }} checkins)
+        <li>Checkin with most toasts: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_toasts.getId }}" target="_blank">{{ stats.most_toasts.getBeer.getName }} ({{ stats.most_toasts.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_toasts.getTotalToasts }} toasts</li>
+        <li>Checkin with most comments: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_comments.getId }}" target="_blank">{{ stats.most_comments.getBeer.getName }} ({{ stats.most_comments.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_comments.getTotalComments }} comments</li>
     </ul>
+    
+    <div class="chart-container">
+    	<canvas id="ratingsChart"></canvas>
+	</div>
+	
+    {% block javascripts %}
+        {{ parent() }}
+        <script>
+    	var ctx = "ratingsChart";
+    	ctx.height = 2000;
+        var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+        	labels: [{{ ratings|join(',') }}],
+       		options: {
+       			responsive: true,
+                maintainAspectRatio: false
+           	},
+        	datasets: [{
+				label: "Ratings",
+				data: [{% for rating in ratings %}
+                    {% if stats.ratings_by_score[rating] is defined %} {{ stats.ratings_by_score[rating] }} {% else %} 0 {% endif %},
+				{% endfor %}],
+	            backgroundColor: "rgba(255,205,86,0.4)",
+            }]
+        }});
+        </script>
+    {% endblock %}
 </div>
 {% endblock %}

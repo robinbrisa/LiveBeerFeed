@@ -40,8 +40,4 @@ class ToastRepository extends ServiceEntityRepository
         ;
     }
     
-    public function getCheckinWithMostToasts($uid = null)
-    {
-        //TODO
-    }
 }

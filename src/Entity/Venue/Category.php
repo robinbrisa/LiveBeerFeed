@@ -27,7 +27,7 @@ class Category
     private $is_primary;
     
     /**
-     * @ORM\ManyToMany(targetEntity="Venue", inversedBy="categories")
+     * @ORM\ManyToMany(targetEntity="Venue", mappedBy="categories")
      */
     private $venues;
     /**

@@ -1,5 +1,35 @@
 body {
+	font-family: ProximaNova, Helvetica, sans-serif;
     padding-top: 70px;
     background-color: #f5f2e8;
 }
-    
+
+.chart-container {
+    width: 700px;
+    height: 300px;
+}
+
+.profile-title {
+	height: 80px;
+	font-size: 40px;
+	line-height: 80px;
+	margin-bottom: 15px;
+}
+
+.profile-title .avatar-wrapper {
+	margin: 0 10px;
+}
+
+.avatar-wrapper {
+	border-radius: 64px;
+	width: 80px;
+	height: 80px;
+	border: 2px solid #f5f2e8;
+	overflow: hidden;
+	float:left;
+}
+
+.avatar-wrapper img{
+	width: 100%;
+	display: block;
+}

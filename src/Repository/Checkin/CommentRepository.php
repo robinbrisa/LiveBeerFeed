@@ -18,17 +18,24 @@ class CommentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Comment::class);
     }
-
-    /*
-    public function findBySomething($value)
+    
+    public function getTotalCommentsToUser($id)
     {
-        return $this->createQueryBuilder('c')
-            ->where('c.something = :value')->setParameter('value', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        return $this->createQueryBuilder('com')
+        ->select('COUNT(com)')
+        ->join('com.checkin', 'c')
+        ->where('c.user = :id')->setParameter('id', $id)
+        ->getQuery()
+        ->getSingleScalarResult()
         ;
     }
-    */
+    
+    public function getTotalCommentsByUser($id)
+    {
+        return $this->createQueryBuilder('com')
+        ->select('COUNT(com)')
+        ->where('com.user = :id')->setParameter('id', $id)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
 }
