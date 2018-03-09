@@ -5,6 +5,7 @@ namespace App\Repository\Checkin;
 use App\Entity\Checkin\Checkin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use DoctrineExtensions\Query\Mysql\Date;
 
 /**
  * @method Checkin|null find($id, $lockMode = null, $lockVersion = null)
@@ -88,7 +89,7 @@ class CheckinRepository extends ServiceEntityRepository
         };
         return $qb->join('c.beer', 'b')
         ->groupBy('c.beer')
-        ->orderBy('COUNT(c)', 'DESC')
+        ->orderBy('total', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
         ->getSingleResult();
@@ -104,15 +105,112 @@ class CheckinRepository extends ServiceEntityRepository
         return $qb->join('c.beer', 'b')
         ->join('b.brewery', 'w')
         ->groupBy('b.brewery')
-        ->orderBy('COUNT(c)', 'DESC')
+        ->orderBy('total', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
         ->getSingleResult();
     }
     
+    public function getBestRatedBrewery($uid = null) {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, AVG(c.rating_score) AS avg_rating, COUNT(c) AS total, b, w');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        return $qb->join('c.beer', 'b')
+        ->join('b.brewery', 'w')
+        ->groupBy('b.brewery')
+        ->orderBy('avg_rating', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getSingleResult();
+    }
+    
+    public function getCheckinHistoryPerDay($uid = null) {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, COUNT(c) as total, DATE(c.created_at) as day');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        $results = $qb->groupBy('day')
+        ->getQuery()
+        ->getResult();
+        
+        $output = array();
+        foreach ($results as $result) {
+            $output[$result['day']] = (int)$result['total'];
+        }
+        return $output;
+    }
+    
+    
+    public function getDayWithMostCheckins($uid = null) {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, COUNT(c) as total, DATE(c.created_at) as day');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        $results = $qb->groupBy('day')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getSingleResult();
+        
+        $output = array();
+        $output[$results['day']] = (int)$results['total'];
+        return $output;
+    }
+    
+    public function getMonthWithMostCheckins($uid = null) {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, COUNT(c) as total, MONTH(c.created_at) AS mm, YEAR(c.created_at) as yy');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        $results = $qb->groupBy('mm')
+        ->addGroupBy('yy')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getSingleResult();
+        
+        $output = array();
+        $output[$results['yy'].'-'.$results['mm']] = (int)$results['total'];
+        return $output;
+    }
+    
+    public function getYearWithMostCheckins($uid = null) {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, COUNT(c) as total, YEAR(c.created_at) as yy');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        $results = $qb->groupBy('yy')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getSingleResult();
+        
+        $output = array();
+        $output[$results['yy']] = (int)$results['total'];
+        return $output;
+    }
+    
     public function getMostCheckedInUniqueBrewery($uid = null)
     {
-        /*$subquery = $this->createQueryBuilder('c')
+        /*
+SELECT COUNT(c.id), y.id, y.name
+FROM (
+	SELECT * FROM checkin
+	GROUP BY beer_id
+) c
+JOIN beer b ON c.beer_id = b.id
+JOIN brewery y ON b.brewery_id = y.id
+GROUP BY b.brewery_id
+ORDER BY COUNT(c.id) DESC
+         * 
+         * 
+         * $subquery = $this->createQueryBuilder('c')
         ->groupBy('c.beer');
         
         $qb = $this->createQueryBuilder('c');
