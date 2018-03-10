@@ -3,6 +3,7 @@
 namespace App\Entity\Checkin;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="checkin_media")
@@ -39,6 +40,7 @@ class Media
     /**
      * @ORM\ManyToOne(targetEntity="Checkin", inversedBy="medias", cascade={"remove"})
      * @ORM\JoinColumn(name="checkin_id", referencedColumnName="id", onDelete="CASCADE")
+     * @JMS\Exclude()
      */
     private $checkin;
     

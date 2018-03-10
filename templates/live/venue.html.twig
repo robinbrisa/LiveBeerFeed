@@ -2,16 +2,17 @@
 
 {% block title %}{{ venue.getName }} Live Feed{% endblock %}
 
+{% block navbar %}
+{% endblock %}
+       
 {% block body %}
 <div class="main-wrapper">
-    <div class="container">
-    	
-    </div>
-    <div class="venue-title">
+    <div id="live-venue-title">
+    	<span id="close-live"><a href="/venue/{{ venue.getId }}" title="Close live" id=""><i class="fa fa-window-close"></i></a></span>
         <span class="description"><i class="fa fa-refresh fa-spin"></i> Live Untappd feed for {{ venue.getUntappdLink|raw }}</span>
     </div>
 
-	<div id="live-content">
+	<div id="live-content" data-vid="{{ venue.getId }}">
         <div id="live-media" class="">
         	{% set i = 0 %}
         	{% set j = 0 %}
@@ -63,7 +64,5 @@
         </ul>
         <div class="gradient-bottom"></div>
     </div>
-    {% block javascripts %}
-    {% endblock %}
 </div>
 {% endblock %}

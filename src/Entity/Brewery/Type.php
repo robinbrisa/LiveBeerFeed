@@ -3,6 +3,7 @@
 namespace App\Entity\Brewery;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="brewery_type")

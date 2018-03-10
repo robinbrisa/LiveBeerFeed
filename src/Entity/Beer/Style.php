@@ -3,6 +3,7 @@
 namespace App\Entity\Beer;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="beer_style", indexes={@ORM\Index(name="name_idx", columns={"name"})})
@@ -24,6 +25,7 @@ class Style
     
     /**
      * @ORM\OneToMany(targetEntity="Beer", mappedBy="style")
+     * @JMS\Exclude()
      */
     private $beers;
     

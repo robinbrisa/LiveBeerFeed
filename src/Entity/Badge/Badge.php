@@ -63,11 +63,6 @@ class Badge
     private $badge_relation;
     
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User\User", mappedBy="badges")
-     */
-    private $users;
-    
-    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="internal_created_at", nullable=true)
      */

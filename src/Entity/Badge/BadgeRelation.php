@@ -3,6 +3,7 @@
 namespace App\Entity\Badge;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Badge\BadgeRelationRepository")

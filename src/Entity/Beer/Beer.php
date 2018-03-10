@@ -4,6 +4,7 @@ namespace App\Entity\Beer;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="beer")
@@ -129,7 +130,11 @@ class Beer
         $this->parent = new \Doctrine\Common\Collections\ArrayCollection();
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("untappd_link")
+     */
     public function getUntappdLink() {
         return '<a href="https://untappd.com/b/'.$this->slug.'/'.$this->id.'" target="_blank">'.$this->name.'</a>';
     }

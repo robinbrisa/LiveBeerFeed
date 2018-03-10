@@ -3,6 +3,7 @@
 namespace App\Entity\Venue;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="venue_category")
@@ -28,6 +29,7 @@ class Category
     
     /**
      * @ORM\ManyToMany(targetEntity="Venue", mappedBy="categories")
+     * @JMS\Exclude()
      */
     private $venues;
     /**

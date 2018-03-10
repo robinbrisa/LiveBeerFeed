@@ -1,6 +1,5 @@
 body {
 	font-family: ProximaNova, Helvetica, sans-serif;
-    padding-top: 50px;
     background-color: #f5f2e8;
 }
 
@@ -11,6 +10,10 @@ a {
  a:hover {
 	color: #ff9933;
 	text-decoration: none;
+}
+ 
+.navbar-push {
+    margin-bottom: 50px;
 }
  
 .chart-container {
@@ -57,28 +60,28 @@ a {
 	display: block;
 }
 
-.venue-title {
-	margin: 10px 5px 0 5px;
+#live-venue-title {
+	margin: 5px;
 	height: 40px;
 	padding: 5px 15px;
-	background-color: #f0f0f0;
+	background-color: #ffcc00;
     border-bottom: 1px solid #e2e2e2;
 }
 
-.venue-title .description {
+#live-venue-title .description {
 	font-size:20px;
 }
 
-.venue-title i {
+#live-venue-title i {
 	margin-right: 4px;
 }
 
 #live-content {
-	margin:5px;
+	margin: 5px;
 }
 
 #live-media {
-	height: calc(100vh - 110px);
+	height: calc(100vh - 50px);
 	overflow: hidden;
 	width:25%;
 	background-color: #fff;
@@ -88,7 +91,7 @@ a {
 }
 
 #live-feed {
-	max-height: calc(100vh - 110px);
+	max-height: calc(100vh - 50px);
     float: left;
 	padding: 0;
 	width: 75%;
@@ -281,4 +284,17 @@ rating.small.r200{
     background: -ms-linear-gradient(top,  rgba(137,255,241,0) 0%,rgba(245,242,232,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(137,255,241,0) 0%,rgba(245,242,232,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0089fff1', endColorstr='#f5f2e8',GradientType=0 ); /* IE6-9 */
+}
+
+#close-live {
+	float: right;
+	font-size: 20px;
+}
+
+#close-live a {
+	color: #555;
+}
+
+#close-live a:hover {
+	color: #888;
 }

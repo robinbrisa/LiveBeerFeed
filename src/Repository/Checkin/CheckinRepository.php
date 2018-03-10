@@ -223,16 +223,24 @@ class CheckinRepository extends ServiceEntityRepository
         return $output;
     }
     
-    public function getVenueCheckins($vid, $limit)
+    public function getVenueCheckins($vid, $minID = null, $limit = null)
     {
-        return $this->createQueryBuilder('c')
-        ->select('c')
-        ->where('c.venue = :vid')->setParameter('vid', $vid)
-        ->orderBy('c.created_at', 'DESC')
-        ->setMaxResults($limit)
-        ->getQuery()
-        ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, m, v, u, b')
+        ->join('c.venue', 'v')
+        ->join('c.user', 'u')
+        ->join('c.beer', 'b')
+        ->join('c.medias', 'm')
+        ->where('c.venue = :vid')->setParameter('vid', $vid);
+        if (!is_null($minID)) {
+            $qb->andWhere('c.id > :minid')->setParameter('minid', $minID);
+        }
+        $qb->orderBy('c.created_at', 'DESC');
+        if (!is_null($limit)) {
+            $qb->setMaxResults($limit);
+        }
+        return $qb->getQuery()
+        ->getResult();
     }
     
     public function getMostCheckedInUniqueBrewery($uid = null)

@@ -4,6 +4,7 @@ namespace App\Entity\User;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="user")
@@ -149,11 +150,13 @@ class User
     
     /**
      * @ORM\OneToMany(targetEntity="Friendship", mappedBy="user", orphanRemoval=true)
+     * @JMS\Exclude()
      */
     private $friends;
     
     /**
      * @ORM\OneToMany(targetEntity="Friendship", mappedBy="friend", cascade={"persist"})
+     * @JMS\Exclude()
      */
     private $friendsWithUser;
     
@@ -226,6 +229,10 @@ class User
         $this->toasts = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("untappd_link")
+     */
     public function getUntappdLink() {
         return '<a href="https://untappd.com/user/'.$this->user_name.'" target="_blank">'.$this->first_name.'</a>';
     }

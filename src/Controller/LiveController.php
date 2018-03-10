@@ -19,7 +19,7 @@ class LiveController extends Controller
             $this->createNotFoundException('This venue is unknown');
         }
         
-        $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($vid, 300);
+        $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($vid, null, 300);
         
         return $this->render('live/venue.html.twig', [
             'venue' => $venue,

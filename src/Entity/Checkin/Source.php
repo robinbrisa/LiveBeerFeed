@@ -32,10 +32,6 @@ class Source
     private $app_website;
     
     /**
-     * @ORM\OneToMany(targetEntity="Checkin", mappedBy="source")
-     */
-    private $checkins;
-    /**
      * Constructor
      */
     public function __construct()

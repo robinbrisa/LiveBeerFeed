@@ -4,6 +4,7 @@ namespace App\Entity\Checkin;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Table(name="checkin")
@@ -35,18 +36,21 @@ class Checkin
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User\User", inversedBy="checkins", cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @JMS\MaxDepth(1)
      */
     private $user;
     
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Beer\Beer", inversedBy="checkins", cascade={"persist"})
      * @ORM\JoinColumn(name="beer_id", referencedColumnName="id")
+     * @JMS\MaxDepth(2)
      */
     private $beer;
     
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Venue\Venue", inversedBy="checkins", cascade={"persist"})
      * @ORM\JoinColumn(name="venue_id", referencedColumnName="id", nullable=true)
+     * @JMS\MaxDepth(1)
      */
     private $venue;
     
@@ -57,6 +61,7 @@ class Checkin
     
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="checkin", cascade={"persist"}, orphanRemoval=true)
+     * @JMS\MaxDepth(2)
      */
     private $comments;
     
@@ -67,11 +72,12 @@ class Checkin
     
     /**
      * @ORM\OneToMany(targetEntity="Toast", mappedBy="checkin", cascade={"persist"}, orphanRemoval=true)
+     * @JMS\MaxDepth(2)
      */
     private $toasts;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Source", inversedBy="checkins", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Source", cascade={"persist"})
      * @ORM\JoinColumn(name="source_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $source;
@@ -88,6 +94,7 @@ class Checkin
     
     /**
      * @ORM\OneToMany(targetEntity="\App\Entity\Badge\BadgeRelation", mappedBy="checkin")
+     * @JMS\MaxDepth(3)
      */
     private $badge_relation;
     
@@ -191,6 +198,10 @@ class Checkin
         return $this->rating_score;
     }
     
+    /**
+    * @JMS\VirtualProperty
+    * @JMS\SerializedName("integer_rating_score")
+    */
     public function getIntegerRatingScore()
     {
         if (is_null($this->rating_score)) {

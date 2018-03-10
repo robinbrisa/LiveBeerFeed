@@ -3,6 +3,8 @@
 namespace App\Entity\Checkin;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+
 
 /**
  * @ORM\Table(name="checkin_toast")
