@@ -8,27 +8,61 @@
     	
     </div>
     <div class="venue-title">
-        <span class="user-full-name">{{ venue.getName }}</span>
+        <span class="description"><i class="fa fa-refresh fa-spin"></i> Live Untappd feed for {{ venue.getUntappdLink|raw }}</span>
     </div>
 
-    <ul id="live-feed">
-    	{% for checkin in checkins %}
-    		<li>
-    			<div class="avatar-wrapper">
-    				{% if checkin.getUser.getIsSupporter %}
-    					<span class="supporter"></span>
-    				{% endif %}
-    				<a href="https://www.untappd.com/user/{{ checkin.getUser.getUserName }}" target="_blank">
-    					<img src="{{ checkin.getUser.getUserAvatar }}" />
-    				</a>
-    			</div>
-        	    <span class="checkin-item">
-        	        {{ checkin.getBeer.getUntappdLink|raw }} by {{ checkin.getBeer.getBrewery.getName }}
-        	    </span>
-        	</li>
-    	{% endfor %}
-    </ul>
-	
+	<div id="live-content">
+        <div id="live-media" class="">
+        	{% set i = 0 %}
+        	{% set j = 0 %}
+        	{% set lineNumber = 1 %}
+        	<div class="d-flex flex-row">
+        	    {% for checkin in checkins %}
+               		{% if checkin.getMedias[0] is defined and j < 60 %}
+               			{% set i = i + 1 %}
+               			{% set j = j + 1 %}
+                   		<div class="checkin-photo">
+                   			<a href="{{ checkin.getMedias[0].getPhotoImgOg }}" target="_blank"><img src="{{ checkin.getMedias[0].getPhotoImgLg }}"></img></a>
+                   		</div>
+                   		{% if i == 2 * lineNumber %}
+                   			</div>
+                   			<div class="d-flex flex-row">
+        	                {% set i = 0 %}
+                   		    {% if lineNumber < 3 %}
+               			   		{% set lineNumber = lineNumber + 1 %}
+               			   	{% endif %}
+                   		{% endif %}
+               		{% endif %}
+        	    {% endfor %}
+            </div>
+        </div>
+        <ul id="live-feed">
+        	{% for checkin in checkins %}
+        		<li data-checkin="{{ checkin.getId }}">
+        			<div class="avatar-wrapper">
+        				{% if checkin.getUser.getIsSupporter %}
+        					<span class="supporter"></span>
+        				{% endif %}
+        				<a href="https://www.untappd.com/user/{{ checkin.getUser.getUserName }}" target="_blank">
+        					<img src="{{ checkin.getUser.getUserAvatar }}" />
+        				</a>
+        			</div>
+        			<div class="checkin-info">
+        				<div class="line">
+                	    	<span class="checkin-item">{{ checkin.getUser.getUntappdLink|raw }} is drinking a {{ checkin.getBeer.getUntappdLink|raw }} by {{ checkin.getBeer.getBrewery.getUntappdLink|raw }} <span class="checkin-date">({{ checkin.getCreatedAt|ago }})</span></span>
+                	    </div>
+                	    <div class="line">
+                	    	<span class="rating small r{{ checkin.getIntegerRatingScore }}"></span> 
+                	    	{% if checkin.getComment != "" and checkin.getComment is not null %}
+                	    		<span class="comment">"{{ checkin.getComment }}"</span>
+                	    	{% endif %}
+                	    </div>
+               		</div>
+            	</li>
+        	{% endfor %}
+        </ul>
+        <div class="gradient-bottom"></div>
+    </div>
     {% block javascripts %}
     {% endblock %}
 </div>

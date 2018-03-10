@@ -225,7 +225,11 @@ class User
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->toasts = new \Doctrine\Common\Collections\ArrayCollection();
     }
-        
+    
+    public function getUntappdLink() {
+        return '<a href="https://untappd.com/user/'.$this->user_name.'" target="_blank">'.$this->first_name.'</a>';
+    }
+    
     public function addFriend(User $friend, $date)
     {
         $fs = new Friendship();

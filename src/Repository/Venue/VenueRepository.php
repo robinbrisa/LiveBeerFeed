@@ -18,5 +18,19 @@ class VenueRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Venue::class);
     }
-
+    
+    public function getMostVisitedVenue($uid)
+    {
+        $qb = $this->createQueryBuilder('v')
+        ->select('v, COUNT(c) as total')
+        ->join('v.checkins', 'c');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        return $qb->groupBy('c.venue')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getSingleResult();
+    }
 }

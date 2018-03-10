@@ -194,6 +194,10 @@ class Brewery
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+    public function getUntappdLink() {
+        return '<a href="https://untappd.com/w/'.$this->slug.'/'.$this->id.'" target="_blank">'.$this->name.'</a>';
+    }
+    
     /**
      * Set id
      *

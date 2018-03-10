@@ -188,7 +188,11 @@ class Venue
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
+    
+    public function getUntappdLink() {
+        return '<a href="https://untappd.com/v/'.$this->slug.'/'.$this->id.'" target="_blank">'.$this->name.'</a>';
+    }
+    
     /**
      * Set id
      *
@@ -212,7 +216,7 @@ class Venue
     {
         return $this->id;
     }
-
+        
     /**
      * Set name
      *

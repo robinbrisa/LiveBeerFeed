@@ -77,7 +77,7 @@ class Checkin
     private $source;
     
     /**
-     * @ORM\OneToMany(targetEntity="Media", mappedBy="checkin", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Media", mappedBy="checkin", cascade={"persist"}, orphanRemoval=true, fetch="EAGER")
      */
     private $medias;
     
@@ -189,6 +189,15 @@ class Checkin
     public function getRatingScore()
     {
         return $this->rating_score;
+    }
+    
+    public function getIntegerRatingScore()
+    {
+        if (is_null($this->rating_score)) {
+            return 0;
+        } else {
+            return $this->rating_score*100;
+        }
     }
     
     /**
