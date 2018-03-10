@@ -20,6 +20,19 @@ class CheckinRepository extends ServiceEntityRepository
         parent::__construct($registry, Checkin::class);
     }
     
+    public function getTotalCheckinsCount($uid = null)
+    {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c, COUNT(c) AS total');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        $result = $qb->getQuery()
+        ->getSingleResult();
+        
+        return $result['total'];
+    }
+    
     public function getCheckinWithMostToasts($uid = null)
     {
         $qb = $this->createQueryBuilder('c')
@@ -42,6 +55,20 @@ class CheckinRepository extends ServiceEntityRepository
             $qb->where('c.user = :id')->setParameter('id', $uid);
         };
         return $qb->addOrderBy('c.total_comments', 'DESC')
+        ->addOrderBy('c.created_at', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getSingleResult();
+    }
+    
+    public function getCheckinWithMostBadges($uid = null)
+    {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        return $qb->addOrderBy('c.total_badges', 'DESC')
         ->addOrderBy('c.created_at', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
@@ -194,6 +221,18 @@ class CheckinRepository extends ServiceEntityRepository
         $output = array();
         $output[$results['yy']] = (int)$results['total'];
         return $output;
+    }
+    
+    public function getVenueCheckins($vid, $limit)
+    {
+        return $this->createQueryBuilder('c')
+        ->select('c')
+        ->where('c.venue = :vid')->setParameter('vid', $vid)
+        ->orderBy('c.created_at', 'DESC')
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult()
+        ;
     }
     
     public function getMostCheckedInUniqueBrewery($uid = null)

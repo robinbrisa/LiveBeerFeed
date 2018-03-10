@@ -198,7 +198,7 @@ class UntappdAPI
      * @param integer $breweryID The Brewery ID that you want to display checkins
      * @param string $compact You can pass "true" here only show the brewery infomation, and remove the "checkins", "media", "beer_list", etc attributes
      *      *
-     * @return string Returns a JSON object containing the user badges
+     * @return string Returns a JSON object containing the brewery info
      */
     public function getBreweryInfo($breweryID, $compact = "false")
     {
@@ -221,7 +221,7 @@ class UntappdAPI
      * @param integer $beerID The Brewery ID that you want to display checkins
      * @param string $compact You can pass "true" here only show the beer infomation, and remove the "checkins", "media", "variants", etc attributes
      *
-     * @return string Returns a JSON object containing the user badges
+     * @return string Returns a JSON object containing the beer info
      */
     public function getBeerInfo($beerID, $compact = "false")
     {
@@ -239,12 +239,12 @@ class UntappdAPI
     }
     
     /**
-     * This method will allow you to see extended information about a beer.
+     * This method will allow you to see extended information about a venue.
      *
-     * @param integer $venueID The Venue ID that you want to display checkins
+     * @param integer $venueID The Venue ID that you want to get info
      * @param string $compact You can pass "true" here only show the venue infomation, and remove the "checkins", "media", "top_beers", etc attributes
      *
-     * @return string Returns a JSON object containing the user badges
+     * @return string Returns a JSON object containing the venue info
      */
     public function getVenueInfo($venueID, $compact = "false")
     {
@@ -256,6 +256,44 @@ class UntappdAPI
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/venue/info/' . $venueID, $headers, $query);
         if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        }
+        return $response;
+    }
+    
+    /**
+     * This method will allow you to see the history of checkins for a venue.
+     *
+     * @param integer $venueID The Venue ID that you want to display checkins
+     * @param integer $max_id The checkin ID that you want the results to start with
+     * @param integer $min_id Returns only checkins that are newer than this value
+     * @param integer $limit The number of results to return, max of 50, default is 25
+     *
+     * @return string Returns a JSON object containing the venue checkins
+     */
+    public function getVenueCheckins($venueID, $accessToken = null, $max_id = null, $min_id = null, $limit = 25)
+    {
+        $headers = array('Accept' => 'application/json');
+        
+        $query = array('limit' => $limit);
+        if (!is_null($max_id)) {
+            $query['max_id'] = $max_id;
+        }
+        if (!is_null($min_id)) {
+            $query['min_id'] = $min_id;
+        }
+        if (is_null($accessToken)) {
+            $query['client_id'] = $this->clientID;
+            $query['client_secret'] = $this->clientSecret;
+        } else {
+            $query['access_token'] = $accessToken;
+        }
+        $response = Unirest\Request::get($this->APIUrl . '/v4/venue/checkins/' . $venueID, $headers, $query);
+        if ($response->code != 200) {
+            if ($response->body->meta->error_detail = "Your 'max_id' is too low, please use a valid that is closer to the most recent ID. We only allow scanning back to a max of 300 checkins.") {
+                $response->body = json_decode('{"response":{"pagination":{"max_id":""}}}');
+                return $response;
+            }
             throw new \Exception("API Error. HTTP code: " . $response->code);
         }
         return $response;

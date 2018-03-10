@@ -107,6 +107,14 @@ class UntappdAPISerializer
         return $beersCollection;
     }
     
+    public function handleVenueObject($venueData) {
+        $venue = $this->buildVenueWithFullInformation($venueData);
+        $this->em->persist($venue);
+        $this->em->flush();
+        $this->handleCheckinsArray($venueData->checkins->items, $venue);
+        return $venue;
+    }
+    
     public function handleFriendsArray(User $user, $friends) {
         foreach ($friends as $friendData) {
             $friend = $this->buildUserWithLowInformation($friendData->user);
@@ -131,9 +139,9 @@ class UntappdAPISerializer
         $output->setUserName($user->user_name);
         $output->setFirstName($user->first_name);
         $output->setLastName($user->last_name);
-        $output->setBio($user->bio);
-        $output->setLocation($user->location);
         $output->setUserAvatar($user->user_avatar);
+        if (isset($user->bio)) { $output->setBio($user->bio); }
+        if (isset($user->location)) { $output->setLocation($user->location); }
         if (isset($user->account_type)) { $output->setAccountType($user->account_type); }
         if (isset($user->is_supporter)) { $output->setIsSupporter($user->is_supporter); }
         $this->em->persist($output);
@@ -328,6 +336,51 @@ class UntappdAPISerializer
         $output->setCountry($venue->location->venue_country);
         $output->setLatitude($venue->location->lat);
         $output->setLongitude($venue->location->lng);
+        foreach ($venue->categories->items as $categoryData) {
+            $category = $this->em->getRepository('\App\Entity\Venue\Category')->find($categoryData->category_id);
+            if (!$category) {
+                $category = new Category();
+                $category->setId($categoryData->category_id);
+                $category->setName($categoryData->category_name);
+                $category->setIsPrimary($categoryData->is_primary);
+                $this->em->persist($category);
+            }
+            $output->addCategory($category);
+        }
+        return $output;
+    }
+    
+    private function buildVenueWithFullInformation($venue) {
+        $output = $this->em->getRepository('\App\Entity\Venue\Venue')->find($venue->venue_id);
+        if (!$output) {
+            $output = new Venue();
+            $output->setId($venue->venue_id);
+        }
+        $output->setInternalDataGathered(true);
+        $output->setName($venue->venue_name);
+        $output->setSlug($venue->venue_slug);
+        $output->setMainCategory($venue->primary_category);
+        $output->setFoursquareId($venue->foursquare->foursquare_id);
+        $output->setFoursquareUrl($venue->foursquare->foursquare_url);
+        if (isset($venue->contact->facebook)) { $output->setFacebook($venue->contact->facebook); }
+        if (isset($venue->contact->yelp)) { $output->setYelp($venue->contact->yelp); }
+        if (isset($venue->contact->twitter)) { $output->setTwitter($venue->contact->twitter); }
+        if (isset($venue->contact->venue_url)) { $output->setVenueUrl($venue->contact->venue_url); }
+        $output->setIconLg($venue->venue_icon->lg);
+        $output->setIconMd($venue->venue_icon->md);
+        $output->setIconSm($venue->venue_icon->sm);
+        $output->setIsVerified($venue->is_verified);
+        $output->setAddress($venue->location->venue_address);
+        $output->setCity($venue->location->venue_city);
+        $output->setState($venue->location->venue_state);
+        $output->setCountry($venue->location->venue_country);
+        $output->setLatitude($venue->location->lat);
+        $output->setLongitude($venue->location->lng);
+        $output->setPublicVenue($venue->public_venue);
+        $output->setTotalCount($venue->stats->total_count);
+        $output->setMonthlyCount($venue->stats->monthly_count);
+        $output->setWeeklyCount($venue->stats->weekly_count);
+        $output->setLastUpdated(\DateTime::createFromFormat(DATE_RFC2822, $venue->last_updated)->setTimeZone(new \DateTimeZone(date_default_timezone_get())));
         foreach ($venue->categories->items as $categoryData) {
             $category = $this->em->getRepository('\App\Entity\Venue\Category')->find($categoryData->category_id);
             if (!$category) {

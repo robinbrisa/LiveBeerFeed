@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ venue.getName }} Live Feed{% endblock %}
+
+{% block body %}
+<div class="main-wrapper">
+    <div class="container">
+    	
+    </div>
+    <div class="venue-title">
+        <span class="user-full-name">{{ venue.getName }}</span>
+    </div>
+
+    <ul id="live-feed">
+    	{% for checkin in checkins %}
+    		<li>
+    			<div class="avatar-wrapper">
+    				{% if checkin.getUser.getIsSupporter %}
+    					<span class="supporter"></span>
+    				{% endif %}
+    				<a href="https://www.untappd.com/user/{{ checkin.getUser.getUserName }}" target="_blank">
+    					<img src="{{ checkin.getUser.getUserAvatar }}" />
+    				</a>
+    			</div>
+        	    <span class="checkin-item">
+        	        {{ checkin.getBeer.getUntappdLink|raw }} by {{ checkin.getBeer.getBrewery.getName }}
+        	    </span>
+        	</li>
+    	{% endfor %}
+    </ul>
+	
+    {% block javascripts %}
+    {% endblock %}
+</div>
+{% endblock %}

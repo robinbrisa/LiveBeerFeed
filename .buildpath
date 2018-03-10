@@ -6,6 +6,11 @@
 			<attribute name="composer" value="source"/>
 		</attributes>
 	</buildpathentry>
+	<buildpathentry kind="src" path="vendor/beberlei/DoctrineExtensions/src">
+		<attributes>
+			<attribute name="composer" value="vendor"/>
+		</attributes>
+	</buildpathentry>
 	<buildpathentry kind="src" path="vendor/behat/transliterator/src">
 		<attributes>
 			<attribute name="composer" value="vendor"/>

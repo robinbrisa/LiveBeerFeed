@@ -1,7 +1,11 @@
 body {
 	font-family: ProximaNova, Helvetica, sans-serif;
-    padding-top: 70px;
+    padding-top: 50px;
     background-color: #f5f2e8;
+}
+
+a {
+    color: #c60;
 }
 
 .chart-container {
@@ -33,16 +37,77 @@ body {
 	display: block;
 }
 
-.avatar-wrapper {
+.profile-title .avatar-wrapper {
 	border-radius: 64px;
 	width: 80px;
 	height: 80px;
 	border: 2px solid #f5f2e8;
 	overflow: hidden;
-	float:left;
+	float: left;
+	position: relative;
 }
 
-.avatar-wrapper img{
+.profile-title .avatar-wrapper img{
 	width: 100%;
 	display: block;
+}
+
+.venue-title {
+	height: 70px;
+	margin-bottom: 5px;
+	padding: 20px;
+	background-color: #dfdfdf;
+}
+
+#live-feed {
+	padding: 0;
+}
+
+#live-feed li {
+	height:30px;
+	background-color: #fff;
+	margin: 4px 6px;
+	list-style-type: none;
+	height:60px;
+    border-bottom: 1px solid #e2e2e2;
+	clear:both;
+}
+
+#live-feed .avatar-wrapper {
+	width: 52px;
+	height: 52px;
+	position: relative;
+	margin: 4px 10px;
+	float: left;
+}
+
+#live-feed .avatar-wrapper .supporter {
+	position: absolute;
+    display: block;
+    width: 34px;
+    height: 17px;
+    left: 50%;
+    margin-left: -17px;
+    top: 46px;
+    z-index: 0;
+    background-image: url(../images/feed_main_supporter.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#live-feed .avatar-wrapper a {
+	z-index: 2;
+    position: absolute;
+    display: block;
+    width: 52px;
+    height: 52px;
+    -webkit-border-radius: 26px;
+    -moz-border-radius: 26px;
+    border-radius: 26px;
+    overflow: hidden;
+}
+
+#live-feed .avatar-wrapper a img {
+	height: 100%;
+	width: 100%;
 }

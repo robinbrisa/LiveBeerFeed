@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ user.getUserName }}'s profile{% endblock %}
+{% block title %}Global Stats{% endblock %}
 
 {% block body %}
 <div class="main-wrapper">
@@ -8,12 +8,9 @@
     	
     </div>
     <div class="profile-title">
-        <div class="avatar-wrapper">
-        	<img src="{{ user.getUserAvatar }}" title="{{ user.getUserName }}" />
-        </div>
-        <span class="user-full-name">{{ user.getFirstName }} {{ user.getLastName }}</span>
-        <span class="user-details">{{ user.getUsername }}</span>
-        <span class="user-details">{{ user.getLocation }}</span>
+        <span class="user-full-name">Global Stats</span>
+        <span class="user-details">User Count</span>
+        <span class="user-details">???</span>
     </div>
 
     <div class="chart-container">
@@ -21,29 +18,17 @@
 	</div>
 	
     <ul>
-        <li>{% if user.getIsModerator %}Is moderator{% endif %}</li>
-        <li>{% if user.getIsSupporter %}Is supporter{% endif %}</li>
-        <li>Badges: {{ user.getTotalBadges }}</li>
-        <li>Friends: {{ user.getTotalFriends }}</li>
-        <li>Checkins: {{ user.getTotalCheckins }}</li>
-        <li>Unique beers: {{ user.getTotalBeers }}</li>
-        <li>Created beers: {{ user.getTotalCreatedBeers }}</li>
-        <li>Uploaded photos: {{ user.getTotalPhotos }}</li>
-        <li>Received toasts: {{ stats.toasts_received }} ({{ (stats.toasts_received/user.getTotalCheckins)|round(2) }} / checkin)</li>
-        <li>Sent toasts: {{ stats.comments_done }}</li>
-        <li>Received comments: {{ stats.comments_received }}  ({{ (stats.comments_received/user.getTotalCheckins)|round(2) }} / checkin)</li>
-        <li>Sent comments: {{ stats.toasts_done }}</li>
         <li>Average rating: {{ stats.rating_avg|round(2) }}/5</li>
-        <li>Checkins with no ratings: {{ stats.ratings_by_score["null"] }} ({{ (stats.ratings_by_score["null"]*100/user.getTotalCheckins)|round(2) }}%)</li>
+        <li>Checkins with no ratings: {{ stats.ratings_by_score["null"] }} ({{ (stats.ratings_by_score["null"]*100/stats.total_checkins)|round(2) }}%)</li>
         <li>Day with the most checkins: {% for day, count in stats.day_with_most_checkins %}{{ day }} ({{ count }} checkins){% endfor %}</li>
         <li>Month with the most checkins: {% for month, count in stats.month_with_most_checkins %}{{ month }} ({{ count }} checkins){% endfor %}</li>
         <li>Year with the most checkins: {% for year, count in stats.year_with_most_checkins %}{{ year }} ({{ count }} checkins){% endfor %}</li>
         <li>Most liked brewery: <a href="https://untappd.com/w/{{ stats.best_rated_brewery[0].getBeer.getBrewery.getSlug }}/{{ stats.best_rated_brewery[0].getBeer.getBrewery.getId }}" target="_blank">{{ stats.best_rated_brewery[0].getBeer.getBrewery.getName }}</a> ({{ stats.best_rated_brewery.avg_rating|round(2) }}/5 with {{ stats.best_rated_brewery.total }} checkins)
         <li>Most checked in beer: <a href="https://untappd.com/b/{{ stats.most_checked_in_beer[0].getBeer.getSlug }}/{{ stats.most_checked_in_beer[0].getBeer.getId }}" target="_blank">{{ stats.most_checked_in_beer[0].getBeer.getName }}</a> ({{ stats.most_checked_in_beer.total }} checkins)
         <li>Most checked in brewery: <a href="https://untappd.com/w/{{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getSlug }}/{{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getId }}" target="_blank">{{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getName }}</a> ({{ stats.most_checked_in_brewery.total }} checkins)
-        <li>Checkin with most toasts: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_toasts.getId }}" target="_blank">{{ stats.most_toasts.getBeer.getName }} ({{ stats.most_toasts.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_toasts.getTotalToasts }} toasts</li>
-        <li>Checkin with most comments: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_comments.getId }}" target="_blank">{{ stats.most_comments.getBeer.getName }} ({{ stats.most_comments.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_comments.getTotalComments }} comments</li>
-        <li>Checkin with most badge unlocks: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_badges.getId }}" target="_blank">{{ stats.most_badges.getBeer.getName }} ({{ stats.most_badges.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_badges.getTotalBadges }} badges</li>
+        <li>Checkin with most toasts: <a href="https://untappd.com/user/{{ stats.most_toasts.getUser.getUserName }}/checkin/{{ stats.most_toasts.getId }}" target="_blank">{{ stats.most_toasts.getBeer.getName }} ({{ stats.most_toasts.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_toasts.getTotalToasts }} toasts</li>
+        <li>Checkin with most comments: <a href="https://untappd.com/user/{{ stats.most_comments.getUser.getUserName }}/checkin/{{ stats.most_comments.getId }}" target="_blank">{{ stats.most_comments.getBeer.getName }} ({{ stats.most_comments.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_comments.getTotalComments }} comments</li>
+        <li>Checkin with most badge unlocks: <a href="https://untappd.com/user/{{ stats.most_badges.getUser.getUserName }}/checkin/{{ stats.most_badges.getId }}" target="_blank">{{ stats.most_badges.getBeer.getName }} ({{ stats.most_badges.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_badges.getTotalBadges }} badges</li>
     </ul>
 	
     {% block javascripts %}

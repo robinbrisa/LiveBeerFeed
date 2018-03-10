@@ -19,16 +19,4 @@ class VenueRepository extends ServiceEntityRepository
         parent::__construct($registry, Venue::class);
     }
 
-    /*
-    public function findBySomething($value)
-    {
-        return $this->createQueryBuilder('v')
-            ->where('v.something = :value')->setParameter('value', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 }

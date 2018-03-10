@@ -171,6 +171,16 @@ class Venue
     private $internal_data_gathered = false;
     
     /**
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    private $internal_full_history_gathered = false;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $internal_full_history_last_max_id;
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -957,6 +967,43 @@ class Venue
     public function getInternalDataGathered()
     {
         return $this->internal_data_gathered;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function getInternalFullHistoryGathered()
+    {
+        return $this->internal_full_history_gathered;
+    }
+    
+    /**
+     * @param boolean $internalFullHistoryGathered
+     */
+    public function setInternalFullHistoryGathered($internalFullHistoryGathered)
+    {
+        $this->internal_full_history_gathered = $internalFullHistoryGathered;
+        
+        return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getInternalFullHistoryLastMaxId()
+    {
+        return $this->internal_full_history_last_max_id;
+    }
+    
+    
+    /**
+     * @param mixed $internalFullHistoryLastMaxId
+     */
+    public function setInternalFullHistoryLastMaxId($internalFullHistoryLastMaxId)
+    {
+        $this->internal_full_history_last_max_id = $internalFullHistoryLastMaxId;
+        
+        return $this;
     }
     
 }
