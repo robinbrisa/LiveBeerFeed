@@ -230,7 +230,7 @@ class CheckinRepository extends ServiceEntityRepository
         ->join('c.venue', 'v')
         ->join('c.user', 'u')
         ->join('c.beer', 'b')
-        ->join('c.medias', 'm')
+        ->leftJoin('c.medias', 'm')
         ->where('c.venue = :vid')->setParameter('vid', $vid);
         if (!is_null($minID)) {
             $qb->andWhere('c.id > :minid')->setParameter('minid', $minID);

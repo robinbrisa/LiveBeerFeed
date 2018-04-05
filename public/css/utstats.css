@@ -88,6 +88,22 @@ a {
     border-bottom: 1px solid #e2e2e2;
     border-right: 1px solid #e2e2e2;
     float:right;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#live-media > div {
+	flex: 1 0 25%;
+}
+
+#live-media > div:nth-child(3) {
+	flex: 0 1 33.3%;
+}
+
+
+#live-media > div:first-child {
+	flex: 0 1 50%;
 }
 
 #live-feed {
@@ -296,5 +312,18 @@ rating.small.r200{
 }
 
 #close-live a:hover {
+	color: #888;
+}
+
+#start-live-mode {
+	float: right;
+	font-size: 20px;
+}
+
+#start-live-mode a {
+	color: #555;
+}
+
+#start-live-mode a:hover {
 	color: #888;
 }

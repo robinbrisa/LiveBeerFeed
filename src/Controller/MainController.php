@@ -12,9 +12,11 @@ class MainController extends Controller
      */
     public function index()
     {
+        $em = $this->getDoctrine()->getManager();
+        $events = $em->getRepository('\App\Entity\Event')->findCurrentEvents();
         
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
+            'currentEvents' => $events,
         ]);
     }
     

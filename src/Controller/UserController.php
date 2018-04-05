@@ -8,9 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class UserController extends Controller
 {
     /**
-     * @Route("/user/{username}", name="profile")
+     * @Route("/user/{username}", name="user_profile")
      */
-    public function index($username)
+    public function viewProfile($username)
     {
         $em = $this->getDoctrine()->getManager();
         $stats = array();

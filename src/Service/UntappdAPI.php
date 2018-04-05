@@ -88,6 +88,9 @@ class UntappdAPI
      */
     public function getUserWishList($username, $offset = 0, $limit = 25, $sort = "date")
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID, 
@@ -115,6 +118,9 @@ class UntappdAPI
      */
     public function getUserFriends($username, $accessToken = null, $offset = 0, $limit = 25)
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'offset' => $offset,
@@ -151,6 +157,9 @@ class UntappdAPI
      */
     public function getUserBadges($username, $offset = 0, $limit = 25)
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID,
@@ -177,6 +186,9 @@ class UntappdAPI
      */
     public function getUserBeers($username, $offset = 0, $limit = 25, $sort = "date")
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID,
@@ -202,6 +214,9 @@ class UntappdAPI
      */
     public function getBreweryInfo($breweryID, $compact = "false")
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID,
@@ -273,6 +288,9 @@ class UntappdAPI
      */
     public function getVenueCheckins($venueID, $accessToken = null, $max_id = null, $min_id = null, $limit = 25)
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         
         $query = array('limit' => $limit);
@@ -311,6 +329,9 @@ class UntappdAPI
      */
     public function searchBeer($querystr, $offset = 0, $limit = 25, $sort = "checkin")
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID,
@@ -338,6 +359,9 @@ class UntappdAPI
      */
     public function searchBrewery($querystr, $offset = 0, $limit = 25, $sort = "checkin")
     {
+        if (!is_null($limit) && $limit > 25) {
+            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID,
@@ -366,6 +390,9 @@ class UntappdAPI
      */
     public function getUserActivityFeed($username, $accessToken = null, $max_id = null, $min_id = null, $limit = 25)
     {
+        if (!is_null($limit) && $limit > 50) {
+            throw new \Exception('Maximum for limit is 50 (requested ' . $limit . ')');
+        }
         $headers = array('Accept' => 'application/json');
         $query = array('limit' => $limit);
         if (!is_null($max_id)) {

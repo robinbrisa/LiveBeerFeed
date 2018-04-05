@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ venue.getName }} venue info{% endblock %}
+
+{% block body %}
+<div class="main-wrapper">
+    <div class="container">
+    	
+    </div>
+    <div class="profile-title">
+    	<div id="start-live-mode">
+    		<a href="/live/venue/{{ venue.getId }}" title="Start Live"><i class="fa fa-play-circle"></i></a>
+    	</div>
+        <div class="avatar-wrapper">
+        	<img src="{{ venue.getIconLg }}" title="{{ venue.getName }}" />
+        </div>
+        <span class="user-full-name">{{ venue.getName }}</span>
+        <span class="user-details">{{ venue.getCity }}, {{ venue.getCountry }}</span>
+        <span class="user-details">
+        {% set categories = [] %}
+        {% for category in venue.getCategories %}
+            {% if category.getName not in categories %}
+                {% set categories = categories|merge([category.getName]) %}
+            {% endif %}
+        {% endfor %}
+        {{ categories|join(', ') }}
+        </span>
+    </div>
+	
+</div>
+{% endblock %}

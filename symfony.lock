@@ -107,6 +107,9 @@
     "mashape/unirest-php": {
         "version": "v3.0.4"
     },
+    "nikic/php-parser": {
+        "version": "v4.0.1"
+    },
     "ocramius/package-versions": {
         "version": "1.3.0"
     },

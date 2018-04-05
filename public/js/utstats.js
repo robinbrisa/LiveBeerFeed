@@ -5,9 +5,12 @@ $(document).ready(function() {
 function updateLivePage() {
 	$.get("/ajax/getVenueCheckins/" + $("#live-content").data('vid'), { minID: $("#live-feed").children("li").first().data('checkin') } )
 	.done(function(data) {
-		console.log(data);
+		var append = "";
+		var mediaAppend = "";
+		var count = 0;
+		var mediaCount = 0;
 		$.each(data, function(key, value) {
-    		var append = '<li data-checkin="' + value.id + '">'
+    		append += '<li data-checkin="' + value.id + '">'
 			append += '<div class="avatar-wrapper">';
     		if (value.user.is_supporter) {
 				append += '<span class="supporter"></span>';
@@ -28,7 +31,24 @@ function updateLivePage() {
         	append += '</div>';
         	append += '</div>';
         	append += '</li>';
-        	$(append).hide().prependTo('#live-feed').fadeIn();
+        	count++;
+        	
+        	if (value.medias[0] !== undefined) {
+        		mediaAppend += '<div class="checkin-photo" data-checkin="' + value.id + '">';
+        		mediaAppend += '<a href="' + value.medias[0].photo_img_og + '" target="_blank"><img src="' + value.medias[0].photo_img_lg + '"></img></a>';
+        		mediaAppend += '</div>';
+        		mediaCount++;
+        	}
 		});
+		for (var i = 0; i < count; i++) {
+			console.log("removing element");
+			$("#live-feed").children("li").last().remove();
+		}
+		for (var i = 0; i < mediaCount; i++) {
+			console.log("removing photo");
+			$("#live-media").children("div").last().remove();
+		}
+    	$(append).hide().prependTo('#live-feed').fadeIn();
+    	$(mediaAppend).hide().prependTo('#live-media').fadeIn();
 	});
 }

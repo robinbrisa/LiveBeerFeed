@@ -14,28 +14,13 @@
 
 	<div id="live-content" data-vid="{{ venue.getId }}">
         <div id="live-media" class="">
-        	{% set i = 0 %}
-        	{% set j = 0 %}
-        	{% set lineNumber = 1 %}
-        	<div class="d-flex flex-row">
         	    {% for checkin in checkins %}
-               		{% if checkin.getMedias[0] is defined and j < 60 %}
-               			{% set i = i + 1 %}
-               			{% set j = j + 1 %}
-                   		<div class="checkin-photo">
+               		{% if checkin.getMedias[0] is defined %}
+                   		<div class="checkin-photo" data-checkin="{{ checkin.getId }}">
                    			<a href="{{ checkin.getMedias[0].getPhotoImgOg }}" target="_blank"><img src="{{ checkin.getMedias[0].getPhotoImgLg }}"></img></a>
                    		</div>
-                   		{% if i == 2 * lineNumber %}
-                   			</div>
-                   			<div class="d-flex flex-row">
-        	                {% set i = 0 %}
-                   		    {% if lineNumber < 3 %}
-               			   		{% set lineNumber = lineNumber + 1 %}
-               			   	{% endif %}
-                   		{% endif %}
                		{% endif %}
         	    {% endfor %}
-            </div>
         </div>
         <ul id="live-feed">
         	{% for checkin in checkins %}

@@ -5,12 +5,12 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class LiveController extends Controller
+class VenueController extends Controller
 {
     /**
-     * @Route("/live/venue/{vid}", name="live_venue")
+     * @Route("/venue/{vid}", name="venue_info")
      */
-    public function index($vid)
+    public function viewInfo($vid)
     {
         $em = $this->getDoctrine()->getManager();
         $venue = $em->getRepository('\App\Entity\Venue\Venue')->find($vid);
@@ -19,11 +19,8 @@ class LiveController extends Controller
             $this->createNotFoundException('This venue is unknown');
         }
         
-        $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($vid, null, 100);
-        
-        return $this->render('live/venue.html.twig', [
+        return $this->render('venue/index.html.twig', [
             'venue' => $venue,
-            'checkins' => $checkins
         ]);
     }
 }
