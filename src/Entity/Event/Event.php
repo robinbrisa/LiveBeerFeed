@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Event;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Event\EventRepository")
  */
 class Event
 {
@@ -32,6 +32,17 @@ class Event
     private $end_date;
     
     /**
+     * @ORM\OneToOne(targetEntity="Style")
+     * @ORM\JoinColumn(name="style_id", referencedColumnName="id", nullable=true)
+     */
+    private $style;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="event", cascade={"persist"}, orphanRemoval=true)
+     */
+    private $messages;
+    
+    /**
      * @ORM\ManyToMany(targetEntity="\App\Entity\Venue\Venue")
      * @ORM\JoinTable(name="event_venues",
      *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
@@ -39,6 +50,11 @@ class Event
      *      )
      */
     private $venues;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $last_info_stats;
     
     /**
      * Get id
@@ -73,6 +89,31 @@ class Event
     {
         return $this->name;
     }
+    
+    /**
+     * Set style
+     *
+     * @param \App\Entity\Event\Style $style
+     *
+     * @return Event
+     */
+    public function setStyle(\App\Entity\Event\Style $style = null)
+    {
+        $this->style = $style;
+        
+        return $this;
+    }
+    
+    /**
+     * Get style
+     *
+     * @return \App\Entity\Event\Style
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+    
     
     /**
      * Add venue
@@ -154,6 +195,65 @@ class Event
     public function getEndDate()
     {
         return $this->end_date;
+    }
+    
+    /**
+     * Add message
+     *
+     * @param \App\Entity\Event\Message $message
+     *
+     * @return Event
+     */
+    public function addMessage(\App\Entity\Event\Message $message)
+    {
+        $this->messages[] = $message;
+        $message->setEvent($this);
+        
+        return $this;
+    }
+    
+    /**
+     * Remove message
+     *
+     * @param \App\Entity\Event\Message $message
+     */
+    public function removeMessage(\App\Entity\Event\Message $message)
+    {
+        $this->messages->removeElement($message);
+    }
+    
+    /**
+     * Get message
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+    
+    /**
+     * Set lastInfoStats
+     *
+     * @param boolean $lastInfoStats
+     *
+     * @return Event
+     */
+    public function setLastInfoStats($lastInfoStats)
+    {
+        $this->last_info_stats = $lastInfoStats;
+        
+        return $this;
+    }
+    
+    /**
+     * Get lastInfoStats
+     *
+     * @return boolean
+     */
+    public function getLastInfoStats()
+    {
+        return $this->last_info_stats;
     }
     
     

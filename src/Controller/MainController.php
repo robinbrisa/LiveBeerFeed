@@ -13,7 +13,9 @@ class MainController extends Controller
     public function index()
     {
         $em = $this->getDoctrine()->getManager();
-        $events = $em->getRepository('\App\Entity\Event')->findCurrentEvents();
+        $events = $em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
+        $venues = $events[0]->getVenues();
+        dump($em->getRepository('\App\Entity\Checkin\Checkin')->getCheckinWithMostBadges(2278575, null));
         
         return $this->render('main/index.html.twig', [
             'currentEvents' => $events,
@@ -34,8 +36,8 @@ class MainController extends Controller
         $stats['most_badges'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getCheckinWithMostBadges();
         $stats['rating_avg'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getAverageRatingByCheckin();
         $stats['ratings_by_score'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getRatingsCountByScore();
-        $stats['most_checked_in_beer'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMostCheckedInBeer();
-        $stats['most_checked_in_brewery'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMostCheckedInBrewery();
+        $stats['most_checked_in_beer'] = $em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer();
+        $stats['most_checked_in_brewery'] = $em->getRepository('\App\Entity\Brewery\Brewery')->getMostCheckedInBrewery();
         $stats['most_checked_in_brewery_unique'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMostCheckedInUniqueBrewery();
         $stats['best_rated_brewery'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getBestRatedBrewery();
         $stats['checkin_history_per_day'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getCheckinHistoryPerDay();

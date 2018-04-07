@@ -4,9 +4,6 @@
 
 {% block body %}
 <div class="main-wrapper">
-    <div class="container">
-    	
-    </div>
     <div class="profile-title">
         <div class="avatar-wrapper">
         	<img src="{{ user.getUserAvatar }}" title="{{ user.getUserName }}" />
@@ -38,10 +35,10 @@
         <li>Day with the most checkins: {% for day, count in stats.day_with_most_checkins %}{{ day }} ({{ count }} checkins){% endfor %}</li>
         <li>Month with the most checkins: {% for month, count in stats.month_with_most_checkins %}{{ month }} ({{ count }} checkins){% endfor %}</li>
         <li>Year with the most checkins: {% for year, count in stats.year_with_most_checkins %}{{ year }} ({{ count }} checkins){% endfor %}</li>
-        <li>Most liked brewery: {{ stats.best_rated_brewery[0].getBeer.getBrewery.getUntappdLink|raw }} ({{ stats.best_rated_brewery.avg_rating|round(2) }}/5 with {{ stats.best_rated_brewery.total }} checkins)
+        <li>Most liked brewery: {{ stats.best_rated_brewery[0].getUntappdLink|raw }} ({{ stats.best_rated_brewery.avg_rating|round(2) }}/5 with {{ stats.best_rated_brewery.total }} checkins)
         <li>Most visited venue: {{ stats.most_visited_venue[0].getUntappdLink|raw }} ({{ stats.most_visited_venue.total }} checkins)
-        <li>Most checked in beer: {{ stats.most_checked_in_beer[0].getBeer.getUntappdLink|raw }} ({{ stats.most_checked_in_beer.total }} checkins)
-        <li>Most checked in brewery: {{ stats.most_checked_in_brewery[0].getBeer.getBrewery.getUntappdLink|raw }} ({{ stats.most_checked_in_brewery.total }} checkins)
+        <li>Most checked in beer: {{ stats.most_checked_in_beer[0].getUntappdLink|raw }} ({{ stats.most_checked_in_beer.total }} checkins)
+        <li>Most checked in brewery: {{ stats.most_checked_in_brewery[0].getUntappdLink|raw }} ({{ stats.most_checked_in_brewery.total }} checkins)
         <li>Checkin with most toasts: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_toasts.getId }}" target="_blank">{{ stats.most_toasts.getBeer.getName }} ({{ stats.most_toasts.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_toasts.getTotalToasts }} toasts</li>
         <li>Checkin with most comments: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_comments.getId }}" target="_blank">{{ stats.most_comments.getBeer.getName }} ({{ stats.most_comments.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_comments.getTotalComments }} comments</li>
         <li>Checkin with most badge unlocks: <a href="https://untappd.com/user/{{ user.getUsername }}/checkin/{{ stats.most_badges.getId }}" target="_blank">{{ stats.most_badges.getBeer.getName }} ({{ stats.most_badges.getCreatedAt|date("d/m/Y H:i:s") }})</a> - {{ stats.most_badges.getTotalBadges }} badges</li>

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+	<div class="container">
+		{% if success %}
+            <div class="alert alert-success" role="alert">Event has been added!</div>
+		{% endif %}
+		<div class="card">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

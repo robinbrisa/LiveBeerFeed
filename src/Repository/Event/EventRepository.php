@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Event;
 
-use App\Entity\Event;
+use App\Entity\Event\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -22,8 +22,8 @@ class EventRepository extends ServiceEntityRepository
     public function findCurrentEvents()
     {
         return $this->createQueryBuilder('e')
-            ->where('e.start_date > :start_date')->setParameter('start_date', 'DATE()')
-            ->andWhere('e.end_date <= :end_date')->setParameter('end_date', 'DATE()')
+        ->where('e.start_date < :start_date')->setParameter('start_date', new \DateTime(''))
+        ->andWhere('e.end_date >= :end_date')->setParameter('end_date', new \DateTime(''))
             ->orderBy('e.id', 'ASC')
             ->getQuery()
             ->getResult()

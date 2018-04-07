@@ -9,10 +9,10 @@
 <div class="main-wrapper">
     <div id="live-venue-title">
     	<span id="close-live"><a href="/venue/{{ venue.getId }}" title="Close live" id=""><i class="fa fa-window-close"></i></a></span>
-        <span class="description"><i class="fa fa-refresh fa-spin"></i> Live Untappd feed for {{ venue.getUntappdLink|raw }}</span>
+        <span class="description"><i class="fa fa-refresh fa-spin"></i> Live feed for {{ venue.getUntappdLink|raw }}</span>
     </div>
 
-	<div id="live-content" data-vid="{{ venue.getId }}">
+	<div id="live-content" data-live-id="{{ venue.getId }}" data-live-type="venue">
         <div id="live-media" class="">
         	    {% for checkin in checkins %}
                		{% if checkin.getMedias[0] is defined %}
@@ -50,4 +50,10 @@
         <div class="gradient-bottom"></div>
     </div>
 </div>
+
+<script>
+setInterval(function(){
+	updateLivePage()
+}, 30000)
+</script>
 {% endblock %}

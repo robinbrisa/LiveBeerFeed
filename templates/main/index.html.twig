@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
     {% if currentEvents|length > 0 %}
         Current events :
         <ul>
             {% for event in currentEvents %}
-            	<li>{{ event.getName }}</li>
+            	<li><a href="/live/event/{{ event.getId }}">{{ event.getName }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
-    	No current events.
+    	No current events
     {% endif %}
 {% endblock %}

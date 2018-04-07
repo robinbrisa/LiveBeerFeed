@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} Live Feed{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+       
+{% block body %}
+{% if event.style %}
+    <style>
+    	#live-venue-title {
+        {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
+        {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
+        }
+        {% if event.style.linkColor %}
+        	a { color: {{ event.style.linkColor }};}
+        	.info-major { color: {{ event.style.linkColor }}; } 
+        {% endif %}
+    </style>
+{% endif %}
+
+<div class="main-wrapper">
+    <div id="live-venue-title">
+    	<span id="close-live"><a href="/event/{{ event.id }}" title="Close live" id=""><i class="fa fa-window-close"></i></a></span>
+    	{% if event.style and event.style.untappdLogoStyle %}
+    		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
+    	{% else %}
+    		{% set untappdLogo = 'untappd_black' %}
+    	{% endif %}
+    	<div class="pull-right powered-by-untappd">Powered by <img class="" src="{{ asset("images/utlogo/") ~ untappdLogo ~ '.png' }}" /></div>
+        <div class="description">
+        	<i class="fa fa-refresh fa-spin"></i> 
+        	
+        	{% if event.style and event.style.eventLogo %}
+        		<img src="{{ asset("images/events/") ~ event.style.eventLogo }}" />
+        	{% else %}
+				{{ event.name }}
+        	{% endif %}
+        </div>
+    </div>
+
+	<div id="live-content" data-live-id="{{ event.id }}" data-live-type="event">
+		<div id="right-panel">
+    	    <div id="info-content">
+    	    	<div class="line"><span id="info-line-1" class="info-line-text"><span class="info-major">Welcome to</span></span></div>
+    	    	<div class="line"><span id="info-line-2" class="info-line-text"><span class="info-major">{{ event.name }}</span></span></div>
+    	    	<div class="line"><span id="info-line-3" class="info-line-text">{{ event.startDate|date("d/m/Y") }} - {{ event.endDate|date("d/m/Y") }}</span></div>
+    	    </div>
+            <div id="live-media" class="">
+        		{% set i = 0 %}
+        	    {% for checkin in checkins %}
+               		{% if checkin.medias[0] is defined %}
+               			{% set i = i + 1 %}
+                   		<div class="checkin-photo" data-checkin="{{ checkin.id }}">
+           					<div class="media-id"><span class="media-number">{{ i }}</span></div>
+                   			<a href="{{ checkin.getMedias[0].photoImgOg }}" target="_blank"><img src="{{ checkin.getMedias[0].photoImgLg }}"></img></a>
+                   		</div>
+               		{% endif %}
+        	    {% endfor %}
+            </div>
+        </div>
+        <ul id="live-feed">
+        	{% set i = 0 %}
+        	{% for checkin in checkins %}
+        		<li data-checkin="{{ checkin.id }}">
+        			<div class="avatar-wrapper">
+        				{% if checkin.getUser.isSupporter %}
+        					<span class="supporter"></span>
+        				{% endif %}
+        				<a href="https://www.untappd.com/user/{{ checkin.user.userName }}" target="_blank">
+        					<img src="{{ checkin.user.userAvatar }}" />
+        				</a>
+        			</div>
+        			<div class="checkin-info">
+        				<div class="line">
+                	    	<span class="checkin-item">{{ checkin.getUser.untappdLink|raw }} is drinking a {{ checkin.beer.untappdLink|raw }} by {{ checkin.beer.brewery.untappdLink|raw }} <span class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
+                	    </div>
+                	    <div class="line">
+                	    	<span class="rating small r{{ checkin.integerRatingScore }}"></span> 
+                	    	{% if checkin.comment != "" and checkin.comment is not null %}
+                	    		<span class="comment">"{{ checkin.comment }}"</span>
+                	    	{% endif %}
+                	    </div>
+               		</div>
+               		{% if checkin.medias[0] is defined %}
+               			{% set i = i + 1 %}
+               			<div class="has-media"><span class="media-number">{{ i }}</span></div>
+               		{% endif %}
+            	</li>
+        	{% endfor %}
+        </ul>
+        <div class="gradient-bottom"></div>
+    </div>
+</div>
+
+<script>
+setInterval(function(){
+	updateLivePage()
+}, 15000)
+var infoLoadDelay = 5000;
+</script>
+{% endblock %}

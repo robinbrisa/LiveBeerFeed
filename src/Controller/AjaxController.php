@@ -7,13 +7,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
+use App\Service\EventStats;
 
 class AjaxController extends Controller
 {
     /**
-     * @Route("/ajax/getVenueCheckins/{vid}", name="ajax_get_venue_checkins_since")
+     * @Route("/ajax/getLiveCheckins/{type}/{id}", name="ajax_get_live_checkins_since")
      */
-    public function getVenueCheckins($vid)
+    public function getLiveCheckins($type, $id)
     {
         $minID = null;
         if (isset($_GET['minID'])) {
@@ -21,12 +22,60 @@ class AjaxController extends Controller
         }
         
         $em = $this->getDoctrine()->getManager();
-        $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($vid, $minID);
+        if ($type == "venue") {
+            $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($id, $minID);
+        } elseif ($type == "event") {
+            $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
+            $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($event->getVenues(), $minID);
+        } else {
+            throw New \Exception("INVALID LIVE TYPE");
+        }
                 
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize($checkins, 'json', SerializationContext::create()->enableMaxDepthChecks());
         
         $response = new Response($jsonContent);
+        $response->headers->set('Content-Type', 'application/json');
+        
+        return $response;
+    }
+    
+    
+    /**
+     * @Route("/ajax/getEventInfoMessage/{id}", name="ajax_get_event_info_message")
+     */
+    public function getEventInfoMessage($id, EventStats $stats)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if (!$event = $em->getRepository('\App\Entity\Event\Event')->find($id)) {
+            throw New \Exception("UNKNOWN EVENT");
+        }
+        
+        $message = $em->getRepository('\App\Entity\Event\Message')->findInfoMessageToDisplay($event);
+        
+        $output = array();
+        $output['line1'] = '<span class="info-major">Welcome to</span>';
+        $output['line2'] = '<span class="info-major">' . $event->getName() . '</span>';
+        $output['line3'] = $event->getStartDate()->format('d/m/Y') . ' - ' . $event->getEndDate()->format('d/m/Y');
+        if ($event->getLastInfoStats()) {
+            $event->setLastInfoStats(0);
+            if ($message) {
+                $output['line1'] = $message->getMessageLine1();
+                $output['line2'] = $message->getMessageLine2();
+                $output['line3'] = $message->getMessageLine3();
+                $message->setLastTimeDisplayed(new \DateTime());
+            }
+        } else {
+            if ($statistics = $stats->returnRandomStatistic($event)) {
+                $output = $statistics;
+            }
+            $event->setLastInfoStats(1);
+        }
+        
+        $em->persist($event);
+        $em->flush();
+        
+        $response = new Response(json_encode($output));
         $response->headers->set('Content-Type', 'application/json');
         
         return $response;

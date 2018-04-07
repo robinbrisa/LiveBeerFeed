@@ -24,10 +24,10 @@ class UserController extends Controller
         $stats['most_badges'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getCheckinWithMostBadges($user); 
         $stats['rating_avg'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getAverageRatingByCheckin($user);
         $stats['ratings_by_score'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getRatingsCountByScore($user);
-        $stats['most_checked_in_beer'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMostCheckedInBeer($user);
-        $stats['most_checked_in_brewery'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMostCheckedInBrewery($user);
+        $stats['most_checked_in_beer'] = $em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer($user);
+        $stats['most_checked_in_brewery'] = $em->getRepository('\App\Entity\Brewery\Brewery')->getMostCheckedInBrewery($user);
         $stats['most_checked_in_brewery_unique'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMostCheckedInUniqueBrewery($user);
-        $stats['best_rated_brewery'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getBestRatedBrewery($user);
+        $stats['best_rated_brewery'] = $em->getRepository('\App\Entity\Brewery\Brewery')->getBestRatedBrewery($user);
         $stats['checkin_history_per_day'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getCheckinHistoryPerDay($user);
         $stats['day_with_most_checkins'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getDayWithMostCheckins($user);
         $stats['month_with_most_checkins'] = $em->getRepository('\App\Entity\Checkin\Checkin')->getMonthWithMostCheckins($user);

@@ -18,17 +18,30 @@ class BeerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Beer::class);
     }
-
-    /*
-    public function findBySomething($value)
+    
+    public function getMostCheckedInBeer($uid = null, $venues = null, $minDate = null, $maxDate = null)
     {
-        return $this->createQueryBuilder('b')
-            ->where('b.something = :value')->setParameter('value', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('b')
+        ->select('b, w, COUNT(c) AS total')
+        ->join('b.checkins', 'c')
+        ->join('b.brewery', 'w');
+        if (!is_null($uid)) {
+            $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        if (!is_null($venues)) {
+            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+        };
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
+        return $qb->groupBy('c.beer')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
     }
-    */
+    
 }

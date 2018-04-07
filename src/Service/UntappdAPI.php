@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use Unirest;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\APIQueryLog as APIQueryLog;
 
 class UntappdAPI
 {
@@ -11,12 +13,13 @@ class UntappdAPI
     private $untappdAPIClientSecret;
     private $untappdAPIOAuthRedirectURL;
     
-    public function __construct($untappdAPIUrl, $untappdAPIClientID, $untappdAPIClientSecret, $untappdAPIOAuthRedirectURL)
+    public function __construct($untappdAPIUrl, $untappdAPIClientID, $untappdAPIClientSecret, $untappdAPIOAuthRedirectURL, EntityManagerInterface $em)
     {
         $this->APIUrl = $untappdAPIUrl;
         $this->clientID = $untappdAPIClientID;
         $this->clientSecret = $untappdAPIClientSecret;
         $this->OAuthRedirectURL = $untappdAPIOAuthRedirectURL;
+        $this->em = $em;
     }
     
     /**
@@ -72,6 +75,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery($path, $response);
         }
         return $response;
     }
@@ -102,6 +107,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/wishlist/' . $username, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/user/wishlist/' . $username, $response);
         }
         return $response;
     }
@@ -142,6 +149,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery($path, $response);
         }
         return $response;
     }
@@ -170,6 +179,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/badges/' . $username, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/user/badges/' . $username, $response);
         }
         return $response;
     }
@@ -200,6 +211,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/beers/' . $username, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/user/beers/' . $username, $response);
         }
         return $response;
     }
@@ -214,9 +227,6 @@ class UntappdAPI
      */
     public function getBreweryInfo($breweryID, $compact = "false")
     {
-        if (!is_null($limit) && $limit > 25) {
-            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
-        }
         $headers = array('Accept' => 'application/json');
         $query = array(
             'client_id' => $this->clientID,
@@ -226,6 +236,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/brewery/info/' . $breweryID, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/brewery/info/' . $breweryID, $response);
         }
         return $response;
     }
@@ -249,6 +261,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/beer/info/' . $beerID, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/beer/info/' . $beerID, $response);
         }
         return $response;
     }
@@ -272,6 +286,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/venue/info/' . $venueID, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/venue/info/' . $venueID, $response);
         }
         return $response;
     }
@@ -313,6 +329,8 @@ class UntappdAPI
                 return $response;
             }
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/venue/checkins/' . $venueID, $response, $accessToken);
         }
         return $response;
     }
@@ -344,6 +362,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/beer/', $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/search/beer/', $response);
         }
         return $response;
     }
@@ -373,6 +393,8 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/brewery/', $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/search/brewery/', $response);
         }
         return $response;
     }
@@ -417,7 +439,21 @@ class UntappdAPI
         $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery($path, $response);
         }
         return $response;
+    }
+    
+    private function logAPIQuery($url, $response, $accessToken = null) {
+        $log = new APIQueryLog();
+        $log->setMethod($url);
+        $log->setDate(new \DateTime());
+        $log->setRemainingQueries($response->headers['X-Ratelimit-Remaining']);
+        if ($accessToken) {
+            $log->setUser($this->em->getRepository('\App\Entity\User\User')->findOneByInternalUntappdAccessToken($accessToken));
+        }
+        $this->em->persist($log);
+        $this->em->flush();
     }
 }

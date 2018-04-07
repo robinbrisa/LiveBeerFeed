@@ -22,13 +22,13 @@ class BadgeRelation
      * 
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="\App\Entity\User\User", inversedBy="badge_relation")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
     
     /**
      * @ORM\ManyToOne(targetEntity="\App\Entity\Checkin\Checkin", inversedBy="badge_relation")
-     * @ORM\JoinColumn(name="checkin_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="checkin_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $checkin;
     
