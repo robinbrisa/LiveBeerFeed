@@ -53,6 +53,7 @@
                			{% set i = i + 1 %}
                    		<div class="checkin-photo" data-checkin="{{ checkin.id }}">
            					<div class="media-id"><span class="media-number">{{ i }}</span></div>
+           					<div class="media-name">{{ checkin.beer.name }} <i>({{ checkin.beer.brewery.name }})</i></div>
                    			<a href="{{ checkin.getMedias[0].photoImgOg }}" target="_blank"><img src="{{ checkin.getMedias[0].photoImgLg }}"></img></a>
                    		</div>
                		{% endif %}
@@ -61,7 +62,8 @@
         </div>
         <ul id="live-feed">
         	{% set i = 0 %}
-        	{% for checkin in checkins %}
+        	{% set j = 0 %}
+        	{% for checkin in checkins if j < 30 %}
         		<li data-checkin="{{ checkin.id }}">
         			<div class="avatar-wrapper">
         				{% if checkin.getUser.isSupporter %}
@@ -73,7 +75,7 @@
         			</div>
         			<div class="checkin-info">
         				<div class="line">
-                	    	<span class="checkin-item">{{ checkin.getUser.untappdLink|raw }} is drinking a {{ checkin.beer.untappdLink|raw }} by {{ checkin.beer.brewery.untappdLink|raw }} <span class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
+                	    	<span class="checkin-item">{{ checkin.getUser.untappdLink|raw }} is drinking a {{ checkin.beer.untappdLink|raw }} by {{ checkin.beer.brewery.untappdLink|raw }} <span data-date="{{ checkin.createdAt|date("D, d M Y H:i:s O") }}" class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
                 	    </div>
                 	    <div class="line">
                 	    	<span class="rating small r{{ checkin.integerRatingScore }}"></span> 
@@ -87,6 +89,7 @@
                			<div class="has-media"><span class="media-number">{{ i }}</span></div>
                		{% endif %}
             	</li>
+            	{% set j = j + 1 %}
         	{% endfor %}
         </ul>
         <div class="gradient-bottom"></div>
@@ -98,5 +101,8 @@ setInterval(function(){
 	updateLivePage()
 }, 15000)
 var infoLoadDelay = 5000;
+setInterval(function(){
+	refreshTimes()
+}, 5000)
 </script>
 {% endblock %}

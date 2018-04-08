@@ -18,17 +18,53 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
-
-    /*
-    public function findBySomething($value)
+    
+    public function getMostCheckinsCount($uid = null, $venues = null, $minDate = null, $maxDate = null)
     {
-        return $this->createQueryBuilder('u')
-            ->where('u.something = :value')->setParameter('value', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('u')
+        ->select('u, COUNT(c) AS total')
+        ->join('u.checkins', 'c');
+        if (!is_null($uid)) {
+            $qb->andWhere('c.user = :id')->setParameter('id', $uid);
+        };
+        if (!is_null($venues)) {
+            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+        };
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
+        return $qb->groupBy('u.id')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
     }
-    */
+    
+    public function getNoRatingCheckinsCount($uid = null, $venues = null, $minDate = null, $maxDate = null)
+    {
+        $qb = $this->createQueryBuilder('u')
+        ->select('u, COUNT(c) AS total')
+        ->join('u.checkins', 'c')
+        ->where('c.rating_score IS NULL');
+        if (!is_null($uid)) {
+            $qb->andWhere('c.user = :id')->setParameter('id', $uid);
+        };
+        if (!is_null($venues)) {
+            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+        };
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
+        return $qb->groupBy('u.id')
+        ->orderBy('total', 'DESC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+    }
 }

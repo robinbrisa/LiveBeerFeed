@@ -51,25 +51,37 @@ class AjaxController extends Controller
             throw New \Exception("UNKNOWN EVENT");
         }
         
-        $message = $em->getRepository('\App\Entity\Event\Message')->findInfoMessageToDisplay($event);
+        $update = true;
+        if((new \DateTime())->getTimestamp() - $event->getLastInfoPolling()->getTimestamp() < 5) {
+            $update = false;
+        }
+        
         
         $output = array();
         $output['line1'] = '<span class="info-major">Welcome to</span>';
         $output['line2'] = '<span class="info-major">' . $event->getName() . '</span>';
         $output['line3'] = $event->getStartDate()->format('d/m/Y') . ' - ' . $event->getEndDate()->format('d/m/Y');
         if ($event->getLastInfoStats()) {
-            $event->setLastInfoStats(0);
-            if ($message) {
+            if ($update) {
+                $event->setLastInfoStats(0);
+            }
+            if ($message = $em->getRepository('\App\Entity\Event\Message')->findInfoMessageToDisplay($event)) {
                 $output['line1'] = $message->getMessageLine1();
                 $output['line2'] = $message->getMessageLine2();
                 $output['line3'] = $message->getMessageLine3();
-                $message->setLastTimeDisplayed(new \DateTime());
+                if ($update) {
+                    $event->setLastInfoPolling(new \DateTime());
+                    $message->setLastTimeDisplayed(new \DateTime());
+                }
             }
         } else {
             if ($statistics = $stats->returnRandomStatistic($event)) {
                 $output = $statistics;
             }
-            $event->setLastInfoStats(1);
+            if ($update) {
+                $event->setLastInfoStats(1);
+                $event->setLastInfoPolling(new \DateTime());
+            }
         }
         
         $em->persist($event);

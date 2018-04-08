@@ -57,6 +57,11 @@ class Event
     private $last_info_stats;
     
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $last_info_polling;
+    
+    /**
      * Get id
      *
      * @return integer
@@ -256,5 +261,27 @@ class Event
         return $this->last_info_stats;
     }
     
+    /**
+     * Set lastInfoPolling
+     *
+     * @param \Datetime $lastInfoPolling
+     *
+     * @return Event
+     */
+    public function setLastInfoPolling($lastInfoPolling)
+    {
+        $this->last_info_polling = $lastInfoPolling;
+        
+        return $this;
+    }
     
+    /**
+     * Get lastInfoPolling
+     *
+     * @return \Datetime
+     */
+    public function getLastInfoPolling()
+    {
+        return $this->last_info_polling;
+    }
 }

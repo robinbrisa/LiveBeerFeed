@@ -11,7 +11,8 @@ $(document).ready(function() {
 			}
 		}, 60000);
 		
-		
+		//moment.locale('fr');
+		refreshTimes();
 	}
 });
 
@@ -40,7 +41,7 @@ function updateLivePage() {
 			append += '</div>';
 			append += '<div class="checkin-info">';
 			append += '<div class="line">';
-			append += '<span class="checkin-item">' + value.user.untappd_link + ' is drinking a ' + value.beer.untappd_link + ' by ' + value.beer.brewery.untappd_link + ' <span class="checkin-date">(' + moment(value.created_at).fromNow() + ')</span></span>';
+			append += '<span class="checkin-item">' + value.user.untappd_link + ' is drinking a ' + value.beer.untappd_link + ' by ' + value.beer.brewery.untappd_link + ' <span data-date="' + value.created_at + '" class="checkin-date">(' + moment(value.created_at).fromNow() + ')</span></span>';
 			append += '</div>';
 			append += '<div class="line">';
 			append += '<span class="rating small r' + value.integer_rating_score + '"></span>';
@@ -58,6 +59,7 @@ function updateLivePage() {
         	if (value.medias[0] !== undefined) {
         		mediaAppend += '<div class="checkin-photo" data-checkin="' + value.id + '">';
         		mediaAppend += '<div class="media-id"><span class="media-number">' + (mediaCount + 1) + '</span></div>';
+        		mediaAppend += '<div class="media-name">' + value.beer.name + ' <i>(' + value.beer.brewery.name + ')</i></div>';
         		mediaAppend += '<a href="' + value.medias[0].photo_img_og + '" target="_blank"><img src="' + value.medias[0].photo_img_lg + '"></img></a>';
         		mediaAppend += '</div>';
         		mediaCount++;
@@ -68,12 +70,18 @@ function updateLivePage() {
 			$(this).html(newID);
 		});
 		for (var i = 0; i < count; i++) {
-			$("#live-feed").children("li").last().remove();
+			// Remove check-ins if more than 30 are displayed
+			if ($("#live-feed").children("li").length > 30) {
+				$("#live-feed").children("li").last().remove();
+			}
 		}
 		for (var i = 0; i < mediaCount; i++) {
-			$("#live-media").children("div").last().remove();
+			// Remove photos if more than 35 are displayed
+			if ($("#live-media").children("div").length > 35) {
+				$("#live-media").children("div").last().remove();
+			}
 		}
-    	$(append).hide().prependTo('#live-feed').animate({width:'toggle'},350);
+    	$(append).hide().prependTo('#live-feed').css('white-space', 'nowrap').animate({width:'toggle'}, { duration : 500, easing : "swing", complete : function() { $('#live-feed > li').css('white-space', ''); } });
     	$(mediaAppend).hide().prependTo('#live-media').fadeIn();
 	});
 }
@@ -100,6 +108,9 @@ function refreshInfo() {
 								var scrollDuration = infoLoadDelay - infoScrollAnimationDuration * 2;
 								$(this).animate({ left: scrollLength }, { duration : scrollDuration });
 							}
+							$(this).find('.animated-increment').each(function () {
+								$(this).animateNumber({ number: $(this).data('value') });
+							});
 						});
 					}
 				);
@@ -107,5 +118,11 @@ function refreshInfo() {
 		);
 	}).fail(function() {
 		infoLoadTimeout = undefined;
+	});
+}
+
+function refreshTimes() {
+	$('.checkin-date').each(function() {
+		$(this).html("(" + moment($(this).data('date')).fromNow() + ")");
 	});
 }

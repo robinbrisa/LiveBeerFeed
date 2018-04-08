@@ -20,45 +20,76 @@ class CheckinRepository extends ServiceEntityRepository
         parent::__construct($registry, Checkin::class);
     }
     
-    public function getTotalCheckinsCount($uid = null)
+    public function getTotalCheckinsCount($uid = null, $venues = null, $minDate = null, $maxDate = null)
     {
         $qb = $this->createQueryBuilder('c')
         ->select('c, COUNT(c) AS total');
         if (!is_null($uid)) {
             $qb->where('c.user = :id')->setParameter('id', $uid);
         };
+        if (!is_null($venues)) {
+            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+        };
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
         $result = $qb->getQuery()
-        ->getSingleResult();
+        ->getOneOrNullResult();
         
-        return $result['total'];
+        if ($result) {
+            return $result['total'];
+        } else {
+            return false;
+        }
     }
     
-    public function getCheckinWithMostToasts($uid = null)
+    public function getCheckinWithMostToasts($uid = null, $venues = null, $minDate = null, $maxDate = null)
     {
         $qb = $this->createQueryBuilder('c')
         ->select('c');
         if (!is_null($uid)) {
             $qb->where('c.user = :id')->setParameter('id', $uid);
+        };
+        if (!is_null($venues)) {
+            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+        };
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
         };
         return $qb->addOrderBy('c.total_toasts', 'DESC')
         ->addOrderBy('c.created_at', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
-        ->getSingleResult();
+        ->getOneOrNullResult();
     }
     
-    public function getCheckinWithMostComments($uid = null)
+    public function getCheckinWithMostComments($uid = null, $venues = null, $minDate = null, $maxDate = null)
     {
         $qb = $this->createQueryBuilder('c')
         ->select('c');
         if (!is_null($uid)) {
             $qb->where('c.user = :id')->setParameter('id', $uid);
         };
+        if (!is_null($venues)) {
+            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+        };
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
         return $qb->addOrderBy('c.total_comments', 'DESC')
         ->addOrderBy('c.created_at', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
-        ->getSingleResult();
+        ->getOneOrNullResult();
     }
     
     public function getCheckinWithMostBadges($uid = null, $venues = null, $minDate = null, $maxDate = null)
@@ -81,7 +112,7 @@ class CheckinRepository extends ServiceEntityRepository
         ->addOrderBy('c.created_at', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
-        ->getSingleResult();
+        ->getOneOrNullResult();
     }
     
     public function getAverageRatingByCheckin($uid = null, $venues = null, $minDate = null, $maxDate = null)

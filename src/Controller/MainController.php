@@ -15,7 +15,7 @@ class MainController extends Controller
         $em = $this->getDoctrine()->getManager();
         $events = $em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
         $venues = $events[0]->getVenues();
-        dump($em->getRepository('\App\Entity\Checkin\Checkin')->getCheckinWithMostBadges(2278575, null));
+        dump($em->getRepository('\App\Entity\Beer\Style')->getBestRatedStyle(null, null, null, null));
         
         return $this->render('main/index.html.twig', [
             'currentEvents' => $events,
