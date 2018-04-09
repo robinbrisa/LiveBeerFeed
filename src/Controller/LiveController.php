@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LiveController extends Controller
 {
@@ -34,6 +35,12 @@ class LiveController extends Controller
     {        
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        $session = $this->get('session');
+        if ($session->has("_locale") && $event->getLocale() !== $session->get("_locale")) {
+            $session->set("_locale", $event->getLocale());
+            return new RedirectResponse('/live/event/'.$event->getId());
+        }
         
         if (!$event) {
             $this->createNotFoundException('This event is unknown');

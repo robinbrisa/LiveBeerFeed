@@ -3,15 +3,10 @@ $(document).ready(function() {
 		infoLoadTimeout = setTimeout(function() {
 			refreshInfo();
 		}, infoLoadDelay);
-
-		infoLoadTimeout = setInterval(function() {
-			if (infoLoadTimeout === undefined) {
-				console.log('Catched broken info refresh timer. Restarting...');
-				refreshInfo();
-			}
-		}, 60000);
 		
-		//moment.locale('fr');
+		if (locale !== undefined) {
+			moment.locale(locale);
+		}
 		refreshTimes();
 	}
 });
@@ -64,6 +59,7 @@ function updateLivePage() {
         		mediaAppend += '</div>';
         		mediaCount++;
         	}
+        	$('#no-checkins').hide();
 		});
 		$('.media-number').each(function() {
 			var newID = Number($(this).html()) + mediaCount;
@@ -96,7 +92,13 @@ function refreshInfo() {
 				$("#info-line-2").html(data.line2);
 				$("#info-line-3").html(data.line3);
 				$(".info-line-text").css('left' , '');
-				$(".info-line-text").css('right' , $(".info-line-text").parent().width());
+				$(".info-line-text").each(function() {
+					if ($(this).width() < $(this).parent().width()) {
+						$(this).css('right' , $(this).parent().width());
+					} else {
+						$(this).css('right' , $(this).width());
+					}
+				});
 				$(".info-line-text").animate({ right: '0' }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
 					function () {
 						infoLoadTimeout = setTimeout(function() {
@@ -117,7 +119,9 @@ function refreshInfo() {
 			}
 		);
 	}).fail(function() {
-		infoLoadTimeout = undefined;
+		infoLoadTimeout = setTimeout(function() {
+			refreshInfo();
+		}, infoLoadDelay)
 	});
 }
 

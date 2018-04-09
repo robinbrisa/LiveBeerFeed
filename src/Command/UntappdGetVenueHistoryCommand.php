@@ -52,7 +52,9 @@ class UntappdGetVenueHistoryCommand extends Command
             throw New \Exception("History has already been gathered for this venue. Use --force to restart.");
         }
         
-        $highestVenueCheckin = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($vid, null, 1)[0];
+        if ($highestVenueCheckin = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($vid, null, 1)) {
+            $highestVenueCheckin = $highestVenueCheckin[0];
+        }
         $found = false;
         
         $maxID = $venue->getInternalFullHistoryLastMaxId();

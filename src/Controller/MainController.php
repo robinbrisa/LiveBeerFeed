@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Service\EventStats;
 
 class MainController extends Controller
 {
@@ -14,13 +15,44 @@ class MainController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $events = $em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
-        $venues = $events[0]->getVenues();
-        dump($em->getRepository('\App\Entity\Beer\Style')->getBestRatedStyle(null, null, null, null));
-        
         return $this->render('main/index.html.twig', [
             'currentEvents' => $events,
         ]);
     }
+    
+    /**
+     * @Route("/debug/{id}", name="debug")
+     */
+    public function debug($id, EventStats $stats)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
+        $venues = $event->getVenues();
+        
+        dump($em->getRepository('\App\Entity\User\User')->getUniqueUsersWithCheckinsCount($venues, $event->getStartDate(), null));
+        
+        $statsDebug = $stats->debugStatistics($event);
+        
+        echo '<div style="width: 500px; margin-left: 30px;">';
+        foreach ($statsDebug as $function => $value) {
+            echo '<div>'.$function.'</div>';
+            if ($value) {
+                echo '<div id="info-content">';
+                echo '<div class="line"><span class="info-line-text">' . $value['line1'] . '</span></div>';
+                echo '<div class="line"><span class="info-line-text">' . $value['line2'] . '</span></div>';
+                echo '<div class="line"><span class="info-line-text">' . $value['line3'] . '</span></div>';
+                echo '</div>';
+            } else {
+                echo '<div>Returned false</div>';
+            }
+        }
+        echo '</div>';
+        
+        return $this->render('main/debug.html.twig', [
+        ]);
+    }
+    
+    
     
     /**
      * @Route("/global", name="global_stats")

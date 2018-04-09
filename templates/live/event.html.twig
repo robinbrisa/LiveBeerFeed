@@ -9,13 +9,11 @@
 {% if event.style %}
     <style>
     	#live-venue-title {
-        {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
-        {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
+            {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
+            {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
         }
-        {% if event.style.linkColor %}
-        	a { color: {{ event.style.linkColor }};}
-        	.info-major { color: {{ event.style.linkColor }}; } 
-        {% endif %}
+        {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
+        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }};}{% endif %}	
     </style>
 {% endif %}
 
@@ -30,9 +28,8 @@
     	<div class="pull-right powered-by-untappd">Powered by <img class="" src="{{ asset("images/utlogo/") ~ untappdLogo ~ '.png' }}" /></div>
         <div class="description">
         	<i class="fa fa-refresh fa-spin"></i> 
-        	
-        	{% if event.style and event.style.eventLogo %}
-        		<img src="{{ asset("images/events/") ~ event.style.eventLogo }}" />
+        	{% if event.eventLogo %}
+        		<img src="{{ asset("images/events/") ~ event.eventLogo }}" />
         	{% else %}
 				{{ event.name }}
         	{% endif %}
@@ -42,7 +39,7 @@
 	<div id="live-content" data-live-id="{{ event.id }}" data-live-type="event">
 		<div id="right-panel">
     	    <div id="info-content">
-    	    	<div class="line"><span id="info-line-1" class="info-line-text"><span class="info-major">Welcome to</span></span></div>
+    	    	<div class="line"><span id="info-line-1" class="info-line-text"><span class="info-major">{% trans %}live.welcome{% endtrans %}</span></span></div>
     	    	<div class="line"><span id="info-line-2" class="info-line-text"><span class="info-major">{{ event.name }}</span></span></div>
     	    	<div class="line"><span id="info-line-3" class="info-line-text">{{ event.startDate|date("d/m/Y") }} - {{ event.endDate|date("d/m/Y") }}</span></div>
     	    </div>
@@ -61,6 +58,22 @@
             </div>
         </div>
         <ul id="live-feed">
+        	{% if event.venues|length == 0 %}
+                <div class="alert alert-danger" role="alert">
+              		<b>There a no venues related to this event.</b> Please add some venues and reload the page.
+                </div>
+        	{% else %}
+        		{% if checkins|length == 0 %}
+        			{% set venueNames = [] %}
+                  	{% for venue in event.venues %}
+        		        {% set venueNames = venueNames|merge([venue.name]) %}
+        		    {% endfor %}
+            		<div id="no-checkins" class="alert alert-warning" role="alert">
+                      	There a no check-ins for this event yet.
+                      	<br />Here's the list of the related venues : {{ venueNames|join(',') }}
+                    </div>
+        		{% endif %}
+        	{% endif %}
         	{% set i = 0 %}
         	{% set j = 0 %}
         	{% for checkin in checkins if j < 30 %}
@@ -75,7 +88,7 @@
         			</div>
         			<div class="checkin-info">
         				<div class="line">
-                	    	<span class="checkin-item">{{ checkin.getUser.untappdLink|raw }} is drinking a {{ checkin.beer.untappdLink|raw }} by {{ checkin.beer.brewery.untappdLink|raw }} <span data-date="{{ checkin.createdAt|date("D, d M Y H:i:s O") }}" class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
+                	    	<span class="checkin-item">{% trans with {'%user%': checkin.getUser.untappdLink|raw, '%beer%': checkin.beer.untappdLink|raw, '%brewery%': checkin.beer.brewery.untappdLink|raw } %}live.currently_drinking{% endtrans %} <span data-date="{{ checkin.createdAt|date("D, d M Y H:i:s O") }}" class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
                 	    </div>
                 	    <div class="line">
                 	    	<span class="rating small r{{ checkin.integerRatingScore }}"></span> 
@@ -104,5 +117,6 @@ var infoLoadDelay = 5000;
 setInterval(function(){
 	refreshTimes()
 }, 5000)
+var locale = "{{ event.locale }}";
 </script>
 {% endblock %}

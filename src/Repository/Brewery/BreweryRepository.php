@@ -43,7 +43,7 @@ class BreweryRepository extends ServiceEntityRepository
         ->getQuery()
         ->getOneOrNullResult();
     }
-    
+        
     public function getBestRatedBrewery($uid = null, $venues = null, $minDate = null, $maxDate = null, $minCheckins = null) {
         $qb = $this->createQueryBuilder('w')
         ->select('w, AVG(c.rating_score) AS avg_rating, COUNT(c) AS total')
@@ -68,7 +68,7 @@ class BreweryRepository extends ServiceEntityRepository
         ->orderBy('avg_rating', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
-        ->getSingleResult();
+        ->getOneOrNullResult();
     }
     
     

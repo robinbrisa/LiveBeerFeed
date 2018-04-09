@@ -1,0 +1,44 @@
+live:
+    currently_drinking: "%user% boit une %beer% de %brewery%"
+    welcome: "Bienvenue"
+stats:
+    general:
+        checkins: 'check-ins'
+    beer_rated_beer:
+        title: 'Bière la mieux notée'
+    beer_rated_brewery:
+        title: 'Brasserie la mieux notée'
+    beer_rated_style:
+        title: 'Style le mieux noté'
+    most_checked_in_beer:
+        title: 'Bière ayant le plus de <i>check-ins</i>'
+    most_checked_in_brewery:
+        title: 'Brasserie ayant le plus de <i>check-ins</i>'
+    most_checked_in_style:
+        title: 'Style ayant le plus de <i>check-ins</i>'
+    ratings_average:
+        title: 'Note moyenne des <i>check-ins</i>'
+        total: '<i>check-ins</i> avec une note'
+    most_badges:
+        title: 'Record de badges par check-in'
+        badges_unlocked: 'badges débloqués'
+    most_no_ratings:
+        title: 'Médaille de l''indécis'
+        count: '%user% a créé %count% check-ins sans noter'
+        total: 'sur un total de %total% check-ins sans note'
+    most_active:
+        title: 'Le plus actif'
+        last_hour: 'Dernière heure'
+        last_4_hours: '4 dernières heures'
+        today: 'Aujourd''hui'
+        count: '%user% a créé %count% check-ins'
+        total: 'sur un total de %total% check-ins'
+    popular_style:
+        title: 'Style le plus aperçu'
+        total: '%count% bières uniques'
+    unique_beers:
+        title: 'Bières différentes aperçues'
+        total: '%count% bières différentes'
+    unique_users:
+        title: 'Utilisateurs <i>Untappd</i> aperçus'
+        total: '%count% utilisateurs étaient actifs aujourd''hui'

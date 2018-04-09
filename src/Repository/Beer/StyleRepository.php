@@ -5,6 +5,8 @@ namespace App\Repository\Beer;
 use App\Entity\Beer\Style;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  * @method Style|null find($id, $lockMode = null, $lockVersion = null)
@@ -68,46 +70,49 @@ class StyleRepository extends ServiceEntityRepository
         ->orderBy('avg_rating', 'DESC')
         ->setMaxResults(1)
         ->getQuery()
-        ->getSingleResult();
+        ->getOneOrNullResult();
     }
     
-    public function getMostCheckedInStyleUniqueBeers($uid = null, $venues = null, $minDate = null, $maxDate = null)
+    public function getMostCheckedInStyleUniqueBeers($uid = null, $venues = null, \DateTime $minDate = null, \DateTime $maxDate = null)
     {
-        $qb = $this->createQueryBuilder('s')
-        ->select('s, b, COUNT(c) AS total')
-        ->join('s.beers', 'b')
-        ->join('b.checkins', 'c');
-        
-        /*
-         * SELECT COUNT(*) cnt, s.*
-            FROM (
-            	SELECT b.*
-            	FROM beer b
-            	JOIN checkin c ON c.beer_id = b.id
-            	WHERE c.user_id = 2278575
-            	GROUP BY c.beer_id
-            ) sub
-            JOIN beer_style s ON sub.style_id = s.id
-            GROUP BY sub.style_id
-            ORDER BY cnt DESC;
-         */
+        $em = $this->getEntityManager();
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('total', 'total');
+        $rsm->addEntityResult('\App\Entity\Beer\Style', 's');
+        $rsm->addFieldResult('s','id','id');
+        $rsm->addFieldResult('s','name','name');
+        $sql = 'SELECT COUNT(*) total, s.id, s.name ' .
+            'FROM ( ' .
+            'SELECT b.* ' .
+            'FROM beer b ' .
+            'JOIN checkin c ON c.beer_id = b.id ' .
+            'WHERE 1 = 1 ';
         if (!is_null($uid)) {
-            $qb->where('c.user = :id')->setParameter('id', $uid);
+            if (is_object($uid)) {
+                $uid = $uid->getId();
+            }
+            $sql .= 'AND c.user_id = ' . $uid . ' ';
         };
         if (!is_null($venues)) {
-            $qb->andWhere('c.venue IN (:venues)')->setParameter('venues', $venues);
+            $venuesArray = array();
+            foreach ($venues as $venue) {
+                $venuesArray[] = $venue->getId();
+            }
+            $sql .= 'AND c.venue_id IN (' . implode(",", $venuesArray) . ') ';
         };
         if (!is_null($minDate)) {
-            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+            $sql .= 'AND c.created_at >= "' . $minDate->format('Y-m-d H:i:s') . '" ';
         };
         if (!is_null($maxDate)) {
-            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+            $sql .= 'AND c.created_at <= "' . $maxDate->format('Y-m-d H:i:s') . '" ';
         };
-        return $qb->groupBy('b.style')
-        ->addGroupBy('b.id')
-        ->orderBy('total', 'DESC')
-        ->setMaxResults(1)
-        ->getQuery()
-        ->getOneOrNullResult();
+        $sql .= 'GROUP BY c.beer_id' .
+            ') sub ' .
+            'JOIN beer_style s ON sub.style_id = s.id ' .
+            'GROUP BY sub.style_id ' . 
+            'ORDER BY total DESC ' .
+            'LIMIT 1 ';
+        $query = $em->createNativeQuery($sql, $rsm);
+        return $query->getOneOrNullResult();
     }
 }

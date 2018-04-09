@@ -198,6 +198,11 @@ class Venue
         return '<a href="https://untappd.com/v/'.$this->slug.'/'.$this->id.'" target="_blank">'.$this->name.'</a>';
     }
     
+    public function __toString()
+    {
+        return $this->name;
+    }
+    
     /**
      * Set id
      *

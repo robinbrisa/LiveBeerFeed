@@ -18,6 +18,11 @@ class Style
     private $id;
     
     /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
+    
+    /**
      * @ORM\Column(type="string", nullable=true)
      */
     private $header_background_color;
@@ -35,21 +40,21 @@ class Style
     /**
      * @ORM\Column(type="string", nullable=true)
      */
+    private $major_info_color;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
     private $untappd_logo_style;
-    
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $event_logo;
-    
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $locale;
     
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function __toString()
+    {
+        return $this->name;
     }
     
     
@@ -100,7 +105,23 @@ class Style
     {
         $this->link_color = $link_color;
     }
-
+    
+    /**
+     * @return mixed
+     */
+    public function getMajorInfoColor()
+    {
+        return $this->major_info_color;
+    }
+    
+    /**
+     * @param mixed $major_info_color
+     */
+    public function setMajorInfoColor($major_info_color)
+    {
+        $this->major_info_color = $major_info_color;
+    }
+    
     /**
      * @return mixed
      */
@@ -118,38 +139,27 @@ class Style
     }
 
     /**
-     * @return mixed
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Style
      */
-    public function getEventLogo()
+    public function setName($name)
     {
-        return $this->event_logo;
-    }
-
-    /**
-     * @param mixed $event_logo
-     */
-    public function setEventLogo($event_logo)
-    {
-        $this->event_logo = $event_logo;
+        $this->name = $name;
+        
+        return $this;
     }
     
     /**
-     * @return mixed
+     * Get name
+     *
+     * @return string
      */
-    public function getLocale()
+    public function getName()
     {
-        return $this->locale;
+        return $this->name;
     }
-    
-    /**
-     * @param mixed $event_logo
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-    }
-    
-    
-    
     
 }

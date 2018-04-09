@@ -55,6 +55,38 @@ class Message
      */
     private $event;
     
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", name="created_at", nullable=true)
+     */
+    private $created_at;
+    
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", name="updated_at", nullable=true)
+     */
+    private $updated_at;
+    
+    
+    public function __toString()
+    {
+        $name = '[' . strip_tags($this->message_line_1) . "|" . strip_tags($this->message_line_2) . "|" . strip_tags($this->message_line_3) . ']';
+        $timeLimits = "";
+        if ($this->start_date) {
+            $timeLimits = ' (Starting' . $this->start_date->format('d-m-y H:i') . ')';
+        }
+        if ($this->end_date) {
+            $timeLimits = ' (Ending' . $this->end_date->format('d-m-y H:i') . ')';
+        }
+        if ($this->start_date && $this->end_date) {
+            $timeLimits = ' (' . $this->start_date->format('d/m/y H:i') . ' - ' . $this->end_date->format('d/m/y H:i') . ')';
+        }
+        return $name . $timeLimits;
+    }
+    
+    public function __construct() {
+        $this->last_time_displayed = new \DateTime();
+    }
     
     public function getId()
     {
@@ -223,4 +255,24 @@ class Message
         return $this->message_line_3;
     }
     
+    
+    /**
+     * Get createdAt
+     *
+     * @return \Datetime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+    
+    /**
+     * Get updatedAt
+     *
+     * @return \Datetime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
 }

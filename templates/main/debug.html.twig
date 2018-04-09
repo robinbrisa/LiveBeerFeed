@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block navbar %}
+{% endblock %}
+       
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<button style="position: fixed; top: 30px; right: 15px;" onclick="startCounts()">CLICK</button>
+<script>
+function startCounts() {
+    $('.animated-increment').each(function () {
+    	$(this).animateNumber({ number: $(this).data('value') });
+    });
+}
+</script>
+{% endblock %}

@@ -58,7 +58,7 @@ class AjaxController extends Controller
         
         
         $output = array();
-        $output['line1'] = '<span class="info-major">Welcome to</span>';
+        $output['line1'] = '<span class="info-major">' . $this->get('translator')->trans('live.welcome') . '</span>';
         $output['line2'] = '<span class="info-major">' . $event->getName() . '</span>';
         $output['line3'] = $event->getStartDate()->format('d/m/Y') . ' - ' . $event->getEndDate()->format('d/m/Y');
         if ($event->getLastInfoStats()) {

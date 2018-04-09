@@ -1,0 +1,44 @@
+live:
+    currently_drinking: "%user% is drinking a %beer% by %brewery%"
+    welcome: "Welcome"
+stats:
+    general:
+        checkins: 'check-ins'
+    beer_rated_beer:
+        title: 'Best Rated Beer'
+    beer_rated_brewery:
+        title: 'Best Rated Brewery'
+    beer_rated_style:
+        title: 'Best Rated Style'
+    most_checked_in_beer:
+        title: 'Most Checked-in Beer'
+    most_checked_in_brewery:
+        title: 'Most Checked-in Brewery'
+    most_checked_in_style:
+        title: 'Most Checked-in Style'
+    ratings_average:
+        title: 'Check-in Ratings Average'
+        total: 'check-ins with ratings'
+    most_badges:
+        title: 'Most Badges Unlocked in One Check-in'
+        badges_unlocked: 'badges unlocked'
+    most_no_ratings:
+        title: 'The Indecisive Award'
+        count: '%user% has made %count% check-ins with no rating'
+        total: 'out of %total% total check-ins with no rating'
+    most_active:
+        title: 'Most Active'
+        last_hour: 'Last Hour'
+        last_4_hours: 'Last 4 Hours'
+        today: 'Today'
+        count: '%user% has made %count% check-ins'
+        total: 'out of %total% total check-ins'
+    popular_style:
+        title: 'Most Seen Style'
+        total: '%count% unique beers'
+    unique_beers:
+        title: 'Unique Beers Seen'
+        total: '%count% unique beers'
+    unique_users:
+        title: 'Active Untappd Users'
+        total: '%count% users were active around here today'
