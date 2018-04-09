@@ -18,60 +18,28 @@ var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
 
 function updateLivePage() {
-	$.get("/ajax/getLiveCheckins/" + $("#live-content").data('live-type') + "/" + $("#live-content").data('live-id'), { minID: $("#live-feed").children("li").first().data('checkin') } )
+	$.get("/ajax/getLiveCheckins/" + $("#live-content").data('live-type') + "/" + $("#live-content").data('live-id'), { minID: $("#live-feed").children("li").first().data('checkin'), format: "html" } )
 	.done(function(data) {
 		var append = "";
 		var mediaAppend = "";
-		var count = 0;
-		var mediaCount = 0;
-		$.each(data, function(key, value) {
-    		append += '<li data-checkin="' + value.id + '">'
-			append += '<div class="avatar-wrapper">';
-    		if (value.user.is_supporter) {
-				append += '<span class="supporter"></span>';
-    		}
-			append += '<a href="https://www.untappd.com/user/' + value.user.user_name + '" target="_blank">';
-			append += '<img src="' + value.user.user_avatar + '" />';
-			append += '</a>';
-			append += '</div>';
-			append += '<div class="checkin-info">';
-			append += '<div class="line">';
-			append += '<span class="checkin-item">' + value.user.untappd_link + ' is drinking a ' + value.beer.untappd_link + ' by ' + value.beer.brewery.untappd_link + ' <span data-date="' + value.created_at + '" class="checkin-date">(' + moment(value.created_at).fromNow() + ')</span></span>';
-			append += '</div>';
-			append += '<div class="line">';
-			append += '<span class="rating small r' + value.integer_rating_score + '"></span>';
-			if (value.comment != "") {
-				append += '<span class="comment">"' + value.comment + '"</span>';
-			}
-        	append += '</div>';
-        	append += '</div>';
-        	if (value.medias[0] !== undefined) {
-        		append += '<div class="has-media"><span class="media-number">' + (mediaCount + 1) + '</span></div>';
-        	}
-        	append += '</li>';
-        	count++;
-        	
-        	if (value.medias[0] !== undefined) {
-        		mediaAppend += '<div class="checkin-photo" data-checkin="' + value.id + '">';
-        		mediaAppend += '<div class="media-id"><span class="media-number">' + (mediaCount + 1) + '</span></div>';
-        		mediaAppend += '<div class="media-name">' + value.beer.name + ' <i>(' + value.beer.brewery.name + ')</i></div>';
-        		mediaAppend += '<a href="' + value.medias[0].photo_img_og + '" target="_blank"><img src="' + value.medias[0].photo_img_lg + '"></img></a>';
-        		mediaAppend += '</div>';
-        		mediaCount++;
-        	}
+		$.each(data.checkins, function(key, value) {
+    		append += value;
         	$('#no-checkins').hide();
 		});
+		$.each(data.medias, function(key, value) {
+			mediaAppend += value;
+		});
 		$('.media-number').each(function() {
-			var newID = Number($(this).html()) + mediaCount;
+			var newID = Number($(this).html()) + data.mediaCount;
 			$(this).html(newID);
 		});
-		for (var i = 0; i < count; i++) {
+		for (var i = 0; i < data.count; i++) {
 			// Remove check-ins if more than 30 are displayed
 			if ($("#live-feed").children("li").length > 30) {
 				$("#live-feed").children("li").last().remove();
 			}
 		}
-		for (var i = 0; i < mediaCount; i++) {
+		for (var i = 0; i < data.mediaCount; i++) {
 			// Remove photos if more than 35 are displayed
 			if ($("#live-media").children("div").length > 35) {
 				$("#live-media").children("div").last().remove();

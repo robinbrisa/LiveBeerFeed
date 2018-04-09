@@ -48,11 +48,7 @@
         	    {% for checkin in checkins %}
                		{% if checkin.medias[0] is defined %}
                			{% set i = i + 1 %}
-                   		<div class="checkin-photo" data-checkin="{{ checkin.id }}">
-           					<div class="media-id"><span class="media-number">{{ i }}</span></div>
-           					<div class="media-name">{{ checkin.beer.name }} <i>({{ checkin.beer.brewery.name }})</i></div>
-                   			<a href="{{ checkin.getMedias[0].photoImgOg }}" target="_blank"><img src="{{ checkin.getMedias[0].photoImgLg }}"></img></a>
-                   		</div>
+                        {% include 'live/content/media.template.html.twig' with { 'checkin': checkin, 'i': i  } %}
                		{% endif %}
         	    {% endfor %}
             </div>
@@ -77,8 +73,10 @@
         	{% set i = 0 %}
         	{% set j = 0 %}
         	{% for checkin in checkins if j < 30 %}
-                {% include 'live/content/checkin.template.html.twig' with { 'checkin': checkin } %}
-            	
+	            {% if checkin.medias[0] is defined %}
+		            {% set i = i + 1 %}
+		        {% endif %}
+                {% include 'live/content/checkin.template.html.twig' with { 'checkin': checkin, 'i': i } %}
             	{% set j = j + 1 %}
         	{% endfor %}
         </ul>

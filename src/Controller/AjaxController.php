@@ -14,11 +14,15 @@ class AjaxController extends Controller
     /**
      * @Route("/ajax/getLiveCheckins/{type}/{id}", name="ajax_get_live_checkins_since")
      */
-    public function getLiveCheckins($type, $id)
+    public function getLiveCheckins($type, $id, $format = 'json')
     {
         $minID = null;
         if (isset($_GET['minID'])) {
             $minID = $_GET['minID'];
+        }
+        $format = 'json';
+        if (isset($_GET['format'])) {
+            $format = $_GET['format'];
         }
         
         $em = $this->getDoctrine()->getManager();
@@ -30,13 +34,27 @@ class AjaxController extends Controller
         } else {
             throw New \Exception("INVALID LIVE TYPE");
         }
-                
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($checkins, 'json', SerializationContext::create()->enableMaxDepthChecks());
         
-        $response = new Response($jsonContent);
+        if ($format == 'html') {
+            $checkinsArray = array('checkins' => array(), 'medias' => array());
+            $mediaCount = 0;
+            foreach ($checkins as $checkin) {
+                if ($checkin->getMedias()[0]) {
+                    $mediaCount++;
+                    $checkinsArray['medias'][] = $this->render('live/content/media.template.html.twig', ['checkin' => $checkin, 'i' => $mediaCount])->getContent();
+                }
+                $checkinsArray['checkins'][] = $this->render('live/content/checkin.template.html.twig', ['checkin' => $checkin, 'i' => $mediaCount])->getContent();
+            }
+            $checkinsArray['mediaCount'] = count($checkinsArray['medias']);
+            $checkinsArray['count'] = count($checkinsArray['checkins']);
+            $response = new Response(json_encode($checkinsArray));
+        } else {
+            $serializer = SerializerBuilder::create()->build();
+            $jsonContent = $serializer->serialize($checkins, 'json', SerializationContext::create()->enableMaxDepthChecks());
+            $response = new Response($jsonContent);
+        }
+        
         $response->headers->set('Content-Type', 'application/json');
-        
         return $response;
     }
     
