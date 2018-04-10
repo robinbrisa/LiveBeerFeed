@@ -9,7 +9,12 @@
 	</div>
 	<div class="checkin-info">
 		<div class="line">
-	    	<span class="checkin-item">{% trans with {'%user%': checkin.getUser.untappdLink|raw, '%beer%': checkin.beer.untappdLink|raw, '%brewery%': checkin.beer.brewery.untappdLink|raw } %}live.currently_drinking{% endtrans %} <span data-date="{{ checkin.createdAt|date("D, d M Y H:i:s O") }}" class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
+    		{% if checkin.beer.style.name|lower|replace({' ': '', '-': '.', '/': ''})|trans({}, 'stylegender') == "M" %}
+    			{% set gender = 0 %}
+    		{% else %}
+    		    {% set gender = 1 %}
+    		{% endif %}
+	    	<span class="checkin-item">{% transchoice gender with {'%user%': checkin.getUser.untappdLink|raw, '%beer%': checkin.beer.untappdLink|raw, '%brewery%': checkin.beer.brewery.untappdLink|raw } %}live.currently_drinking{% endtranschoice %} <span data-date="{{ checkin.createdAt|date("D, d M Y H:i:s O") }}" class="checkin-date">({{ checkin.createdAt|ago }})</span></span>
 	    </div>
 	    <div class="line">
 	    	<span class="rating small r{{ checkin.integerRatingScore }}"></span> 

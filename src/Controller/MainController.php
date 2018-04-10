@@ -29,7 +29,13 @@ class MainController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
         
-        dump($em->getRepository('\App\Entity\User\User')->getUniqueUsersWithCheckinsCount($venues, $event->getStartDate(), null));
+        dump($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1));
+        
+        if (count($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)) > 0) {
+            echo $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)[0]->getId();
+        } else {
+            echo "No checkin";
+        }
         
         $statsDebug = $stats->debugStatistics($event);
         

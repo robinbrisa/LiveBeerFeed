@@ -6,7 +6,7 @@ parameters:
     untappd_api_client_secret: '%env(UNTAPPD_API_CLIENT_SECRET)%'
     untappd_api_oauth_redirect_url: '%env(UNTAPPD_API_OAUTH_REDIRECT_URL)%'
     locale: en
-    
+
 services:
     # default configuration for services in *this* file
     _defaults:

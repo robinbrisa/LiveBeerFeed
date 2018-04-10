@@ -114,6 +114,6 @@ class UntappdGetVenueHistoryCommand extends Command
         } else {
             $output->writeln(sprintf('Couldn\'t get venue information.'));
         }
-        $io->success('Task done');
+        $io->success('Venue ' . $venue->getName() . ' checkins have been updated');
     }
 }

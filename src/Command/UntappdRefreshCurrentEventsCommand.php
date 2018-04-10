@@ -46,10 +46,19 @@ class UntappdRefreshCurrentEventsCommand extends Command
         }
         
         $checkinCommand = $this->getApplication()->find('untappd:get:venue:history');
+        $pushCommand = $this->getApplication()->find('live:push:checkins');
         foreach ($events as $event) {
-            $output->writeln(sprintf('Found event "' . $event->getName() . '"'));
-            foreach ($event->getVenues() as $venue) {
-                $output->writeln(sprintf('Refreshing venue "' . $venue->getName() . '"'));
+            $output->writeln(sprintf('Found event %s', $event->getName()));
+            $venues = $event->getVenues();
+            
+            $minID = null;
+            $checkin = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1);
+            if (count($checkin) > 0) {
+                $minID = $checkin[0]->getId();
+            } 
+            
+            foreach ($venues as $venue) {
+                $output->writeln(sprintf('Refreshing venue %s', $venue->getName()));
                 $arguments = array(
                     'command' => 'untappd:get:venue:history',
                     'vid'    => $venue->getId(),
@@ -57,6 +66,17 @@ class UntappdRefreshCurrentEventsCommand extends Command
                 );
                 $checkinCommand->run(new ArrayInput($arguments), $output);
             }
+            
+            $output->writeln(sprintf('Calling push command for event %s', $event->getName()));
+            $arguments = array(
+                'command' => 'live:push:checkins',
+                'live_type' => 'event',
+                'id' => $event->getId()
+            );
+            if ($minID) {
+                $arguments['minID'] = $minID;
+            }
+            $pushCommand->run(new ArrayInput($arguments), $output);
         }
         $io->success('All current events are now refreshed');
     }

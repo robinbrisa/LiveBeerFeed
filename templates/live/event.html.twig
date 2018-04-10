@@ -56,7 +56,7 @@
         <ul id="live-feed">
         	{% if event.venues|length == 0 %}
                 <div class="alert alert-danger" role="alert">
-              		<b>There a no venues related to this event.</b> Please add some venues and reload the page.
+              		<b>{{ "live.no_venues_bold"|trans }}</b> {{ "live.no_venues"|trans }}
                 </div>
         	{% else %}
         		{% if checkins|length == 0 %}
@@ -85,10 +85,6 @@
 </div>
 
 <script>
-setInterval(function(){
-	updateLivePage()
-}, 15000)
-var infoLoadDelay = 5000;
 setInterval(function(){
 	refreshTimes()
 }, 5000)

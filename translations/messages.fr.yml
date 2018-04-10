@@ -1,6 +1,8 @@
 live:
-    currently_drinking: "%user% boit une %beer% de %brewery%"
+    currently_drinking: "{0} %user% boit un %beer% de %brewery%|{1} %user% boit une %beer% de %brewery%"
     welcome: "Bienvenue"
+    no_venues_bold: "Aucun lieu n'est rattaché à cet évènement."
+    no_venues: "Veuillez ajouter un lieu et recharger la page."
 stats:
     general:
         checkins: 'check-ins'
