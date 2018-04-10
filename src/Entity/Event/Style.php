@@ -25,22 +25,22 @@ class Style
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $header_background_color;
+    private $header_background_color = '#ffcc00';
     
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $header_text_color;
+    private $header_text_color = '#000000';
     
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $link_color;
+    private $link_color = '#cc6600';
     
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $major_info_color;
+    private $major_info_color = '#cc6600';
     
     /**
      * @ORM\Column(type="string", nullable=true)
