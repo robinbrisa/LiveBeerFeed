@@ -63,7 +63,7 @@ class LivePushCheckinsCommand extends Command
         
         if ($checkinsArray['count'] > 0) {
             $context = new \ZMQContext();
-            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewCheckin');
+            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
             $socket->connect("tcp://localhost:5555");
             $socket->send(json_encode($checkinsArray));
             $io->success('New checkins have been pushed!');

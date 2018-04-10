@@ -21,7 +21,9 @@ function pushServer(){
         	handleNewCheckinData(data);
         });
         conn.subscribe("info-" + $("#live-content").data('live-type') + "-" + $("#live-content").data('live-id'), function(topic, data) {
-            console.log('Received new info');
+        	if (data.action == "reload") {
+        		location.reload();
+        	}
             $(".info-line-text").stop();
         	handleNewInfoData(data);
         });

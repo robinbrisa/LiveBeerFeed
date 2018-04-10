@@ -6,6 +6,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\EventStats;
 
@@ -109,5 +110,32 @@ class AjaxController extends Controller
         $response->headers->set('Content-Type', 'application/json');
         
         return $response;
+    }
+    
+    /**
+     * @Route("/ajax/reloadClients", name="reload_clients")
+     */
+    public function reloadClientsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $id = $request->query->get('id');
+        $event = $em->getRepository('App\Entity\Event\Event')->find($id);
+        
+        $magicArray = array(
+            'push_topic' => 'info-event-'.$event->getId(),
+            'push_type' => 'info',
+            'action' => 'reload'
+        );
+        
+        $context = new \ZMQContext();
+        $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+        $socket->connect("tcp://localhost:5555");
+        $socket->send(json_encode($magicArray));
+        
+        // redirect to the 'list' view of the given entity
+        return $this->redirectToRoute('easyadmin', array(
+            'action' => 'list',
+            'entity' => $request->query->get('entity'),
+        ));
     }
 }

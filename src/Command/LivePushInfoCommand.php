@@ -73,7 +73,7 @@ class LivePushInfoCommand extends Command
             $data['push_topic'] = 'info-event-'.$event->getId();
             
             $context = new \ZMQContext();
-            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewInfo');
+            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
             $socket->connect("tcp://localhost:5555");
             $socket->send(json_encode($data));
         }

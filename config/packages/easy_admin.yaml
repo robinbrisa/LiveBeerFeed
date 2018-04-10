@@ -12,6 +12,9 @@ easy_admin:
                     - messages
                     - style
                     - { property: 'locale', type: 'Symfony\Component\Form\Extension\Core\Type\LanguageType', type_options: { required: true, choices: { 'English': 'en', 'Français': 'fr' }, choice_loader: null } }
+            list:
+                actions:
+                    - { name: 'reload_clients', icon: 'refresh', type: 'route' }
         Message:
             class: App\Entity\Event\Message
             form:
@@ -32,6 +35,3 @@ easy_admin:
                     - { property: 'link_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
                     - { property: 'major_info_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
                     - { property: 'untappd_logo_style', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Black': 'black', 'White': 'white' } } }
-        
-        #- App\Entity\Event\Message
-        #- App\Entity\Event\Style
