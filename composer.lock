@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2508c0226110a8b4c351e549f6763db9",
+    "content-hash": "e2f9931575f1d9d492c2ca8e2f58e970",
     "packages": [
         {
             "name": "beberlei/DoctrineExtensions",
@@ -6524,6 +6524,57 @@
                 "templating"
             ],
             "time": "2018-04-02T09:24:19+00:00"
+        },
+        {
+            "name": "wrep/daemonizable-command",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mac-cain13/daemonizable-command.git",
+                "reference": "f320fdc25d9f8194eeef42f7e8e45266e3fa1893"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mac-cain13/daemonizable-command/zipball/f320fdc25d9f8194eeef42f7e8e45266e3fa1893",
+                "reference": "f320fdc25d9f8194eeef42f7e8e45266e3fa1893",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9",
+                "symfony/console": "3.*|4.*",
+                "symfony/dependency-injection": "3.*|4.*"
+            },
+            "suggest": {
+                "symfony/filesystem": "If you can't use Upstart or systemd"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Wrep\\Daemonizable\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mathijs Kadijk",
+                    "email": "mathijs@wrep.nl"
+                }
+            ],
+            "description": "Daemonizable (endless running) commands for Symfony.",
+            "homepage": "https://github.com/mac-cain13/daemonizable-command",
+            "keywords": [
+                "Symfony2",
+                "background process",
+                "backgrounding",
+                "daemon",
+                "long running process",
+                "symfony",
+                "symfony3"
+            ],
+            "time": "2018-03-27T06:56:12+00:00"
         },
         {
             "name": "zendframework/zend-code",

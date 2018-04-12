@@ -31,13 +31,14 @@ function pushServer(){
         console.warn('WebSocket connection closed');
         setTimeout(function(){
             location = '/live/' + $("#live-content").data('live-type') + "/" + $("#live-content").data('live-id')
-        }, 2000)
+        }, 20000)
     }, {
         'skipSubprotocolCheck': true
     });	
 }
 
 function updateLivePage() {
+	// Replaced by push notifications
 	$.get("/ajax/getLiveCheckins/" + $("#live-content").data('live-type') + "/" + $("#live-content").data('live-id'), { minID: $("#live-feed").children("li").first().data('checkin'), format: "html" } )
 	.done(function(data) {
 		handleNewCheckinData(data);

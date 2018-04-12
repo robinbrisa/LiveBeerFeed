@@ -1,5 +1,5 @@
 <div class="checkin-photo" data-checkin="{{ checkin.id }}">
 	<div class="media-id"><span class="media-number">{{ i }}</span></div>
-	<div class="media-name">{{ checkin.beer.name }} <i>({{ checkin.beer.brewery.name }})</i></div>
+	<div class="media-name">{{ checkin.beer.name }} <span class="brewery-name">({{ checkin.beer.brewery.name }})</span></div>
 	<a href="{{ checkin.getMedias[0].photoImgOg }}" target="_blank"><img src="{{ checkin.getMedias[0].photoImgLg }}"></img></a>
 </div>

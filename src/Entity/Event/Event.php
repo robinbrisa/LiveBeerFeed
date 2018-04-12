@@ -73,6 +73,11 @@ class Event
     private $locale = 'fr';
     
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $screen_size = 'normal';
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -367,6 +372,22 @@ class Event
     public function setLocale($locale)
     {
         $this->locale = $locale;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getScreenSize()
+    {
+        return $this->screen_size;
+    }
+    
+    /**
+     * @param mixed $locale
+     */
+    public function setScreenSize($screenSize)
+    {
+        $this->screen_size = $screenSize;
     }
     
 }

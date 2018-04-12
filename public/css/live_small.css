@@ -1,0 +1,160 @@
+#live-feed {
+	width: 67%;
+}
+
+#right-panel {
+	width:33%;
+}
+
+#live-feed li {
+	min-height: 44px;
+	max-height: 64px;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+#live-feed .checkin-info {
+    padding-left: 56px;
+}
+
+#live-feed .avatar-wrapper {
+	width: 34px;
+	height: 34px;
+	position: relative;
+	margin: 4px 10px;
+	float: left;
+}
+
+#live-feed .has-media {
+    width: 20px;
+    height: 20px;
+}
+
+.has-media .media-number {
+    position: relative;
+    bottom: 1px;
+}
+
+#live-media > div {
+	flex: 1 0 33.3%;
+}
+
+#live-media > div:first-child {
+	flex: 0 1 50%;
+}
+
+.media-name .brewery-name {
+	display: none;
+}
+
+.checkin-photo .media-name {
+    height: 14px;
+    line-height: 14px;
+    font-size: 11px;
+    padding: 0 1px;
+}
+
+#info-content .line {
+    font-size: 24px;
+    line-height: 22px;
+    height: 34px;
+}
+
+.checkin-info .comment {
+    bottom: 3px;
+}
+
+.info-line-text .image-wrapper {
+    height: 31px;
+}
+
+.rating.small {
+    height: 18px;
+    width: 99px;
+    background-image: url(../images/ratings_quarters_very_small.png);
+    background-size: 99px 418px;
+}
+
+.rating.small.r0 {
+	display:none;
+}
+
+.rating.small.r25 {
+	background-position:0 -20px;
+}
+
+.rating.small.r50 {
+	background-position:0 -40px;
+}
+
+.rating.small.r75 {
+	background-position:0 -60px;
+}
+
+.rating.small.r100 {
+	background-position:0 -80px;
+}
+
+.rating.small.r125{
+	background-position:0 -100px;
+}
+
+.rating.small.r150{
+	background-position:0 -120px;
+}
+
+.rating.small.r175{
+	background-position:0 -140px;
+}
+
+rating.small.r200{
+	background-position:0 -160px;
+}
+
+.rating.small.r225{
+	background-position:0 -180px;
+}
+
+.rating.small.r250{
+	background-position:0 -200px;
+}
+
+.rating.small.r275{
+	background-position:0 -220px;
+}
+
+.rating.small.r300{
+	background-position:0 -240px;
+}
+
+.rating.small.r325{
+	background-position:0 -260px;
+}
+
+.rating.small.r350{
+	background-position:0 -280px;
+}
+
+.rating.small.r375{
+	background-position:0 -300px;
+}
+
+.rating.small.r400{
+	background-position:0 -320px;
+}
+
+.rating.small.r425{
+	background-position:0 -340px;
+}
+
+.rating.small.r450{
+	background-position:0 -360px;
+}
+
+.rating.small.r475{
+	background-position:0 -380px;
+}
+
+.rating.small.r500{
+	background-position:0 -400px;
+}

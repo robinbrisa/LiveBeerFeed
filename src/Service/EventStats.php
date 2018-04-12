@@ -20,8 +20,10 @@ class EventStats
     public function __construct(EntityManagerInterface $em, Tools $tools, TranslatorInterface $translator)
     {
         $this->em = $em;
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->tools = $tools;
         $this->translator = $translator;
+        echo "Constructed\n";
         
         $this->availableStatistics = array(
              'get_most_checked_in_style',
@@ -64,6 +66,10 @@ class EventStats
                 $i++;
             }
         }
+        
+        unset($rand);
+        unset($availableStatistics);
+        unset($selectedStatistic);
         return $output;
     }
     
@@ -83,7 +89,9 @@ class EventStats
                 'line2' => $this->returnBeerWithLabel($results[0], true) . ' (' . $results[0]->getBrewery()->getName() . ')',
                 'line3' => $this->tools->getRatingImage($results['avg_rating']) . ' (' . round($results['avg_rating'], 2) . '/5, <span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins') . ')'
             );
+            unset($results);
             return $output;
+            
         } else {
             return false;
         }
@@ -97,6 +105,7 @@ class EventStats
                 'line2' => $this->returnBreweryWithLabel($results[0], true),
                 'line3' => $this->tools->getRatingImage($results['avg_rating']) . ' (' . round($results['avg_rating'], 2) . '/5, <span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins') . ')'
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -111,6 +120,7 @@ class EventStats
                 'line2' => $results[0]->getName(),
                 'line3' => $this->tools->getRatingImage($results['avg_rating']) . ' (' . round($results['avg_rating'], 2) . '/5, <span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins') . ')'
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -124,6 +134,7 @@ class EventStats
                 'line2' => $this->returnBeerWithLabel($results[0], true) . ' (' . $results[0]->getBrewery()->getName() . ')',
                 'line3' => '<span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins')
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -137,6 +148,7 @@ class EventStats
                 'line2' => $this->returnBreweryWithLabel($results[0], true),
                 'line3' => '<span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins')
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -150,6 +162,7 @@ class EventStats
                 'line2' => $results[0]->getName(),
                 'line3' => '<span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins')
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -164,6 +177,7 @@ class EventStats
                 'line2' => $this->tools->getRatingImage($results['average']) . ' (' . round($results['average'], 2) . '/5)',
                 'line3' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b> ' . $this->translator->trans('stats.ratings_average.total')
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -183,6 +197,7 @@ class EventStats
                 'line2' => '<b><span class="animated-increment" data-value="' . $results->getTotalBadges() . '">0</span></b> ' . $this->translator->trans('stats.most_badges.badges_unlocked') . ' ' . $badgeIcons,
                 'line3' => $this->returnUserWithAvatar($results->getUser()) . ' ' . $this->returnBeerWithLabel($results->getBeer())
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -200,6 +215,8 @@ class EventStats
                 'line2' => $this->translator->trans('stats.most_no_ratings.count', array('%user%' => $this->returnUserWithAvatar($results[0], true), '%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>')),
                 'line3' => $this->translator->trans('stats.most_no_ratings.total', array('%total%' => '<b><span class="animated-increment" data-value="' . $total['total'] . '">0</span></b>'))
             );
+            unset($results);
+            unset($total);
             return $output;
         } else {
             return false;
@@ -217,6 +234,8 @@ class EventStats
                 'line2' => $this->translator->trans('stats.most_active.count', array('%user%' => $this->returnUserWithAvatar($results[0], true), '%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>')),
                 'line3' => $this->translator->trans('stats.most_active.total', array('%total%' => '<b><span class="animated-increment" data-value="' . $total . '">0</span></b>'))
             );
+            unset($results);
+            unset($total);
             return $output;
         } else {
             return false;
@@ -234,6 +253,8 @@ class EventStats
                 'line2' => $this->translator->trans('stats.most_active.count', array('%user%' => $this->returnUserWithAvatar($results[0], true), '%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>')),
                 'line3' => $this->translator->trans('stats.most_active.total', array('%total%' => '<b><span class="animated-increment" data-value="' . $total . '">0</span></b>'))
             );
+            unset($results);
+            unset($total);
             return $output;
         } else {
             return false;
@@ -251,6 +272,8 @@ class EventStats
                 'line2' => $this->translator->trans('stats.most_active.count', array('%user%' => $this->returnUserWithAvatar($results[0], true), '%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>')),
                 'line3' => $this->translator->trans('stats.most_active.total', array('%total%' => '<b><span class="animated-increment" data-value="' . $total . '">0</span></b>'))
             );
+            unset($results);
+            unset($total);
             return $output;
         } else {
             return false;
@@ -269,6 +292,8 @@ class EventStats
                 'line2' => $this->translator->trans('stats.most_active.count', array('%user%' => $this->returnUserWithAvatar($results[0], true), '%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>')),
                 'line3' => $this->translator->trans('stats.most_active.total', array('%total%' => '<b><span class="animated-increment" data-value="' . $total . '">0</span></b>'))
             );
+            unset($results);
+            unset($total);
             return $output;
         } else {
             return false;
@@ -282,6 +307,7 @@ class EventStats
                 'line2' => $results[0]->getName(),
                 'line3' => $this->translator->trans('stats.popular_style.total', array('%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>'))
             );
+            unset($results);
             return $output;
         } else {
             return false;
@@ -302,6 +328,8 @@ class EventStats
             foreach($latestBeers as $beer) {
                 $output['line3'] .= '<div class="image-wrapper"><img src="' . $beer->getLabel() . '"/></div> ';
             }
+            unset($count);
+            unset($latestBeers);
             return $output;
         } else {
             return false;
@@ -322,6 +350,8 @@ class EventStats
             foreach($latestUsers as $user) {
                 $output['line3'] .= '<div class="image-wrapper"><img src="' . $user->getUserAvatar() . '"/></div> ';
             }
+            unset($count);
+            unset($latestUsers);
             return $output;
         } else {
             return false;

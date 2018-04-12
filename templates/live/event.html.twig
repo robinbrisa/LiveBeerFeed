@@ -5,6 +5,13 @@
 {% block navbar %}
 {% endblock %}
        
+{% block stylesheets %}
+	{{ parent() }}
+	{% if event.screenSize == "small" %}
+		<link href="{{ asset('css/live_small.css') }}" rel="stylesheet">
+	{% endif %}
+{% endblock %}
+        
 {% block body %}
 {% if event.style %}
     <style>
