@@ -43,6 +43,10 @@ class LivePushInfoCommand extends Command
         } else {
             foreach ($events as $event) {
                 $output->writeln(sprintf('[%s] Pushing new info for %s', date('H:i:s'), $event->getName()));
+                if (count($event->getVenues()) == 0) {
+                    $output->writeln(sprintf('[%s] No venues are related to this event.', date('H:i:s')));
+                    continue;
+                }
                 
                 $this->translator->setLocale($event->getLocale());
                 
