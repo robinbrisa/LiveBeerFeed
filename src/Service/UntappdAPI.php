@@ -330,7 +330,7 @@ class UntappdAPI
             }
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery('/v4/venue/checkins/' . $venueID, $response, $accessToken);
+            $log = $this->logAPIQuery('/v4/venue/checkins/' . $venueID, $response, $accessToken);
         }
         return $response;
     }
@@ -445,7 +445,7 @@ class UntappdAPI
         return $response;
     }
     
-    private function logAPIQuery($url, $response, $accessToken = null) {
+    public function logAPIQuery($url, $response, $accessToken = null) {
         $log = new APIQueryLog();
         $log->setMethod($url);
         $log->setDate(new \DateTime());
@@ -455,5 +455,11 @@ class UntappdAPI
         }
         $this->em->persist($log);
         $this->em->flush();
+        $this->em->detach($log);
+        return $log;
+    }
+        
+    public function disableSqlLogger() {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
     }
 }

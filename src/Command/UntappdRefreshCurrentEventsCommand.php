@@ -30,6 +30,7 @@ class UntappdRefreshCurrentEventsCommand extends Command
     public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer, EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->untappdAPI = $untappdAPI;
         $this->untappdAPISerializer = $untappdAPISerializer;
         
@@ -42,42 +43,47 @@ class UntappdRefreshCurrentEventsCommand extends Command
         
         $events = $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
         if (!$events) {
-            throw New \Exception("No events are currently running");
-        }
-        
-        $checkinCommand = $this->getApplication()->find('untappd:get:venue:history');
-        $pushCommand = $this->getApplication()->find('live:push:checkins');
-        foreach ($events as $event) {
-            $output->writeln(sprintf('Found event %s', $event->getName()));
-            $venues = $event->getVenues();
-            
-            $minID = null;
-            $checkin = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1);
-            if (count($checkin) > 0) {
-                $minID = $checkin[0]->getId();
-            } 
-            
-            foreach ($venues as $venue) {
-                $output->writeln(sprintf('Refreshing venue %s', $venue->getName()));
+            $io->error("No events are currently running");
+        } else {
+            $checkinCommand = $this->getApplication()->find('untappd:get:venue:history');
+            $pushCommand = $this->getApplication()->find('live:push:checkins');
+            foreach ($events as $event) {
+                $output->writeln(sprintf('[%s] Found event %s', date('H:i:s'), $event->getName()));
+                $venues = $event->getVenues();
+                
+                $minID = null;
+                $checkin = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1);
+                if (count($checkin) > 0) {
+                    $minID = $checkin[0]->getId();
+                } 
+                
+                foreach ($venues as $venue) {
+                    $output->writeln(sprintf('[%s] Refreshing venue %s', date('H:i:s'), $venue->getName()));
+                    $arguments = array(
+                        'command' => 'untappd:get:venue:history',
+                        'vid'    => $venue->getId(),
+                        '--update' => true,
+                        '-e'  => 'prod',
+                        '--no-debug'  => true,
+                    );
+                    $checkinCommand->run(new ArrayInput($arguments), $output);
+                }
+                
+                $output->writeln(sprintf('[%s] Pushing new checkins for event %s', date('H:i:s'), $event->getName()));
                 $arguments = array(
-                    'command' => 'untappd:get:venue:history',
-                    'vid'    => $venue->getId(),
-                    '--update' => true
+                    'command' => 'live:push:checkins',
+                    'live_type' => 'event',
+                    'id' => $event->getId(),
+                    '-e'  => 'prod',
+                    '--no-debug'  => true,
                 );
-                $checkinCommand->run(new ArrayInput($arguments), $output);
+                if ($minID) {
+                    $arguments['minID'] = $minID;
+                }
+                $pushCommand->run(new ArrayInput($arguments), $output);
             }
             
-            $output->writeln(sprintf('Calling push command for event %s', $event->getName()));
-            $arguments = array(
-                'command' => 'live:push:checkins',
-                'live_type' => 'event',
-                'id' => $event->getId()
-            );
-            if ($minID) {
-                $arguments['minID'] = $minID;
-            }
-            $pushCommand->run(new ArrayInput($arguments), $output);
+            $output->writeln(sprintf('[%s] All current events are now refreshed', date('H:i:s')));
         }
-        $io->success('All current events are now refreshed');
     }
 }

@@ -28,6 +28,7 @@ class LivePushCheckinsCommand extends Command
     public function __construct(EntityManagerInterface $em, \Twig_Environment $templating)
     {
         $this->em = $em;
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->templating = $templating;
         
         parent::__construct();
@@ -66,9 +67,10 @@ class LivePushCheckinsCommand extends Command
             $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
             $socket->connect("tcp://localhost:5555");
             $socket->send(json_encode($checkinsArray));
-            $io->success('New checkins have been pushed!');
+            $socket->disconnect("tcp://localhost:5555");
+            $output->writeln(sprintf('[%s] New check-ins have been pushed', date('H:i:s')));
         } else {
-            $io->success('No new checkin to push');
+            $output->writeln(sprintf('[%s] No new check-ins to push', date('H:i:s')));
         }
     }
 }

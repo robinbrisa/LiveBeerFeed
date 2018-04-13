@@ -32,8 +32,11 @@ class UntappdGetVenueHistoryCommand extends Command
     public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer, EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->untappdAPI = $untappdAPI;
+        $this->untappdAPI->disableSqlLogger();
         $this->untappdAPISerializer = $untappdAPISerializer;
+        $this->untappdAPISerializer->disableSqlLogger();
         
         parent::__construct();
     }
@@ -63,11 +66,11 @@ class UntappdGetVenueHistoryCommand extends Command
         }
         if ($highestVenueCheckin && $input->getOption('update')) {
             $maxID = null;
-            $output->writeln(sprintf('Update option applied, updating until checkin ' . $highestVenueCheckin->getId()));
+            $output->writeln(sprintf('[%s] Update option applied, updating until checkin %d', date('H:i:s'), $highestVenueCheckin->getId()));
         }
         if ($input->getOption('force')) {
             $maxID = null;
-            $output->writeln(sprintf('Force option applied, restarting full history'));
+            $output->writeln(sprintf('[%s] Force option applied, restarting full history', date('H:i:s')));
             $venue->setInternalFullHistoryGathered(false);
         }
         if ($response = $this->untappdAPI->getVenueCheckins($vid, null, $maxID, null, 25)) {
@@ -114,6 +117,11 @@ class UntappdGetVenueHistoryCommand extends Command
         } else {
             $output->writeln(sprintf('Couldn\'t get venue information.'));
         }
-        $io->success('Venue ' . $venue->getName() . ' checkins have been updated');
+        
+        $output->writeln(sprintf('[%s] Venue %s checkins have been updated', date('H:i:s'), $venue->getName()));
+        
+        unset($checkinsData);
+        unset($highestVenueCheckin);
+        unset($venue);
     }
 }

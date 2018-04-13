@@ -86,7 +86,7 @@ class UntappdAPISerializer
             $checkinCollection->add($checkin);
         }
         $this->em->flush();
-        return $checkinCollection;
+        return true;
     }
     
     public function handleBreweryObject($breweryData) {
@@ -411,16 +411,22 @@ class UntappdAPISerializer
     }
     
     private function buildToast($toast) {
-        $output = new Toast();
-        $output->setId($toast->like_id);
+        $output = $this->em->getRepository('\App\Entity\Checkin\Toast')->find($toast->like_id);
+        if (!$output) {
+            $output = new Toast();
+            $output->setId($toast->like_id);
+        }
         $output->setCreatedAt(\DateTime::createFromFormat(DATE_RFC2822, $toast->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get())));
         $output->setUser($this->buildUserWithLowInformation($toast->user));
         return $output;
     }
     
     private function buildComment($comment) {
-        $output = new Comment();
-        $output->setId($comment->comment_id);
+        $output = $this->em->getRepository('\App\Entity\Checkin\Comment')->find($comment->comment_id);
+        if (!$output) {
+            $output = new Comment();
+            $output->setId($comment->comment_id);
+        }
         $output->setCreatedAt(\DateTime::createFromFormat(DATE_RFC2822, $comment->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get())));
         $output->setCommentSource($comment->comment_source);
         $output->setUser($this->buildUserWithLowInformation($comment->user));
@@ -429,8 +435,11 @@ class UntappdAPISerializer
     }
     
     private function buildCheckinMedia($media) {
-        $output = new Media();
-        $output->setId($media->photo_id);
+        $output = $this->em->getRepository('\App\Entity\Checkin\Comment')->find($media->photo_id);
+        if (!$output) {
+            $output = new Media();
+            $output->setId($media->photo_id);
+        }
         $output->setPhotoImgSm($media->photo->photo_img_sm);
         $output->setPhotoImgMd($media->photo->photo_img_md);
         $output->setPhotoImgLg($media->photo->photo_img_lg);
@@ -467,6 +476,7 @@ class UntappdAPISerializer
     private function createBadgeRelation($badge, $user, $checkin, $userBadgeID, $createdAt) {
         $relation = $this->em->getRepository('\App\Entity\Badge\BadgeRelation')->findOneBy(array('badge' => $badge, 'user' => $user));
         if (!$relation) {
+            echo "Creating relation for checkin " . $checkin . " \n";
             $relation = new BadgeRelation();
             $relation->setBadge($badge);
             $relation->setUser($user);
@@ -476,5 +486,9 @@ class UntappdAPISerializer
             $this->em->persist($relation);
         }
         return true;
+    }
+    
+    public function disableSqlLogger() {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
     }
 }
