@@ -5,3 +5,4 @@ twig:
     globals:
         untappd_api_oauth_redirect_url: '%untappd_api_oauth_redirect_url%'
         untappd_api_client_id: '%untappd_api_client_id%'
+        websocket: '%websocket%'

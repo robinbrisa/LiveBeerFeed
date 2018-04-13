@@ -1,7 +1,4 @@
 doctrine:
-    dbal:
-        server_version: '5.5'
-        
     orm:
         metadata_cache_driver:
             type: service
