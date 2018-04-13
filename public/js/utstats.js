@@ -15,7 +15,7 @@ var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
 
 function pushServer(){
-	var conn = new ab.Session('ws://' + websocket, function() {
+	var conn = new ab.Session(websocket, function() {
         conn.subscribe("checkins-" + $("#live-content").data('live-type') + "-" + $("#live-content").data('live-id'), function(topic, data) {
             console.log('Received ' + data.count + ' new checkins');
         	handleNewCheckinData(data);
