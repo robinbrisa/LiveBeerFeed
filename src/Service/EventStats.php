@@ -47,7 +47,6 @@ class EventStats
     }
     
     public function returnRandomStatistic($event) {
-        return false;
         $i = 0;
         $availableStatistics = $this->availableStatistics;
         $rand = array_rand($availableStatistics);
