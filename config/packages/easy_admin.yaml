@@ -6,6 +6,7 @@ easy_admin:
             form:
                 fields: 
                     - name
+                    - slug
                     - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, format: 'dd-MM-yyyy HH:mm:ss' } }
                     - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, format: 'dd-MM-yyyy HH:mm:ss' }  }
                     - venues

@@ -5,13 +5,13 @@ namespace App\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Wrep\Daemonizable\Command\EndlessCommand;
+use Wrep\Daemonizable\Command\EndlessContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use App\Service\EventStats;
 use Symfony\Component\Translation\TranslatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class LiveDaemonStartCommand extends EndlessCommand
+class LiveDaemonStartCommand extends EndlessContainerAwareCommand
 {
     protected static $defaultName = 'live:daemon:start';
     
@@ -25,8 +25,8 @@ class LiveDaemonStartCommand extends EndlessCommand
     
     public function __construct(EntityManagerInterface $em, EventStats $stats,TranslatorInterface $translator)
     {
-        $this->em = $em;
-        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+        //$this->em = $em;
+        //$this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->stats = $stats;
         $this->translator = $translator;
         $this->last_checkins_push = new \DateTime();

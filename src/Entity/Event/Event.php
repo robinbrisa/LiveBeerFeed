@@ -23,6 +23,11 @@ class Event
     private $name;
     
     /**
+     * @ORM\Column(type="string", nullable=true, unique=true)
+     */
+    private $slug;
+    
+    /**
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $start_date;
@@ -130,6 +135,30 @@ class Event
     public function getName()
     {
         return $this->name;
+    }
+    
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Event
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+        
+        return $this;
+    }
+    
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
     
     /**

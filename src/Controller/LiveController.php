@@ -36,14 +36,17 @@ class LiveController extends Controller
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
         
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('This event is unknown');
+            }
+        }
+        
         $session = $this->get('session');
         if ($session->has("_locale") && $event->getLocale() !== $session->get("_locale")) {
             $session->set("_locale", $event->getLocale());
             return new RedirectResponse('/live/event/'.$event->getId());
-        }
-        
-        if (!$event) {
-            $this->createNotFoundException('This event is unknown');
         }
         
         $venues = $event->getVenues();
@@ -53,6 +56,32 @@ class LiveController extends Controller
         return $this->render('live/event.html.twig', [
             'event' => $event,
             'checkins' => $checkins
+        ]);
+    }
+    
+    /**
+     * @Route("/notify/{eventID}", name="notification_subscriber")
+     */
+    public function notification_subscriber($eventID)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('This event is unknown');
+            }
+        }
+        
+        $session = $this->get('session');
+        if ($session->has("_locale") && $event->getLocale() !== $session->get("_locale")) {
+            $session->set("_locale", $event->getLocale());
+            return new RedirectResponse('/live/event/'.$event->getId());
+        }
+        
+        return $this->render('live/notification.html.twig', [
+            'event' => $event,
         ]);
     }
 }

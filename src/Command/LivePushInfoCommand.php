@@ -80,10 +80,10 @@ class LivePushInfoCommand extends Command
                 $socket->connect("tcp://localhost:5555");
                 $socket->send(json_encode($data));
                 $socket->disconnect("tcp://localhost:5555");
-                
             }
             
             $output->writeln(sprintf('[%s] Info has been pushed for all current events', date('H:i:s')));
         }
+        unset($events);
     }
 }
