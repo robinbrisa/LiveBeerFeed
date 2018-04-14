@@ -45,11 +45,13 @@
 
 	<div id="live-content" data-live-id="{{ event.id }}" data-live-type="event">
 		<div id="right-panel">
+			{% if event.screenSize == "normal" %}
     	    <div id="info-content">
     	    	<div class="line"><span id="info-line-1" class="info-line-text"><span class="info-major">{% trans %}live.welcome{% endtrans %}</span></span></div>
     	    	<div class="line"><span id="info-line-2" class="info-line-text"><span class="info-major">{{ event.name }}</span></span></div>
     	    	<div class="line"><span id="info-line-3" class="info-line-text">{{ event.startDate|date("d/m/Y") }} - {{ event.endDate|date("d/m/Y") }}</span></div>
     	    </div>
+    	    {% endif %}
             <div id="live-media" class="">
         		{% set i = 0 %}
         	    {% for checkin in checkins %}
@@ -60,7 +62,14 @@
         	    {% endfor %}
             </div>
         </div>
-        <ul id="live-feed">
+        <div id="left-panel">
+			{% if event.screenSize == "small" %}
+    	    <div id="info-content">
+    	    	<div class="line"><span id="info-line-1" class="info-line-text"><span class="info-major">{% trans %}live.welcome{% endtrans %}</span></span></div>
+    	    	<div class="line"><span id="info-line-2" class="info-line-text"><span class="info-major">{{ event.name }}</span></span></div>
+    	    	<div class="line"><span id="info-line-3" class="info-line-text">{{ event.startDate|date("d/m/Y") }} - {{ event.endDate|date("d/m/Y") }}</span></div>
+    	    </div>
+    	    {% endif %}
         	{% if event.venues|length == 0 %}
                 <div class="alert alert-danger" role="alert">
               		<b>{{ "live.no_venues_bold"|trans }}</b> {{ "live.no_venues"|trans }}
@@ -72,21 +81,24 @@
         		        {% set venueNames = venueNames|merge([venue.name]) %}
         		    {% endfor %}
             		<div id="no-checkins" class="alert alert-warning" role="alert">
-                      	There a no check-ins for this event yet.
-                      	<br />Here's the list of the related venues : {{ venueNames|join(',') }}
+                      	{{ "live.no_checkins"|trans }} <br />
+                      	{% trans with {'%venues%': venueNames|join(',')} %}live.venues_list{% endtrans %} <br />
+                      	{{ "live.no_checkins_info"|trans }}
                     </div>
         		{% endif %}
         	{% endif %}
-        	{% set i = 0 %}
-        	{% set j = 0 %}
-        	{% for checkin in checkins if j < 30 %}
-	            {% if checkin.medias[0] is defined %}
-		            {% set i = i + 1 %}
-		        {% endif %}
-                {% include 'live/content/checkin.template.html.twig' with { 'checkin': checkin, 'i': i } %}
-            	{% set j = j + 1 %}
-        	{% endfor %}
-        </ul>
+            <ul id="live-feed">
+            	{% set i = 0 %}
+            	{% set j = 0 %}
+            	{% for checkin in checkins if j < 30 %}
+    	            {% if checkin.medias[0] is defined %}
+    		            {% set i = i + 1 %}
+    		        {% endif %}
+                    {% include 'live/content/checkin.template.html.twig' with { 'checkin': checkin, 'i': i } %}
+                	{% set j = j + 1 %}
+            	{% endfor %}
+            </ul>
+        </div>
         <div class="gradient-bottom"></div>
     </div>
 </div>

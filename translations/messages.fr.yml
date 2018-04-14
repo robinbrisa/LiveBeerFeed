@@ -3,6 +3,9 @@ live:
     welcome: "Bienvenue"
     no_venues_bold: "Aucun lieu n'est rattaché à cet évènement."
     no_venues: "Veuillez ajouter un lieu et recharger la page."
+    no_checkins: "Il n'y a pour l'instant aucun check-in pour cet évènement."
+    venues_list: "Localisez vos check-ins sur un des lieux suivants: %venues%."
+    no_checkins_info: "Les nouveaux check-ins apparaîtront automatiquement."
 stats:
     general:
         checkins: 'check-ins'

@@ -248,7 +248,7 @@ class CheckinRepository extends ServiceEntityRepository
         return $output;
     }
     
-    public function getVenueCheckins($venues, $minID = null, $limit = null)
+    public function getVenueCheckins($venues, $minID = null, $limit = null, $minDate = null, $maxDate = null)
     {
         $qb = $this->createQueryBuilder('c')
         ->select('c, m, v, u, b')
@@ -260,6 +260,12 @@ class CheckinRepository extends ServiceEntityRepository
         if (!is_null($minID)) {
             $qb->andWhere('c.id > :minid')->setParameter('minid', $minID);
         }
+        if (!is_null($minDate)) {
+            $qb->andWhere('c.created_at >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
         $qb->orderBy('c.created_at', 'DESC');
         if (!is_null($limit)) {
             $qb->setMaxResults($limit);

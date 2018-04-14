@@ -476,7 +476,6 @@ class UntappdAPISerializer
     private function createBadgeRelation($badge, $user, $checkin, $userBadgeID, $createdAt) {
         $relation = $this->em->getRepository('\App\Entity\Badge\BadgeRelation')->findOneBy(array('badge' => $badge, 'user' => $user));
         if (!$relation) {
-            echo "Creating relation for checkin " . $checkin . " \n";
             $relation = new BadgeRelation();
             $relation->setBadge($badge);
             $relation->setUser($user);

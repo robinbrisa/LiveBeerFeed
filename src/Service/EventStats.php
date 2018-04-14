@@ -23,7 +23,6 @@ class EventStats
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->tools = $tools;
         $this->translator = $translator;
-        echo "Constructed\n";
         
         $this->availableStatistics = array(
              'get_most_checked_in_style',
@@ -344,7 +343,7 @@ class EventStats
             $latestUsers = $this->em->getRepository('\App\Entity\User\User')->getUniqueLatestCheckInUsers(30, $event->getVenues(), new \DateTime('today midnight'), null, false);
             $output = array(
                 'line1' => '<span class="info-major">' . $this->translator->trans('stats.unique_users.title') . '</span>',
-                'line2' => $this->translator->trans('stats.unique_beers.total', array('%count%' => '<b><span class="animated-increment" data-value="' . $count . '">0</span></b>')),
+                'line2' => $this->translator->trans('stats.unique_users.total', array('%count%' => '<b><span class="animated-increment" data-value="' . $count . '">0</span></b>')),
                 'line3' => ''
             );
             foreach($latestUsers as $user) {

@@ -45,7 +45,7 @@ class LivePushCheckinsCommand extends Command
             $checkins = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($id, $minID);
         } elseif ($type == "event") {
             $event = $this->em->getRepository('\App\Entity\Event\Event')->find($id);
-            $checkins = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($event->getVenues(), $minID);
+            $checkins = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($event->getVenues(), $minID, null, $event->getStartDate());
         } else {
             throw New \Exception("Live type is invalid");
         }

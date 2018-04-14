@@ -29,7 +29,7 @@ class MainController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
         
-        dump($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1));
+    //    dump($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1));
         
         if (count($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)) > 0) {
             echo $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)[0]->getId();
