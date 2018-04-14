@@ -44,7 +44,7 @@ class LiveController extends Controller
         }
         
         $session = $this->get('session');
-        if ($session->has("_locale") && $event->getLocale() !== $session->get("_locale")) {
+        if (!$session->has("_locale") || $event->getLocale() !== $session->get("_locale")) {
             $session->set("_locale", $event->getLocale());
             return new RedirectResponse('/live/event/'.$event->getId());
         }

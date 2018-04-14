@@ -23,10 +23,8 @@ class LiveDaemonStartCommand extends EndlessContainerAwareCommand
         ;
     }
     
-    public function __construct(EntityManagerInterface $em, EventStats $stats,TranslatorInterface $translator)
+    public function __construct(EventStats $stats,TranslatorInterface $translator)
     {
-        //$this->em = $em;
-        //$this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->stats = $stats;
         $this->translator = $translator;
         $this->last_checkins_push = new \DateTime();

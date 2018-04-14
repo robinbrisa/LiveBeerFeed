@@ -10,7 +10,6 @@ easy_admin:
                     - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, format: 'dd-MM-yyyy HH:mm:ss' } }
                     - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, format: 'dd-MM-yyyy HH:mm:ss' }  }
                     - venues
-                    - messages
                     - style
                     - { property: 'screen_size', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Normal': 'normal', 'Small': 'small' } } }
                     - { property: 'locale', type: 'Symfony\Component\Form\Extension\Core\Type\LanguageType', type_options: { required: true, choices: { 'English': 'en', 'Français': 'fr' }, choice_loader: null } }
