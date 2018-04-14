@@ -34,7 +34,7 @@ class Venue
     private $last_updated;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $main_category;
     
