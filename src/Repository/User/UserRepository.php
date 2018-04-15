@@ -109,4 +109,19 @@ class UserRepository extends ServiceEntityRepository
         ->getQuery()
         ->getOneOrNullResult();
     }
+    
+    public function getAPIKeys() {
+        
+        $keysArray = array('default' => 100);
+        
+        $users = $this->createQueryBuilder('u')
+        ->where('u.internal_untappd_access_token IS NOT NULL')
+        ->getQuery()
+        ->getResult();
+        
+        foreach ($users as $user) {
+            $keysArray[$user->getInternalUntappdAccessToken()] = 100;
+        }
+        return $keysArray;
+    }
 }

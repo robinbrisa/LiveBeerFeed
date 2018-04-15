@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Service\EventStats;
+use App\Service\Tools;
 
 class MainController extends Controller
 {
@@ -23,19 +24,23 @@ class MainController extends Controller
     /**
      * @Route("/debug/{id}", name="debug")
      */
-    public function debug($id, EventStats $stats)
+    public function debug($id, EventStats $stats, Tools $tools)
     {
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
-        
-    //    dump($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1));
-        
+                
         if (count($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)) > 0) {
             echo $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)[0]->getId();
         } else {
             echo "No checkin";
         }
+        
+        $apiKeyPool = $tools->getAPIKeysPool();
+        $apiKey = $tools->getBestAPIKey(array('default' => 0, 'testttt' => 0));
+        
+        dump($apiKey);
+        dump($apiKeyPool);
         
         $statsDebug = $stats->debugStatistics($event);
         

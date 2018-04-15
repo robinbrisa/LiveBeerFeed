@@ -19,22 +19,26 @@ class APIQueryLogRepository extends ServiceEntityRepository
         parent::__construct($registry, APIQueryLog::class);
     }
 
-//    /**
-//     * @return APIQueryLog[] Returns an array of APIQueryLog objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function findUsedAPIKeys()
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+        $keysArray = array();
+        $registeredKeys = $this->createQueryBuilder('a')
+            ->addSelect('100-COUNT(a) AS remaining_queries, u.internal_untappd_access_token')
+            ->leftJoin('a.user', 'u')
+            ->groupBy('u.id')
+            ->where('a.date >= :interval')->setParameter('interval', new \DateTime('- 1 hour'))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+        
+        foreach ($registeredKeys as $key) {
+            $keyToken = $key['internal_untappd_access_token'];
+            if (is_null($keyToken)) {
+                $keyToken = "default";
+            }
+            $keysArray[$keyToken] = intval($key['remaining_queries']);
+        }
+        return $keysArray;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?APIQueryLog
@@ -47,4 +51,17 @@ class APIQueryLogRepository extends ServiceEntityRepository
         ;
     }
     */
+    
+    /*
+SELECT MAX(q.remaining_queries), u.internal_untappd_access_token
+FROM api_query_log q
+LEFT JOIN user u ON q.user_key_id = u.id
+GROUP BY u.id
+UNION
+SELECT "100", u.internal_untappd_access_token
+FROM user u
+LEFT JOIN api_query_log q ON u.id = q.user_key_id
+WHERE u.internal_untappd_access_token IS NOT NULL
+AND q.id IS NULL;
+     */
 }

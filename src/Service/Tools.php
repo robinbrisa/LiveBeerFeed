@@ -17,6 +17,7 @@ class Tools
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
     }
     
     public function getRatingImage($rating) {
@@ -29,5 +30,31 @@ class Tools
         }
         $rating = $rating * 100;
         return '<span class="rating small r' . $rating . '"></span>';
+    }
+    
+    public function getAPIKeysPool() {
+        $usedKeys = $this->em->getRepository('App\Entity\APIQueryLog')->findUsedAPIKeys();
+        $userKeys = $this->em->getRepository('App\Entity\User\User')->getAPIKeys();
+        $finalPool = array_merge($userKeys, $usedKeys);
+        arsort($finalPool);
+        unset($usedKeys);
+        unset($userKeys);
+        return $finalPool;
+    }
+    
+    public function getBestAPIKey($keyPool) {
+        if ($keyPool['default'] > 1) {
+            $APIToken = null;
+        } else {
+            unset($keyPool['default']);
+            while (current($keyPool) < 1 && current($keyPool) !== false) {
+                next($keyPool);
+                if (current($keyPool) === false) {
+                    return false;
+                }
+            }
+            $APIToken = key($keyPool);
+        }
+        return $APIToken;
     }
 }

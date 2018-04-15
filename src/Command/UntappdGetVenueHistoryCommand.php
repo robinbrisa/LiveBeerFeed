@@ -11,6 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\UntappdAPI;
 use App\Service\UntappdAPISerializer;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Tools;
 
 class UntappdGetVenueHistoryCommand extends Command
 {
@@ -29,7 +30,7 @@ class UntappdGetVenueHistoryCommand extends Command
         ;
     }
 
-    public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer, EntityManagerInterface $em)
+    public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer, EntityManagerInterface $em, Tools $tools)
     {
         $this->em = $em;
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
@@ -37,6 +38,7 @@ class UntappdGetVenueHistoryCommand extends Command
         $this->untappdAPI->disableSqlLogger();
         $this->untappdAPISerializer = $untappdAPISerializer;
         $this->untappdAPISerializer->disableSqlLogger();
+        $this->tools = $tools;
         
         parent::__construct();
     }
@@ -60,6 +62,14 @@ class UntappdGetVenueHistoryCommand extends Command
         }
         $found = false;
         
+        $apiKeyPool = $this->tools->getAPIKeysPool();
+        $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
+        
+        if ($apiKey === false) {
+            $output->writeln(sprintf('[%s] No more API keys available', date('H:i:s')));
+            return false;
+        }
+        
         $maxID = $venue->getInternalFullHistoryLastMaxId();
         if(!is_null($maxID) && !$input->getOption('force') && !$input->getOption('update')) {
             $output->writeln(sprintf('Restarting from checkin %d', $maxID));
@@ -73,13 +83,29 @@ class UntappdGetVenueHistoryCommand extends Command
             $output->writeln(sprintf('[%s] Force option applied, restarting full history', date('H:i:s')));
             $venue->setInternalFullHistoryGathered(false);
         }
-        if ($response = $this->untappdAPI->getVenueCheckins($vid, null, $maxID, null, 25)) {
+        if ($response = $this->untappdAPI->getVenueCheckins($vid, $apiKey, $maxID, null, 25)) {
+            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+            while ($rateLimitRemaining == 0 && $apiKey !== false) {
+                $poolKey = $apiKey;
+                if (is_null($apiKey)) {
+                    $poolKey = 'default';
+                }
+                $apiKeyPool[$poolKey] = intval($rateLimitRemaining);
+                $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
+                $response = $this->untappdAPI->getVenueCheckins($vid, $apiKey, $maxID, null, 25);
+                $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                if ($apiKey === false) {
+                    $output->writeln(sprintf('[%s] API query limit has been reached, please continue later.', date('H:i:s')));
+                    return false;
+                } else {
+                    $output->writeln(sprintf('[%s] Retrying with key %s', date('H:i:s'), $apiKey));
+                }
+            }
             $output->writeln(sprintf('[%s] Successfully received venue information', date('H:i:s')));
             $i = 0;
             $j = 0;
             $maxID = $response->body->response->pagination->max_id;
-            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
-            while ($maxID != "" && $rateLimitRemaining > 0 && !$found) {
+            while ($maxID != "" && $apiKey !== false && !$found) {
                 $output->writeln(sprintf('[%s] (%d) Handling %d checkins. Remaining queries: %d.', date('H:i:s'), $i, $response->body->response->checkins->count, $rateLimitRemaining));
                 $checkinsData = $response->body->response->checkins->items;
                 $this->untappdAPISerializer->handleCheckinsArray($checkinsData);
@@ -97,9 +123,17 @@ class UntappdGetVenueHistoryCommand extends Command
                 $this->em->persist($venue);
                 $this->em->flush();
                 $i++;
-                if ($maxID != "" && $rateLimitRemaining > 0 && !$found) {
+                
+                $poolKey = $apiKey;
+                if (is_null($apiKey)) {
+                    $poolKey = 'default';
+                }
+                $apiKeyPool[$poolKey] = $rateLimitRemaining;
+                $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
+                
+                if ($maxID != "" && $apiKey !== false && !$found) {
                     $output->writeln(sprintf('[%s] (%d) Next page starting at %d.', date('H:i:s'), $i, $maxID));
-                    $response = $this->untappdAPI->getVenueCheckins($vid, null, $maxID, null, 25);
+                    $response = $this->untappdAPI->getVenueCheckins($vid, $apiKey, $maxID, null, 25);
                     $maxID = $response->body->response->pagination->max_id;
                     $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
                 }
@@ -111,7 +145,7 @@ class UntappdGetVenueHistoryCommand extends Command
                 $this->em->persist($venue);
                 $this->em->flush();
             }
-            if ($rateLimitRemaining == 0) {
+            if ($apiKey === false) {
                 $output->writeln(sprintf('[%s] API query limit has been reached, please continue later.', date('H:i:s')));
             }
         } else {

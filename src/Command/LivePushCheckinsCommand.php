@@ -36,11 +36,10 @@ class LivePushCheckinsCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
         $type = $input->getArgument('live_type');
         $id = $input->getArgument('id');
         $minID = $input->getArgument('minID');
-        
+                
         if ($type == "venue") {
             $checkins = $this->em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($id, $minID);
         } elseif ($type == "event") {
