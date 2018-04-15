@@ -39,7 +39,7 @@ class Event
     
     /**
      * @ORM\ManyToOne(targetEntity="Style")
-     * @ORM\JoinColumn(name="style_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="style_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private $style;
     
