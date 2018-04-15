@@ -181,7 +181,7 @@ class User
     private $badge_relation;
     
     /**
-     * @ORM\Column(name="internal_untappd_access_token", type="string", nullable=true)
+     * @ORM\Column(name="internal_untappd_access_token", type="string", nullable=true, unique=true)
      */
     private $internal_untappd_access_token;
     

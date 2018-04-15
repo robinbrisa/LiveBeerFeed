@@ -451,7 +451,7 @@ class UntappdAPI
         $log->setDate(new \DateTime());
         $log->setRemainingQueries($response->headers['X-Ratelimit-Remaining']);
         if ($accessToken) {
-            $log->setUser($this->em->getRepository('\App\Entity\User\User')->findOneByInternalUntappdAccessToken($accessToken));
+            $log->setUser($this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken)));
         }
         $this->em->persist($log);
         $this->em->flush();
