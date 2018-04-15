@@ -1252,4 +1252,5 @@ class User
     {
         return $this->badge_relation;
     }
+    
 }

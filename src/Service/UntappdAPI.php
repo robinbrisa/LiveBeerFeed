@@ -462,4 +462,5 @@ class UntappdAPI
     public function disableSqlLogger() {
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
     }
+    
 }
