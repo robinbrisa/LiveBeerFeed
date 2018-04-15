@@ -7,8 +7,8 @@ easy_admin:
                 fields: 
                     - name
                     - slug
-                    - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, widget: single_text } }
-                    - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, widget: single_text }  }
+                    - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, time_widget: single_text }  }
+                    - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, time_widget: single_text }  }
                     - venues
                     - { property: 'messages', type_options: { by_reference: false} }
                     - style
@@ -24,8 +24,8 @@ easy_admin:
                     - message_line_1
                     - message_line_2
                     - message_line_3
-                    - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, widget: single_text } }
-                    - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, widget: single_text }  }
+                    - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
+                    - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
                     - event
         Style:
             class: App\Entity\Event\Style
