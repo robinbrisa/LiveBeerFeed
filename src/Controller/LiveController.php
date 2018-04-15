@@ -126,7 +126,8 @@ class LiveController extends Controller
         
         return $this->render('live/post.html.twig', array(
             'form' => $form->createView(),
-            'event' => $event
+            'event' => $event,
+            'success' => false
         ));
     }
     
@@ -145,8 +146,9 @@ class LiveController extends Controller
             }
         }
         
-        return $this->render('live/post_success.html.twig', array(
-            'event' => $event
+        return $this->render('live/post.html.twig', array(
+            'event' => $event,
+            'success' => true
         ));
     }
     

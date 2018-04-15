@@ -35,36 +35,40 @@
         </div>
         
     	<span class="page-title info-major">Submit a new message</span>
-    	<p>This form will allow you to add a message to the "{{ event.name }}" live beer feed.<br />
-    	You can use it to make important announcements (plugging a new keg, ...)<br />
-    	Please fill the 3 message lines and select the time when it should begin to display. Highlighted lines will display in a <span class="info-major">different color</span>.<br />
-    	Your message will last for 10 minutes after the start date.<br />
-    	<b class="info-major">THIS FORM IS PRIVATE. PLEASE DO NOT SHARE IT WITH VISITORS. DO NOT ABUSE.</b> 
-    	<div class="card card-block bg-faded">
-    		<div class="card-body">
-                {{ form_start(form) }}
-                <div class="form-group">
-                    {{ form_label(form.message_line_1) }}
-					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
-                    {{ form_errors(form.message_line_1) }}
-                    {{ form_widget(form.message_line_1) }}
+    	{% if not success %}
+        	<p>This form will allow you to add a message to the "{{ event.name }}" live beer feed.<br />
+        	You can use it to make important announcements (plugging a new keg, ...)<br />
+        	Please fill the 3 message lines and select the time when it should begin to display. Highlighted lines will display in a <span class="info-major">different color</span>.<br />
+        	Your message will last for 10 minutes after the start date.<br />
+        	<b class="info-major">THIS FORM IS PRIVATE. PLEASE DO NOT SHARE IT WITH VISITORS. DO NOT ABUSE.</b> 
+        	<div class="card card-block bg-faded">
+        		<div class="card-body">
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.message_line_1) }}
+    					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
+                        {{ form_errors(form.message_line_1) }}
+                        {{ form_widget(form.message_line_1) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.message_line_2) }}
+    					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
+                        {{ form_errors(form.message_line_2) }}
+                        {{ form_widget(form.message_line_2) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.message_line_3) }}
+    					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
+                        {{ form_errors(form.message_line_3) }}
+                        {{ form_widget(form.message_line_3) }}
+                    </div>
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.message_line_2) }}
-					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
-                    {{ form_errors(form.message_line_2) }}
-                    {{ form_widget(form.message_line_2) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.message_line_3) }}
-					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
-                    {{ form_errors(form.message_line_3) }}
-                    {{ form_widget(form.message_line_3) }}
-                </div>
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
-            </div>
-		</div>	
+    		</div>
+    	{% else %}
+    		<p>Your message has successfully been registered. Thanks!</p>
+    	{% endif %}	
     </div>
     
 </div>
