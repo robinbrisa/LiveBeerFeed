@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} Live Info Notification{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+        
+{% block body %}
+{% if event.style %}
+    <style>
+    	#live-venue-title {
+            {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
+            {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
+        }
+        {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
+        {% if event.style.majorInfoColor %}
+        	.info-major { color: {{ event.style.majorInfoColor }};}
+        	#subscribe { background-color: {{ event.style.majorInfoColor }}; color: white; }
+        {% endif %}	
+    </style>
+{% endif %}
+
+
+<div class="main-wrapper">
+    <div class="container">
+        <div id="live-venue-title">
+        	{% if event.style and event.style.untappdLogoStyle %}
+        		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
+        	{% else %}
+        		{% set untappdLogo = 'untappd_black' %}
+        	{% endif %}
+            <div class="description">
+            	{% if event.eventLogo %}
+            		<img src="{{ asset("images/events/") ~ event.eventLogo }}" />
+            	{% else %}
+    				{{ event.name }}
+            	{% endif %}
+            </div>
+        </div>
+        
+        <button type="button" id="subscribe" class="btn">Subscribe to push notifications</button>
+    	
+		<div id="stats-carousel" class="carousel slide" data-ride="carousel" data-interval="10000">
+			<div class="carousel-inner row w-100 mx-auto">
+			{% set i = 0 %}
+            {% for stat in stats %}
+    			<div class="carousel-item col-md-4 {% if i == 0 %}active{% endif %}">
+            		<div class="card">
+            			<span class="page-title stat-title info-major">{{ stat.label }}</span>
+                        {% include 'event/templates/' ~ stat.template ~ '.html.twig' with { 'data': stat.content } %}
+            		</div>
+            	</div>
+            	{% set i = i + 1 %}
+    		{% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#stats-carousel" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+            </a>
+			<a class="carousel-control-next" href="#stats-carousel" role="button" data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+            </a>
+        </div>
+   
+    </div>
+</div>
+{% endblock %}

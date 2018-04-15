@@ -7,16 +7,37 @@ $(document).ready(function() {
 		pushServer();
 	}
 	
-	$(window).blur(function(){
-		visible = false;
-	});
-	$(window).focus(function(){
-		visible = true;
-	});
-	
 	if ($('#post-message').length !== 0) {
 		$('#form_startTime').attr('min', minTime);
 	}
+	
+	$("#stats-carousel").on("slide.bs.carousel", function(e) {
+		var $e = $(e.relatedTarget);
+		var idx = $e.index();
+		var itemsPerSlide = 3;
+		var totalItems = $(".carousel-item").length;
+	
+		console.log($e);
+		console.log(idx);
+		console.log(itemsPerSlide);
+		console.log(totalItems);
+		
+	  if (idx >= totalItems - (itemsPerSlide - 1)) {
+	    var it = itemsPerSlide - (totalItems - idx);
+	    for (var i = 0; i < it; i++) {
+	      // append slides to end
+	  if (e.direction == "left") {
+	$(".carousel-item")
+	  .eq(i)
+	  .appendTo(".carousel-inner");
+	  } else {
+	    $(".carousel-item")
+	  .eq(0)
+	  .appendTo(".carousel-inner");
+	      }
+	    }
+	  }
+	});
 });
 
 var infoLoadTimeout;
@@ -24,7 +45,6 @@ var nextRefreshInfoQueued = false;
 
 var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
-var visible = true;
 
 function pushServer(){
 	var conn = new ab.Session(websocket, function() {
@@ -88,7 +108,8 @@ function handleNewCheckinData(data) {
 }
 
 function handleNewInfoData(data) {
-    if (visible) {
+	console.log(document.visibilityState);
+    if (document.visibilityState == "visible") {
 		$(".info-line-text").css('right' , '');
 		$(".info-line-text").animate({ left: $(".info-line-text").parent().width() }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
 			function() {

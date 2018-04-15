@@ -38,3 +38,8 @@ services:
             $untappdAPIClientSecret: '%untappd_api_client_secret%'
             $untappdAPIOAuthRedirectURL: '%untappd_api_oauth_redirect_url%'
             
+    app.twig_runtime:
+        class: App\Twig\AppRuntime
+        public: false
+        tags:
+            - { name: twig.runtime }

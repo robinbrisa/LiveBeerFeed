@@ -1,0 +1,18 @@
+{% set i = 0 %}
+<ul class="ranking">
+{% for beer in data %}
+	{% set i = i + 1 %}
+    <li data-beer="{{ beer[0].id }}">
+    	<div class="ranking-image-wrapper">
+    		<a href="https://www.untappd.com/b/{{ beer[0].slug }}/{{ beer[0].id }}" target="_blank">
+    			<img src="{{ beer[0].label }}" />
+    		</a>
+    	</div>
+    	<div class="beer-info">
+        	<div class="beer-info-line info-major">{{ beer[0].name }}</div>
+        	<div class="beer-info-line">{{ beer[0].brewery.name }}</div>
+        	<div class="beer-info-line rating-line">{{ beer.avg_rating|rating|raw }} <span class="rating-value">({{ beer.avg_rating|round(2) }})</span></div>
+        </div>
+    </li>
+{% endfor %}
+</ul>
