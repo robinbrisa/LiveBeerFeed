@@ -7,6 +7,11 @@ a {
     color: #c60;
 }
 
+.container {
+	background-color: #FDFDFB;
+	padding: 12px;
+}
+
  a:hover {
 	color: #ff9933;
 	text-decoration: none;
@@ -86,6 +91,21 @@ a {
 	padding: 5px 15px;
 	background-color: #ffcc00;
     border-bottom: 1px solid #e2e2e2;
+}
+
+.container #live-venue-title {
+	margin: 0;
+	margin-bottom: 4px;
+	padding: 5px 8px;
+}
+
+.container .page-title {
+	font-size:24px;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	display:inline-block;
+	width:100%;
+	margin-bottom: 8px;
 }
 
 #live-venue-title .description {
@@ -172,6 +192,7 @@ a {
 .info-major {
 	font-weight: bold;
     color: #c60;
+    border-color: #c60;
 }
 
 .info-line-text {

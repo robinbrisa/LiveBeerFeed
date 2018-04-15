@@ -20,7 +20,7 @@
             {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
         }
         {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
-        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }};}{% endif %}	
+        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
     </style>
 {% endif %}
 
