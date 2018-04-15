@@ -86,11 +86,11 @@ class LiveController extends Controller
         
         $form = $this->createFormBuilder($message)
         ->add('message_line_1', TextType::class)
-        ->add('message_line_1_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlight line 1'))
+        ->add('message_line_1_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
         ->add('message_line_2', TextType::class)
-        ->add('message_line_2_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlight line 2'))
+        ->add('message_line_2_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
         ->add('message_line_3', TextType::class)
-        ->add('message_line_3_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlight line 3'))
+        ->add('message_line_3_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
         ->add('startTime', TimeType::class,  array('mapped' => false, 'widget' => 'single_text', 'required' => true ))
         ->add('save', SubmitType::class, array('label' => 'Submit Message'))
         ->getForm();

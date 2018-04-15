@@ -39,6 +39,10 @@ a {
     float: right;
 }
 
+.form-highlight {
+	float: right;
+}
+
 .profile-title {
 	height: 115px;
 	margin-bottom: 20px;
