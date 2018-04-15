@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType; 
 use App\Entity\Event\Message;
 
 class LiveController extends Controller
@@ -85,8 +86,11 @@ class LiveController extends Controller
         
         $form = $this->createFormBuilder($message)
         ->add('message_line_1', TextType::class)
+        ->add('message_line_1_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlight line 1'))
         ->add('message_line_2', TextType::class)
+        ->add('message_line_2_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlight line 2'))
         ->add('message_line_3', TextType::class)
+        ->add('message_line_3_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlight line 3'))
         ->add('startTime', TimeType::class,  array('mapped' => false, 'widget' => 'single_text', 'required' => true ))
         ->add('save', SubmitType::class, array('label' => 'Submit Message'))
         ->getForm();
@@ -102,6 +106,16 @@ class LiveController extends Controller
             $startDate->modify('+'.$minutesToAdd.' minutes');
             $endDate = clone $startDate;
             $endDate = $endDate->modify('+ 10 minutes');
+            
+            if ($form->get('message_line_1_important')->getData()) {
+                $message->setMessageLine1('<span class="info-major">' . $message->getMessageLine1() . '</span>');
+            }
+            if ($form->get('message_line_2_important')->getData()) {
+                $message->setMessageLine2('<span class="info-major">' . $message->getMessageLine2() . '</span>');
+            }
+            if ($form->get('message_line_3_important')->getData()) {
+                $message->setMessageLine3('<span class="info-major">' . $message->getMessageLine3() . '</span>');
+            }
             
             $message->setStartDate($startDate);
             $message->setEndDate($endDate);
