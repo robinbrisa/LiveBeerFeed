@@ -75,7 +75,7 @@ class Event
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $locale = 'fr';
+    private $locale = 'en';
     
     /**
      * @ORM\Column(type="string", nullable=true)
