@@ -50,7 +50,7 @@ class Message
     private $last_time_displayed;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Event", inversedBy="messages", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Event", inversedBy="messages")
      * @ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $event;

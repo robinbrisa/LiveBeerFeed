@@ -7,7 +7,7 @@
         Current events :
         <ul>
             {% for event in currentEvents %}
-            	<li><a href="/live/event/{{ event.getId }}">{{ event.getName }}</a></li>
+            	<li><a href="/live/event/{% if event.getSlug %}{{ event.getSlug }}{% else %}{{ event.getId }}{% endif %}">{{ event.getName }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

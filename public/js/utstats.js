@@ -6,6 +6,13 @@ $(document).ready(function() {
 		refreshTimes();
 		pushServer();
 	}
+	
+	$(window).blur(function(){
+		visible = false;
+	});
+	$(window).focus(function(){
+		visible = true;
+	});
 });
 
 var infoLoadTimeout;
@@ -13,6 +20,7 @@ var nextRefreshInfoQueued = false;
 
 var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
+var visible = true;
 
 function pushServer(){
 	var conn = new ab.Session(websocket, function() {
@@ -76,36 +84,47 @@ function handleNewCheckinData(data) {
 }
 
 function handleNewInfoData(data) {
-	$(".info-line-text").css('right' , '');
-	$(".info-line-text").animate({ left: $(".info-line-text").parent().width() }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
-		function() {
-			$("#info-line-1").html(data.line1);
-			$("#info-line-2").html(data.line2);
-			$("#info-line-3").html(data.line3);
-			$(".info-line-text").css('left' , '');
-			$(".info-line-text").each(function() {
-				if ($(this).width() < $(this).parent().width()) {
-					$(this).css('right' , $(this).parent().width());
-				} else {
-					$(this).css('right' , $(this).width());
-				}
-			});
-			$(".info-line-text").animate({ right: '0' }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
-				function () {
-					$(".info-line-text").each(function() {
-						if ($(this).width() > $("#info-content").width()) {
-							var scrollLength = $("#info-content").width() - $(this).width() - 6;
-							var scrollDuration = infoLoadDelay - infoScrollAnimationDuration * 2;
-							$(this).animate({ left: scrollLength }, { duration : scrollDuration });
-						}
-						$(this).find('.animated-increment').each(function () {
-							$(this).animateNumber({ number: $(this).data('value') });
+    if (visible) {
+		$(".info-line-text").css('right' , '');
+		$(".info-line-text").animate({ left: $(".info-line-text").parent().width() }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
+			function() {
+				$("#info-line-1").html(data.line1);
+				$("#info-line-2").html(data.line2);
+				$("#info-line-3").html(data.line3);
+				$(".info-line-text").css('left' , '');
+				$(".info-line-text").each(function() {
+					if ($(this).width() < $(this).parent().width()) {
+						$(this).css('right' , $(this).parent().width());
+					} else {
+						$(this).css('right' , $(this).width());
+					}
+				});
+				$(".info-line-text").animate({ right: '0' }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
+					function () {
+						$(".info-line-text").each(function() {
+							if ($(this).width() > $("#info-content").width()) {
+								var scrollLength = $("#info-content").width() - $(this).width() - 6;
+								var scrollDuration = infoLoadDelay - infoScrollAnimationDuration * 2;
+								$(this).animate({ left: scrollLength }, { duration : scrollDuration });
+							}
+							$(this).find('.animated-increment').each(function () {
+								$(this).animateNumber({ number: $(this).data('value') });
+							});
 						});
-					});
-				}
-			);
-		}
-	);
+					}
+				);
+			}
+		);
+    } else {
+		$("#info-line-1").html(data.line1);
+		$("#info-line-2").html(data.line2);
+		$("#info-line-3").html(data.line3);
+		$(".info-line-text").each(function() {
+			$(this).find('.animated-increment').each(function () {
+				$(this).html($(this).data('value'));
+			});
+		});
+    }
 }
 
 function refreshTimes() {

@@ -76,7 +76,7 @@ class UntappdAPI
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery($path, $response);
+            $this->logAPIQuery($path, $response, $accessToken);
         }
         return $response;
     }
@@ -150,7 +150,7 @@ class UntappdAPI
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery($path, $response);
+            $this->logAPIQuery($path, $response, $accessToken);
         }
         return $response;
     }
@@ -440,7 +440,7 @@ class UntappdAPI
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery($path, $response);
+            $this->logAPIQuery($path, $response, $accessToken);
         }
         return $response;
     }

@@ -44,7 +44,7 @@ class Event
     private $style;
     
     /**
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="event", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="event", cascade={"persist"})
      */
     private $messages;
     
