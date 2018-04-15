@@ -2,6 +2,7 @@ twig:
     paths: ['%kernel.project_dir%/templates']
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes: ['bootstrap_4_layout.html.twig']
     globals:
         untappd_api_oauth_redirect_url: '%untappd_api_oauth_redirect_url%'
         untappd_api_client_id: '%untappd_api_client_id%'

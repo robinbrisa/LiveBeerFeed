@@ -4,6 +4,7 @@ namespace App\Entity\Event;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="event_message")
@@ -19,17 +20,23 @@ class Message
     private $id;
     
     /**
-     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(max = 65, maxMessage = "Line 1 is too long")
+     * @ORM\Column(type="string", length=65)
      */
     private $message_line_1;
     
     /**
-     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(max = 65, maxMessage = "Line 2 is too long")
+     * @ORM\Column(type="string", length=65)
      */
     private $message_line_2;
     
     /**
-     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(max = 65, maxMessage = "Line 3 is too long")
+     * @ORM\Column(type="string", length=65)
      */
     private $message_line_3;
     

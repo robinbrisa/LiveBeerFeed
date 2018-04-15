@@ -13,6 +13,10 @@ $(document).ready(function() {
 	$(window).focus(function(){
 		visible = true;
 	});
+	
+	if ($('#post-message').length !== 0) {
+		$('#form_startTime').attr('min', minTime);
+	}
 });
 
 var infoLoadTimeout;

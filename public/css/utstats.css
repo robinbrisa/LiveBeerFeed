@@ -426,6 +426,11 @@ rating.small.r200{
 	font-style: italic;
 }
 
+.important-message {
+	font-weight:bold;
+	color: red;
+}
+
 .checkin-info .comment {
 	position: relative;
 	bottom:5px;

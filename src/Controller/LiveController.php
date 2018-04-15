@@ -5,6 +5,11 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use App\Entity\Event\Message;
 
 class LiveController extends Controller
 {
@@ -39,7 +44,7 @@ class LiveController extends Controller
         if (is_null($event)) {
             $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
             if (is_null($event)) {
-                throw $this->createNotFoundException('This event is unknown');
+                throw $this->createNotFoundException('Unkown event');
             }
         }
         
@@ -57,6 +62,78 @@ class LiveController extends Controller
             'event' => $event,
             'checkins' => $checkins
         ]);
+    }
+    
+    
+    /**
+     * @Route("/post/{eventID}", name="post_message")
+     */
+    public function post_event_message($eventID, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unkown event');
+            }
+        }
+        
+        $message = new Message();
+        $message->setEvent($event);
+        
+        $form = $this->createFormBuilder($message)
+        ->add('message_line_1', TextType::class)
+        ->add('message_line_2', TextType::class)
+        ->add('message_line_3', TextType::class)
+        ->add('startTime', TimeType::class,  array('mapped' => false, 'widget' => 'single_text', 'required' => true ))
+        ->add('save', SubmitType::class, array('label' => 'Submit Message'))
+        ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $message = $form->getData();
+            
+            // To complicated for no good reason
+            $minutesToAdd = ($form->get('startTime')->getData()->format('H') * 60) + $form->get('startTime')->getData()->format('i');
+            $startDate = new \DateTime('today midnight');
+            $startDate->modify('+'.$minutesToAdd.' minutes');
+            $endDate = clone $startDate;
+            $endDate = $endDate->modify('+ 10 minutes');
+            
+            $message->setStartDate($startDate);
+            $message->setEndDate($endDate);
+            $em->persist($message);
+            $em->flush();
+            return $this->redirectToRoute('post_message_success', array('eventID' => $eventID));
+        }
+        
+        return $this->render('live/post.html.twig', array(
+            'form' => $form->createView(),
+            'event' => $event
+        ));
+    }
+    
+    /**
+     * @Route("/post/{eventID}/success", name="post_message_success")
+     */
+    public function post_event_message_success($eventID)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unkown event');
+            }
+        }
+        
+        return $this->render('live/post_success.html.twig', array(
+            'event' => $event
+        ));
     }
     
     /**
