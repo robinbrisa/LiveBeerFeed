@@ -17,12 +17,13 @@ class EventStats
 {
     private $em;
     
-    public function __construct(EntityManagerInterface $em, Tools $tools, TranslatorInterface $translator)
+    public function __construct(EntityManagerInterface $em, Tools $tools, TranslatorInterface $translator, \Twig_Environment $templating)
     {
         $this->em = $em;
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->tools = $tools;
         $this->translator = $translator;
+        $this->templating = $templating;
         
         $this->availableStatistics = array(
              'get_most_checked_in_style',
@@ -78,6 +79,66 @@ class EventStats
             $output[$function] = $this->$function($event);
         }
         return $output;
+    }
+    
+    public function getStatsCards($event, $render = false) {
+        $venues = $event->getVenues();
+        $minBeerRatings = 5;
+        $minBreweryRatings = 5;
+        $minStyleRatings = 5;
+        
+        $stats = array();
+        
+        if ($bestRatedBeers = $this->em->getRepository('\App\Entity\Beer\Beer')->getBestRatedBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), $minBeerRatings, 5)) {
+            $stats['best_rated_beers'] = array(
+                'label' => 'Best Rated Beers',
+                'template' => 'best_rated_beers',
+                'content' => $bestRatedBeers
+            );
+        }
+        if ($bestRatedBreweries = $this->em->getRepository('\App\Entity\Brewery\Brewery')->getBestRatedBrewery(null, $venues, $event->getStartDate(), $event->getEndDate(), $minBreweryRatings, 5)) {
+            $stats['best_rated_breweries'] = array(
+                'label' => 'Best Rated Breweries',
+                'template' => 'best_rated_breweries',
+                'content' => $bestRatedBreweries
+            );
+        }
+        if ($bestRatedStyles = $this->em->getRepository('\App\Entity\Beer\Style')->getBestRatedStyle(null, $venues, $event->getStartDate(), $event->getEndDate(), $minStyleRatings, 5)) {
+            $stats['best_rated_styles'] = array(
+                'label' => 'Best Rated Styles',
+                'template' => 'best_rated_styles',
+                'content' => $bestRatedStyles
+            );
+        }
+        if ($mostRatedBeers = $this->em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
+            $stats['most_rated_beers'] = array(
+                'label' => 'Most Checked-in Beers',
+                'template' => 'most_rated_beers',
+                'content' => $mostRatedBeers
+            );
+        }
+        if ($mostRatedBreweries = $this->em->getRepository('\App\Entity\Brewery\Brewery')->getMostCheckedInBrewery(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
+            $stats['most_rated_breweries'] = array(
+                'label' => 'Most Checked-in Breweries',
+                'template' => 'most_rated_breweries',
+                'content' => $mostRatedBreweries
+            );
+        }
+        if ($mostRatedStyles = $this->em->getRepository('\App\Entity\Beer\Style')->getMostCheckedInStyle(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
+            $stats['most_rated_styles'] = array(
+                'label' => 'Most Checked-in Styles',
+                'template' => 'most_rated_styles',
+                'content' => $mostRatedStyles
+            );
+        }
+        
+        if ($render) {
+            foreach ($stats as $key => $stat) {
+                $stats[$key]['render'] = $this->templating->render('event/templates/' . $stat['template'] . '.html.twig', ['data' => $stat['content']]);
+            }
+        }
+        
+        return $stats;
     }
     
     private function get_best_rated_beer($event) {

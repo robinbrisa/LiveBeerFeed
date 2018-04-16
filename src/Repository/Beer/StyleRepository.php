@@ -21,6 +21,11 @@ class StyleRepository extends ServiceEntityRepository
         parent::__construct($registry, Style::class);
     }
     
+    public function findAll()
+    {
+        return $this->findBy(array(), array('name' => 'ASC'));
+    }
+    
     public function getMostCheckedInStyle($uid = null, $venues = null, $minDate = null, $maxDate = null, $limit = 1) {
         $qb = $this->createQueryBuilder('s')
         ->select('s, b, COUNT(c) AS total')

@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Input\ArrayInput;
 
 class LivePushCheckinsCommand extends Command
 {
@@ -68,6 +69,15 @@ class LivePushCheckinsCommand extends Command
             $socket->send(json_encode($checkinsArray));
             $socket->disconnect("tcp://localhost:5555");
             $output->writeln(sprintf('[%s] New check-ins have been pushed', date('H:i:s')));
+            
+            $push_stats_command = $this->getApplication()->find('live:push:stats');
+            $push_stats_command_args = array(
+                'command' => 'live:push:stats',
+                'id' => $id,
+                '-e'  => 'prod',
+                '--no-debug'  => true,
+            );
+            $push_stats_command->run(new ArrayInput($push_stats_command_args), $output);
         } else {
             $output->writeln(sprintf('[%s] No new check-ins to push', date('H:i:s')));
         }

@@ -36,11 +36,16 @@ class MainController extends Controller
             echo "No checkin";
         }
         
-        $apiKeyPool = $tools->getAPIKeysPool();
-        $apiKey = $tools->getBestAPIKey(array('default' => 0, 'testttt' => 0));
+        $styles = $em->getRepository('\App\Entity\Beer\Style')->findAll();
         
-        dump($apiKey);
-        dump($apiKeyPool);
+        foreach ($styles as $style) {
+            echo '<div id="info-content" style="width:500px;">';
+            echo '<div class="line">';
+            echo '<div class="color-wrapper live-style-color-container"><div class="ranking-style-color" style="float:left; background-color: ' . $style->getColor() . '; width:32px;"></div></div>';
+            echo '<span class="name">' . $style->getName() . '</span>';
+            echo '</div>';
+            echo '</div>';
+        }
         
         $statsDebug = $stats->debugStatistics($event);
         

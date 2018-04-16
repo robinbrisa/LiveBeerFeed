@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ event.name }} Live Info Notification{% endblock %}
+{% block title %}{{ event.name }} Live Information{% endblock %}
 
 {% block navbar %}
 {% endblock %}
@@ -22,7 +22,7 @@
 
 
 <div class="main-wrapper">
-    <div class="container">
+    <div id="event-info" class="container" data-event-id="{{ event.id }}">
         <div id="live-venue-title">
         	{% if event.style and event.style.untappdLogoStyle %}
         		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
@@ -43,9 +43,9 @@
 		<div id="stats-carousel" class="carousel slide" data-ride="carousel" data-interval="10000">
 			<div class="carousel-inner row w-100 mx-auto">
 			{% set i = 0 %}
-            {% for stat in stats %}
+            {% for key, stat in stats %}
     			<div class="carousel-item col-md-4 {% if i == 0 %}active{% endif %}">
-            		<div class="card">
+            		<div class="card" data-stat="{{ key }}">
             			<span class="page-title stat-title info-major">{{ stat.label }}</span>
                         {% include 'event/templates/' ~ stat.template ~ '.html.twig' with { 'data': stat.content } %}
             		</div>
@@ -65,4 +65,8 @@
    
     </div>
 </div>
+<script>
+var locale = "{{ event.locale }}";
+var websocket = "{{ websocket }}";
+</script>
 {% endblock %}

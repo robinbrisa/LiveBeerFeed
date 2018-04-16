@@ -7,6 +7,11 @@ $(document).ready(function() {
 		pushServer();
 	}
 	
+	if ($('#event-info').length !== 0) {
+		pushServerEventInfo();
+	}
+	
+	
 	if ($('#post-message').length !== 0) {
 		$('#form_startTime').attr('min', minTime);
 	}
@@ -16,27 +21,18 @@ $(document).ready(function() {
 		var idx = $e.index();
 		var itemsPerSlide = 3;
 		var totalItems = $(".carousel-item").length;
-	
-		console.log($e);
-		console.log(idx);
-		console.log(itemsPerSlide);
-		console.log(totalItems);
 		
-	  if (idx >= totalItems - (itemsPerSlide - 1)) {
-	    var it = itemsPerSlide - (totalItems - idx);
-	    for (var i = 0; i < it; i++) {
-	      // append slides to end
-	  if (e.direction == "left") {
-	$(".carousel-item")
-	  .eq(i)
-	  .appendTo(".carousel-inner");
-	  } else {
-	    $(".carousel-item")
-	  .eq(0)
-	  .appendTo(".carousel-inner");
-	      }
-	    }
-	  }
+	    if (idx >= totalItems - (itemsPerSlide - 1)) {
+		    var it = itemsPerSlide - (totalItems - idx);
+		    for (var i = 0; i < it; i++) {
+			      // append slides to end
+				if (e.direction == "left") {
+					$(".carousel-item").eq(i).appendTo(".carousel-inner");
+				} else {
+					$(".carousel-item").eq(0).appendTo(".carousel-inner");
+			    }
+		    }
+		}
 	});
 });
 
@@ -63,6 +59,24 @@ function pushServer(){
         console.warn('WebSocket connection closed');
         setTimeout(function(){
             location = '/live/' + $("#live-content").data('live-type') + "/" + $("#live-content").data('live-id')
+        }, 20000)
+    }, {
+        'skipSubprotocolCheck': true
+    });	
+}
+
+function pushServerEventInfo(){
+	var conn = new ab.Session(websocket, function() {
+        conn.subscribe("stats-" + $("#event-info").data('event-id'), function(topic, data) {
+        	if (data.action == "reload") {
+        		location.reload();
+        	}
+        	handleUpToDateEventStats(data);
+        });
+    }, function() {
+        console.warn('WebSocket connection closed');
+        setTimeout(function(){
+            location = '/event/' + $("#event-info").data('event-id')
         }, 20000)
     }, {
         'skipSubprotocolCheck': true
@@ -108,7 +122,6 @@ function handleNewCheckinData(data) {
 }
 
 function handleNewInfoData(data) {
-	console.log(document.visibilityState);
     if (document.visibilityState == "visible") {
 		$(".info-line-text").css('right' , '');
 		$(".info-line-text").animate({ left: $(".info-line-text").parent().width() }, { duration : infoScrollAnimationDuration, easing : "swing" }).promise().then(
@@ -150,6 +163,12 @@ function handleNewInfoData(data) {
 			});
 		});
     }
+}
+
+function handleUpToDateEventStats(data) {
+	$.each(data.stats, function(key, stat) {;
+		$('.card[data-stat="'+stat.template+'"]').html('<span class="page-title stat-title info-major">' + stat.label + '</span>' + stat.render);
+	});
 }
 
 function refreshTimes() {
