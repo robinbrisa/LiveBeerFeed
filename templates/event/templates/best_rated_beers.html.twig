@@ -9,7 +9,7 @@
     		</a>
     	</div>
     	<div class="beer-info">
-        	<div class="beer-info-line info-major">{{ beer[0].name }}</div>
+        	<div class="beer-info-line">{{ beer[0].untappdLink|raw }}</div>
         	<div class="beer-info-line">{{ beer[0].brewery.name }}</div>
         	<div class="beer-info-line rating-line">{{ beer.avg_rating|rating|raw }} <span class="rating-value">({{ beer.avg_rating|round(2) }})</span></div>
         </div>

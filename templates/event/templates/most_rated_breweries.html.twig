@@ -9,7 +9,7 @@
     		</a>
     	</div>
     	<div class="beer-info">
-        	<div class="beer-info-line info-major">{{ brewery[0].name }}</div>
+        	<div class="beer-info-line">{{ brewery[0].untappdLink|raw }}</div>
         	<div class="beer-info-line">{% if brewery[0].city %}{{ brewery[0].city }}, {% endif %}{{ brewery[0].countryName }}</div>
         	<div class="beer-info-line">{{ brewery.total }} check-ins</span></div>
         </div>

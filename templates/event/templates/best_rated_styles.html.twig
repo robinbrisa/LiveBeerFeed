@@ -7,7 +7,7 @@
     		<div class="ranking-style-color" style="background-color: {% if style[0].color %}{{ style[0].color }}{% else %}#ffffff{% endif %}"></div>
     	</div>
     	<div class="beer-info">
-        	<div class="beer-info-line info-major">{{ style[0].name }}</div>
+        	<div class="beer-info-line"><a href="#">{{ style[0].name }}</a></div>
         	<div class="beer-info-line rating-line">{{ style.avg_rating|rating|raw }} <span class="rating-value">({{ style.avg_rating|round(2) }})</span></div>
         	<div class="beer-info-line"></div>
         </div>
