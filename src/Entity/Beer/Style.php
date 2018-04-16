@@ -24,6 +24,11 @@ class Style
     private $name;
     
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $color;
+    
+    /**
      * @ORM\OneToMany(targetEntity="Beer", mappedBy="style")
      * @JMS\Exclude()
      */
@@ -65,6 +70,30 @@ class Style
     public function getName()
     {
         return $this->name;
+    }
+    
+    /**
+     * Set color
+     *
+     * @param string $color
+     *
+     * @return Style
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+        
+        return $this;
+    }
+    
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
     }
     
 }

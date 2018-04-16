@@ -14,6 +14,7 @@ class EventController extends Controller
     {
         $minBeerRatings = 5;
         $minBreweryRatings = 5;
+        $minStyleRatings = 5;
         
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
@@ -36,6 +37,7 @@ class EventController extends Controller
                 'content' => $bestRatedBeers
             );
         }
+        
         if ($bestRatedBreweries = $em->getRepository('\App\Entity\Brewery\Brewery')->getBestRatedBrewery(null, $venues, $event->getStartDate(), $event->getEndDate(), $minBreweryRatings, 5)) {
             $stats['best_rated_breweries'] = array(
                 'label' => 'Best Rated Breweries',
@@ -43,6 +45,15 @@ class EventController extends Controller
                 'content' => $bestRatedBreweries
             );
         }
+        
+        if ($bestRatedStyles = $em->getRepository('\App\Entity\Beer\Style')->getBestRatedStyle(null, $venues, $event->getStartDate(), $event->getEndDate(), $minStyleRatings, 5)) {
+            $stats['best_rated_styles'] = array(
+                'label' => 'Best Rated Styles',
+                'template' => 'best_rated_styles',
+                'content' => $bestRatedStyles
+            );
+        }
+        
         if ($mostRatedBeers = $em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
             $stats['most_rated_beers'] = array(
                 'label' => 'Most Checked-in Beers',
@@ -59,6 +70,13 @@ class EventController extends Controller
             );
         }
         
+        if ($mostRatedStyles = $em->getRepository('\App\Entity\Beer\Style')->getMostCheckedInStyle(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
+            $stats['most_rated_styles'] = array(
+                'label' => 'Most Checked-in Styles',
+                'template' => 'most_rated_styles',
+                'content' => $mostRatedStyles
+            );
+        }
         
         $em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer();
         return $this->render('event/index.html.twig', [

@@ -116,7 +116,7 @@ class EventStats
         if ($results = $this->em->getRepository('\App\Entity\Beer\Style')->getBestRatedStyle(null, $event->getVenues(), $event->getStartDate(), null, $minRatings)) {
             $output = array(
                 'line1' => '<span class="info-major">' . $this->translator->trans('stats.beer_rated_style.title') . '</span>',
-                'line2' => $results[0]->getName(),
+                'line2' => $this->returnStyleWithColor($results[0], true),
                 'line3' => $this->tools->getRatingImage($results['avg_rating']) . ' (' . round($results['avg_rating'], 2) . '/5, <span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins') . ')'
             );
             unset($results);
@@ -158,7 +158,7 @@ class EventStats
         if ($results = $this->em->getRepository('\App\Entity\Beer\Style')->getMostCheckedInStyle(null, $event->getVenues(), $event->getStartDate())) {
             $output = array(
                 'line1' => '<span class="info-major">' . $this->translator->trans('stats.most_checked_in_style.title') . '</span>',
-                'line2' => $results[0]->getName(),
+                'line2' => $this->returnStyleWithColor($results[0], true),
                 'line3' => '<span class="animated-increment" data-value="' . $results['total'] . '">0</span> ' . $this->translator->trans('stats.general.checkins')
             );
             unset($results);
@@ -303,7 +303,7 @@ class EventStats
         if ($results = $this->em->getRepository('\App\Entity\Beer\Style')->getMostCheckedInStyleUniqueBeers(null, $event->getVenues(), $event->getStartDate())) {
             $output = array(
                 'line1' => '<span class="info-major">' . $this->translator->trans('stats.popular_style.title') . '</span>',
-                'line2' => $results[0]->getName(),
+                'line2' => $this->returnStyleWithColor($results[0], true),
                 'line3' => $this->translator->trans('stats.popular_style.total', array('%count%' => '<b><span class="animated-increment" data-value="' . $results['total'] . '">0</span></b>'))
             );
             unset($results);
@@ -381,5 +381,16 @@ class EventStats
         return $output;
     }
     
+    private function returnStyleWithColor($style, $bold = false) {
+        $color = '#ffffff';
+        if (!is_null($style->getColor())) {
+            $color = $style->getColor();
+        }
+        $output = '<div class="color-wrapper live-style-color-container"><div class="ranking-style-color" style="background-color: ' . $color . '"></div></div> ';
+        if ($bold) { $output .= '<b>'; }
+        $output .= $style->getName();
+        if ($bold) { $output .= '</b>'; }
+        return $output;
+    }
     
 }

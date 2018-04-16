@@ -21,8 +21,7 @@ class StyleRepository extends ServiceEntityRepository
         parent::__construct($registry, Style::class);
     }
     
-    public function getMostCheckedInStyle($uid = null, $venues = null, $minDate = null, $maxDate = null)
-    {
+    public function getMostCheckedInStyle($uid = null, $venues = null, $minDate = null, $maxDate = null, $limit = 1) {
         $qb = $this->createQueryBuilder('s')
         ->select('s, b, COUNT(c) AS total')
         ->join('s.beers', 'b')
@@ -39,14 +38,17 @@ class StyleRepository extends ServiceEntityRepository
         if (!is_null($maxDate)) {
             $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
         };
-        return $qb->groupBy('b.style')
+        $qb->groupBy('b.style')
         ->orderBy('total', 'DESC')
-        ->setMaxResults(1)
-        ->getQuery()
-        ->getOneOrNullResult();
+        ->setMaxResults($limit);
+        if ($limit > 1) {
+            return $qb->getQuery()->getResult();
+        } else {
+            return $qb->getQuery()->getOneOrNullResult();
+        }
     }
     
-    public function getBestRatedStyle($uid = null, $venues = null, $minDate = null, $maxDate = null, $minCheckins = null) {
+    public function getBestRatedStyle($uid = null, $venues = null, $minDate = null, $maxDate = null, $minCheckins = null, $limit = 1) {
         $qb = $this->createQueryBuilder('s')
         ->select('s, b, AVG(c.rating_score) AS avg_rating, COUNT(c) AS total')
         ->join('s.beers', 'b')
@@ -66,11 +68,14 @@ class StyleRepository extends ServiceEntityRepository
         if (!is_null($minCheckins)) {
             $qb->having('total > :minCheckins')->setParameter('minCheckins', $minCheckins);
         };
-        return $qb->groupBy('b.style')
+        $qb->groupBy('b.style')
         ->orderBy('avg_rating', 'DESC')
-        ->setMaxResults(1)
-        ->getQuery()
-        ->getOneOrNullResult();
+        ->setMaxResults($limit);
+        if ($limit > 1) {
+            return $qb->getQuery()->getResult();
+        } else {
+            return $qb->getQuery()->getOneOrNullResult();
+        }
     }
     
     public function getMostCheckedInStyleUniqueBeers($uid = null, $venues = null, \DateTime $minDate = null, \DateTime $maxDate = null)
