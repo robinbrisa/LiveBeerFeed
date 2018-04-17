@@ -40,45 +40,59 @@
     	
    		<span class="page-title info-major">Statistics</span>
    		
-   		{% if stats|length > 0 %}
-		<div id="stats-carousel" class="carousel slide" data-ride="carousel" data-interval="10000">
-			<div class="carousel-inner row w-100 mx-auto">
-			{% set i = 0 %}
-            {% for key, stat in stats %}
-    			<div class="carousel-item col-md-4 {% if i == 0 %}active{% endif %}">
-            		<div class="card" data-stat="{{ key }}">
-            			<span class="page-title stat-title info-major">{{ stat.label }}</span>
-                        {% include 'event/templates/' ~ stat.template ~ '.html.twig' with { 'data': stat.content } %}
+  		{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
+    		<div id="event-upcoming">
+            	<div class="alert alert-primary" role="alert">
+            		<div class="large-icon">
+            			<i class="fa fa-clock-o" aria-hidden="true"></i>
             		</div>
-            	</div>
-            	{% set i = i + 1 %}
-    		{% endfor %}
+        			<b>You're too early!</b></br>
+        		    {{ event.name }} hasn't started yet. However, you can already subscribe to receive upcoming notifications!</br>
+        			This event will start <span id="time-left-event" data-date="{{ event.startDate|date("D, d M Y H:i:s O") }}"></span>. This page will automatically refresh.
+           		 </div>
+    		</div>
+  		{% else %}
+       		{% if stats|length > 0 %}
+    		<div id="stats-carousel" class="carousel slide" data-ride="carousel" data-interval="10000">
+    			<div class="carousel-inner row w-100 mx-auto">
+    			{% set i = 0 %}
+                {% for key, stat in stats %}
+        			<div class="carousel-item col-md-4 {% if i == 0 %}active{% endif %}">
+                		<div class="card" data-stat="{{ key }}">
+                			<span class="page-title stat-title info-major">{{ stat.label }}</span>
+                            {% include 'event/templates/' ~ stat.template ~ '.html.twig' with { 'data': stat.content } %}
+                		</div>
+                	</div>
+                	{% set i = i + 1 %}
+        		{% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#stats-carousel" role="button" data-slide="prev">
+    				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    				<span class="sr-only">Previous</span>
+                </a>
+    			<a class="carousel-control-next" href="#stats-carousel" role="button" data-slide="next">
+    				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+    				<span class="sr-only">Next</span>
+                </a>
             </div>
-            <a class="carousel-control-prev" href="#stats-carousel" role="button" data-slide="prev">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="sr-only">Previous</span>
-            </a>
-			<a class="carousel-control-next" href="#stats-carousel" role="button" data-slide="next">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="sr-only">Next</span>
-            </a>
-        </div>
-        {% endif %}
-        
-  		{% if stats|length == 0 %}
-		<div id="missing-stats">
-        	<div class="alert alert-primary" role="alert">
-        		<div class="spinning-cog">
-        			<i class="fa fa-cog fa-spin"></i>
+            {% endif %}
+            
+      		{% if stats|length == 0 %}
+        		<div id="missing-stats">
+                	<div class="alert alert-primary" role="alert">
+                		<div class="large-icon">
+                			<i class="fa fa-cog fa-spin"></i>
+                		</div>
+            			<b>We are currently building relevant statistics for the event.</b></br>
+            			They will appear as soon as we get enough data.</br>
+            			Please check again later!
+               		 </div>
         		</div>
-    			<b>We are currently building relevant statistics for the event.</b></br>
-    			They will appear as soon as we get enough data.</br>
-    			Please check again later!
-       		 </div>
-		</div>
-		{% endif %}
+    		{% endif %}
+    	{% endif %}
 		
    		<div id="latest-notifications" {% if messages|length == 0 %}style="display:none;"{% endif %}>
+			<hr class="my-3">
    			<span class="page-title info-major">Latest notifications</span>
    			<div id="latest-notifications-block">
    			{% for message in messages %}
@@ -98,4 +112,12 @@ var websocket = "{{ websocket }}";
 {% block javascripts %}
 	{{ parent() }}
 	<script src="{{ asset('js/push.js') }}"></script>
+	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
+		{% set seconds = event.startDate|date('U') - "now"|date('U') %}
+		<script>
+			setTimeout(function(){ location.reload() }, {{ (seconds + 1) * 1000 }});
+			setInterval(function(){ $('#time-left-event').html(moment($('#time-left-event').data('date')).fromNow()); }, 1000)
+		</script>
+		
+	{% endif %}
 {% endblock %}

@@ -2,15 +2,42 @@
 
 {% block title %}Home{% endblock %}
 
+{% block navbar %}
+{% endblock %}
+       
 {% block body %}
-    {% if currentEvents|length > 0 %}
-        Current events :
-        <ul>
-            {% for event in currentEvents %}
-            	<li><a href="/live/event/{% if event.getSlug %}{{ event.getSlug }}{% else %}{{ event.getId }}{% endif %}">{{ event.getName }}</a></li>
+<div class="container">
+    <div class="jumbotron" id="homepage-presentation">
+		<h1 class="display-3">Welcome to Live Beer Feed!</h1>
+		<p class="lead">Get live information and statistics during your favorite beer events. 
+		<br />Receive notifications from the organizers and brewers.</p>
+		<hr class="my-2">
+        {% if currentEvents|length > 0 %}
+			<h1 class="display-4">Current events</h3>
+		    {% for event in currentEvents %}
+                {% include 'main/templates/current_event_card.template.html.twig' with { 'event': event } %}
             {% endfor %}
-        </ul>
-    {% else %}
-    	No current events
-    {% endif %}
+        {% else %}
+        	<p>We aren't tracking any events at the moment.</p>
+        {% endif %}
+		<hr class="my-4">
+			<h1 class="display-4">Upcoming events</h3>
+            {% if upcomingEvents|length > 0 %}
+    		    {% for event in upcomingEvents %}
+                    {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
+                {% endfor %}
+            {% else %}
+            	<p>There are no upcoming events at the moment.</p>
+            {% endif %}
+		<hr class="my-4">
+            {% if previousEvents|length > 0 %}
+				<h1 class="display-4">Previous events</h1>
+    		    {% for event in previousEvents %}
+                    {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
+                {% endfor %}
+            {% else %}
+            	<p>There are no previous events at the moment.</p>
+            {% endif %}
+    </div>
+</div>
 {% endblock %}

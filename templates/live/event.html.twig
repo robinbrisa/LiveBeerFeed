@@ -32,9 +32,8 @@
     	{% else %}
     		{% set untappdLogo = 'untappd_black' %}
     	{% endif %}
-    	<div class="pull-right powered-by-untappd">Powered by <img class="" src="{{ asset("images/utlogo/") ~ untappdLogo ~ '.png' }}" /></div>
+    	<div class="pull-right powered-by-untappd"><i class="fa fa-refresh fa-spin"></i> Powered by <img class="" src="{{ asset("images/utlogo/") ~ untappdLogo ~ '.png' }}" /></div>
         <div class="description">
-        	<i class="fa fa-refresh fa-spin"></i> 
         	{% if event.eventLogo %}
         		<img src="{{ asset("images/events/") ~ event.eventLogo }}" />
         	{% else %}

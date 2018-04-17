@@ -1,0 +1,7 @@
+<div class="card" style="width: 18rem;">
+	<img class="card-img-top" src="images/events/notification/{% if event.eventLogoNotification %}{{ event.eventLogoNotification }}{% else %}default_icon.jpg{% endif %}" alt="{{ event.name }}">
+	<div class="card-body">
+		<h5 class="card-title">{{ event.name }}</h5>
+		<p class="card-text"><i class="fa fa-hourglass-start" aria-hidden="true"></i> {{ event.startDate|date('d/m/Y H:i') }}<br /><i class="fa fa-hourglass-end" aria-hidden="true"></i> {{ event.endDate|date('d/m/Y H:i') }}</p>
+	</div>
+</div>

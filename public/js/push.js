@@ -123,7 +123,7 @@ function updateBtn() {
 	if (isSubscribed) {
 		pushButton.html('Unsubscribe from notifications');
 	} else {
-		pushButton.html('<i class="fa fa-envelope faa-shake animated button-animation"></i> Subscribe to new notifications <i class="fa fa-hand-o-up faa-vertical animated button-animation" aria-hidden="true"></i>');
+		pushButton.html('<i class="fa fa-envelope button-animation"></i> Subscribe to live notifications <i class="fa fa-hand-o-up faa-vertical animated button-animation" aria-hidden="true"></i>');
 	}
 	pushButton.attr('disabled', false);
 }

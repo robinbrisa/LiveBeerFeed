@@ -11,7 +11,7 @@
     	<div class="beer-info">
         	<div class="beer-info-line">{{ brewery[0].untappdLink|raw }}</div>
         	<div class="beer-info-line">{% if brewery[0].city %}{{ brewery[0].city }}, {% endif %}{{ brewery[0].countryName }}</div>
-        	<div class="beer-info-line rating-line">{{ brewery.avg_rating|rating|raw }} <span class="rating-value">({{ brewery.avg_rating|round(2) }})</span></div>
+        	<div class="beer-info-line rating-line">{{ brewery.avg_rating|rating|raw }} <span class="rating-value">({{ brewery.avg_rating|round(2) }}/5)</span></div>
         </div>
     </li>
 {% endfor %}

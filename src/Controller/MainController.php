@@ -16,8 +16,12 @@ class MainController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $events = $em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
+        $upcomingEvents = $em->getRepository('\App\Entity\Event\Event')->findUpcomingEvents();
+        $previousEvents = $em->getRepository('\App\Entity\Event\Event')->findPreviousEvents();
         return $this->render('main/index.html.twig', [
             'currentEvents' => $events,
+            'upcomingEvents' => $upcomingEvents,
+            'previousEvents' => $previousEvents,
         ]);
     }
     

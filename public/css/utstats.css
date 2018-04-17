@@ -1,5 +1,5 @@
 body {
-	font-family: ProximaNova, Helvetica, sans-serif;
+	font-family: 'PT Sans', sans-serif;
     background-color: #f5f2e8;
 }
 
@@ -21,11 +21,27 @@ a {
     margin-bottom: 56px;
 }
  
- .powered-by-untappd {
+.homepage-event-icon {
+	width:96px;
+	height:96px;	
+	margin:10px;
+}
+ 
+.homepage-event-icon img {
+	width:100%;
+	height:100%;	
+}
+
+.homepage-presentation > .display-4 {
+	margin-bottom: 6px;
+}
+
+.powered-by-untappd {
  	height: 100%;
  	line-height: 30px;
  	font-weight: bold;
- }
+ 	font-size:17px;
+}
  
  .powered-by-untappd img {
  	height: 95%;
@@ -265,6 +281,7 @@ a {
     line-height:28px;
 	clear:both;
 	overflow: hidden;
+	font-size: 18px;
 }
 
 #live-feed .avatar-wrapper {
@@ -671,7 +688,7 @@ rating.small.r200{
     font-size: 18px;
 }
 
-.spinning-cog {
+.large-icon {
     float: left;
     font-size: 49px;
     margin-right: 18px;
