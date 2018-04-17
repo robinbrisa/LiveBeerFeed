@@ -30,8 +30,8 @@ class MainController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
         
-        $beer = $em->getRepository('\App\Entity\Beer\Beer')->getBestRatedBeer(null, null, null, null, 5, 5, false);
-        dump($beer);
+        $msg = $em->getRepository('\App\Entity\Event\Message')->findLatestEventMessageByBroadcastDate($event, new \DateTime('- 5 hours'));
+        dump($msg);
         
         if (count($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)) > 0) {
             echo $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)[0]->getId();

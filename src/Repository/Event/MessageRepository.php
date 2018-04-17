@@ -55,4 +55,19 @@ class MessageRepository extends ServiceEntityRepository
         ->getOneOrNullResult()
         ;
     }
+    
+    public function findLatestEventMessageByBroadcastDate($event, $minDate = null, $maxDate = null) {
+        $qb = $this->createQueryBuilder('m');
+        $qb->where('m.event = :event')->setParameter('event', $event);
+        if (!is_null($minDate)) {
+            $qb->andWhere('m.broadcast_date >= :minDate')->setParameter('minDate', $minDate);
+        };
+        if (!is_null($maxDate)) {
+            $qb->andWhere('m.broadcast_date <= :maxDate')->setParameter('maxDate', $maxDate);
+        };
+        return $qb->andWhere('m.broadcast_date IS NOT NULL')
+           ->orderBy('m.broadcast_date', 'DESC')
+           ->getQuery()
+           ->getResult();
+    }
 }

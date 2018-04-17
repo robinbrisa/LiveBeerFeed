@@ -74,6 +74,12 @@ function pushServerEventInfo(){
         	}
         	handleUpToDateEventStats(data);
         });
+        conn.subscribe("notifications-" + $("#event-info").data('event-id'), function(topic, data) {
+        	if (data.action == "reload") {
+        		location.reload();
+        	}
+        	handleNewNotification(data);
+        });
     }, function() {
         console.warn('WebSocket connection closed');
         setTimeout(function(){
@@ -167,9 +173,21 @@ function handleNewInfoData(data) {
 }
 
 function handleUpToDateEventStats(data) {
-	$.each(data.stats, function(key, stat) {;
-		$('.card[data-stat="'+stat.template+'"]').html('<span class="page-title stat-title info-major">' + stat.label + '</span>' + stat.render);
+	if ($('#stats-carousel').length === 0) {
+		location.reload();
+	}
+	$.each(data.stats, function(key, stat) {
+		if ($('.card[data-stat="'+key+'"]').length !== 0) {
+			$('.card[data-stat="'+key+'"]').html('<span class="page-title stat-title info-major">' + stat.label + '</span>' + stat.render);
+		} else {
+			$('.carousel-inner').append('<div class="carousel-item col-md-4"><div class="card" data-stat="' + key + '"><span class="page-title stat-title info-major">' + stat.label + '</span>' + stat.render + '</div></div>');
+		}
 	});
+}
+
+function handleNewNotification(data) {
+	$('#latest-notifications').show();
+	$('#latest-notifications-block').prepend(data.message);
 }
 
 function refreshTimes() {

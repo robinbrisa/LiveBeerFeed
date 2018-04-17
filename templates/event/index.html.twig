@@ -40,6 +40,9 @@
         
         <button type="button" id="subscribe" class="btn" disabled>Subscribe to notifications</button>
     	
+   		<span class="page-title info-major">Statistics</span>
+   		
+   		{% if stats|length > 0 %}
 		<div id="stats-carousel" class="carousel slide" data-ride="carousel" data-interval="10000">
 			<div class="carousel-inner row w-100 mx-auto">
 			{% set i = 0 %}
@@ -62,7 +65,29 @@
 				<span class="sr-only">Next</span>
             </a>
         </div>
-   
+        {% endif %}
+        
+  		{% if stats|length == 0 %}
+		<div id="missing-stats">
+        	<div class="alert alert-primary" role="alert">
+        		<div class="spinning-cog">
+        			<i class="fa fa-cog fa-spin"></i>
+        		</div>
+    			<b>We are currently building relevant statistics for the event.</b></br>
+    			They will appear as soon as we get enough data.</br>
+    			Please check again later!
+       		 </div>
+		</div>
+		{% endif %}
+		
+   		<div id="latest-notifications" {% if messages|length == 0 %}style="display:none;"{% endif %}>
+   			<span class="page-title info-major">Latest notifications</span>
+   			<div id="latest-notifications-block">
+   			{% for message in messages %}
+	            {% include 'event/templates/notification.template.html.twig' with { 'message': message } %}
+   			{% endfor %}
+   			</div>
+   		</div>
     </div>
 </div>
 <script>

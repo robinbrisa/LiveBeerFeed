@@ -31,8 +31,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 		console.error('Service Worker Error', error);
 	});
 } else {
-	console.warn('Push messaging is not supported');
-	pushButton.hide();
+	console.warn('Notifications are not supported');
 }
 
 function initializeUI() {
@@ -111,7 +110,6 @@ function updateSubscriptionOnServer(subscription, method) {
 		        contentEncoding
 	    	}
 	    });
-	} else {
 	}
 }
 

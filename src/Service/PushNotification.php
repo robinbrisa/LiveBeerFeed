@@ -53,7 +53,7 @@ class PushNotification
                 
         $webPush = new WebPush($auth);
         foreach ($notifications as $notification) {
-            $webPush->sendNotification($notification['subscription'], json_encode($payload), false, ['TTL' => 5000]);
+            $webPush->sendNotification($notification['subscription'], json_encode($payload), false, ['TTL' => 3600]);
         }
         $webPush->flush();
         

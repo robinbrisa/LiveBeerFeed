@@ -25,13 +25,14 @@ class LivePushInfoCommand extends Command
         ;
     }
     
-    public function __construct(EntityManagerInterface $em, EventStats $stats, TranslatorInterface $translator, PushNotification $pushNotification)
+    public function __construct(EntityManagerInterface $em, EventStats $stats, TranslatorInterface $translator, PushNotification $pushNotification, \Twig_Environment $templating)
     {
         $this->em = $em;
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->stats = $stats;
         $this->translator = $translator;
         $this->push_notification = $pushNotification;
+        $this->templating = $templating;
                 
         parent::__construct();
     }
@@ -97,6 +98,16 @@ class LivePushInfoCommand extends Command
                     
                     $this->push_notification->pushNotification($subscribers, $event->getName(), $message, $event->getEventLogoNotification(), array('eventID' => $event->getId()));
                     
+                    $data['push_type'] = 'notification';
+                    $data['push_topic'] = 'notifications-'.$event->getId();
+                    $data['message'] = $this->templating->render('event/templates/notification.template.html.twig', ['message' => $broadcastMessage]);
+                    
+                    $context = new \ZMQContext();
+                    $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+                    $socket->connect("tcp://localhost:5555");
+                    $socket->send(json_encode($data));
+                    $socket->disconnect("tcp://localhost:5555");
+                    
                     unset($subscribers);
                     unset($broadcastMessage);
                 }
@@ -105,6 +116,7 @@ class LivePushInfoCommand extends Command
             
             $output->writeln(sprintf('[%s] Info has been pushed for all current events', date('H:i:s')));
         }
+        unset($context);
         unset($events);
     }
 }

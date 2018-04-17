@@ -188,6 +188,15 @@ a {
 	white-space: nowrap;
 }
 
+#info-content .visitor span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.visitor .info-line-text {
+	overflow: hidden;
+}
+
 #info-content .line:first-child {
     border-bottom: 1px solid #e2e2e2;
 }
@@ -605,6 +614,8 @@ rating.small.r200{
 .rating-line {
 	height: 22px;
 }
+.carousel-inner {
+}
 
 .carousel-item {
 	padding-left: 5px;
@@ -620,10 +631,14 @@ rating.small.r200{
 }
 .carousel-control-prev-icon {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+	position: relative;
+	right: 29px;
 }
 
 .carousel-control-next-icon {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+	position: relative;
+	left: 29px;
 }
 
 .ranking-style-color-container {
@@ -640,6 +655,26 @@ rating.small.r200{
      width: 100%;
 	 border-radius: 40px;
 	 border: 1px solid #000;
+}
+
+.notification-history-element {
+	margin-bottom: 10px;
+}
+
+.message-timestamp {
+	border-top: 3px solid #e2e2e2;
+    width: 80px;
+    border-left: 3px solid #e2e2e2;
+    border-right: 3px solid #e2e2e2;
+    padding: 0 4px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.spinning-cog {
+    float: left;
+    font-size: 49px;
+    margin-right: 18px;
 }
 
 @media (min-width: 768px) {

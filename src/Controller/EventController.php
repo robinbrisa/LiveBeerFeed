@@ -24,11 +24,13 @@ class EventController extends Controller
             $event = $event[0];
         }
         
+        $messages = $em->getRepository('\App\Entity\Event\Message')->findLatestEventMessageByBroadcastDate($event, new \DateTime('- 6 hours'));
         $stats = $stats->getStatsCards($event);
         
         return $this->render('event/index.html.twig', [
             'event' => $event,
-            'stats' => $stats
+            'stats' => $stats,
+            'messages' => $messages
         ]);
     }
 }

@@ -1,0 +1,8 @@
+<div class="notification-history-element">
+    <div class="message-timestamp">{{ message.getBroadcastDate|date('H:i') }}</div>
+    <div id="info-content">
+    	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine1|raw }}</span></div>
+    	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine2|raw }}</span></div>
+    	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine3|raw }}</span></div>
+    </div>
+</div>
