@@ -48,31 +48,35 @@ self.addEventListener('push', function(event) {
 	
 	console.log('[SW] Push Received.');
 	
-	
 	var data = {};
 	if (event.data) {
 		data = event.data.json();
 	}
-  
+	
 	var title = data.title || "Live Beer Feed Notification";
 	var options = {
 		body: data.message || "You got a notification!",
-		vibrate: [200, 200, 200],
+		vibrate: [150, 150, 150, 150, 150],
 		icon: data.icon || "/images/events/notification/beer_icon.png",
-		badge: "/images/events/notification/beer_icon.png"
+		badge: "/images/events/notification/beer_icon.png",
+		data: data.more
 	};
-
+	
 	event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', function(event) {
-  console.log('[Service Worker] Notification click Received.');
+	event.notification.close();
+	
+	console.log('[SW] Clicked');
+	
+	var url = 'https://www.livebeerfeed.com';
 
-  event.notification.close();
-
-  event.waitUntil(
-    clients.openWindow('https://developers.google.com/web/')
-  );
+	if (event.notification.data.eventID) {
+		url += '/event/' + event.notification.data.eventID;
+	}
+	
+	event.waitUntil(clients.openWindow(url));
 });
 
 self.addEventListener('pushsubscriptionchange', function(event) {

@@ -95,7 +95,7 @@ class LivePushInfoCommand extends Command
                            
                     $message = strip_tags($broadcastMessage->getMessageLine1()) . ' ' . strip_tags($broadcastMessage->getMessageLine2()) . ' ' . strip_tags($broadcastMessage->getMessageLine3());
                     
-                    $this->push_notification->pushNotification($subscribers, $event->getName(), $message, $event->getEventLogoNotification());
+                    $this->push_notification->pushNotification($subscribers, $event->getName(), $message, $event->getEventLogoNotification(), array('eventID' => $event->getId()));
                     
                     unset($subscribers);
                     unset($broadcastMessage);

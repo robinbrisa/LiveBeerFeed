@@ -33,11 +33,12 @@ class EventNotificationServerCommand extends ContainerAwareCommand
         
         $webSock = new \React\Socket\Server('0.0.0.0:8080', $loop); 
         if ($this->getContainer()->getParameter('websocket_secure') == 1) {
+            echo "Secure mode\n";
             $webSock = new \React\Socket\SecureServer($webSock, $loop, [
                 'local_cert'        => $this->getContainer()->getParameter('cert_path'),
                 'local_pk'          => $this->getContainer()->getParameter('cert_key_path'),
-                'allow_self_signed' => FALSE,
-                'verify_peer' => FALSE
+                'allow_self_signed' => true,
+                'verify_peer' => false
             ]);
         }
         

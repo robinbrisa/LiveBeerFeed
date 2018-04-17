@@ -18,7 +18,7 @@ class PushNotification
         $this->push_private_key = $pushPrivateKey;
     }
     
-    public function pushNotification($subscribers, $title, $message, $icon) {
+    public function pushNotification($subscribers, $title, $message, $icon, $additionnalData = null) {
         $notifications = array();
         foreach ($subscribers as $subscriber) {
             $subscriptionArray = array('endpoint' => $subscriber->getEndpoint());
@@ -36,7 +36,8 @@ class PushNotification
         
         $payload = array(
             'title' => $title,
-            'message' => $message
+            'message' => $message,
+            'more' => $additionnalData
         );
         if ($icon) {
             $payload['icon'] = '/images/events/notification/' . $icon;
