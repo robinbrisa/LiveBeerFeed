@@ -75,6 +75,11 @@ class Event
     /**
      * @ORM\Column(type="string", nullable=true)
      */
+    private $event_logo_notification;
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
     private $locale = 'en';
     
     /**
@@ -385,6 +390,22 @@ class Event
     public function setEventLogo($event_logo)
     {
         $this->event_logo = $event_logo;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getEventLogoNotification()
+    {
+        return $this->event_logo_notification;
+    }
+    
+    /**
+     * @param mixed $event_logo_notification
+     */
+    public function setEventLogoNotification($event_logo_notification)
+    {
+        $this->event_logo_notification = $event_logo_notification;
     }
     
     /**

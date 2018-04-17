@@ -83,6 +83,9 @@
     "evenement/evenement": {
         "version": "v3.0.1"
     },
+    "fgrosse/phpasn1": {
+        "version": "2.1.0"
+    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.33"
     },
@@ -122,6 +125,9 @@
     "mashape/unirest-php": {
         "version": "v3.0.4"
     },
+    "minishlink/web-push": {
+        "version": "v4.0.1"
+    },
     "nikic/php-parser": {
         "version": "v4.0.1"
     },
@@ -133,6 +139,12 @@
     },
     "pagerfanta/pagerfanta": {
         "version": "v1.0.5"
+    },
+    "paragonie/random_compat": {
+        "version": "v2.0.12"
+    },
+    "paragonie/sodium_compat": {
+        "version": "v1.6.1"
     },
     "php-http/cache-plugin": {
         "version": "v1.5.0"
@@ -229,6 +241,9 @@
             "version": "4.0",
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
+    },
+    "spomky-labs/base64url": {
+        "version": "v1.0.2"
     },
     "stof/doctrine-extensions-bundle": {
         "version": "1.2",
@@ -445,6 +460,15 @@
     },
     "twig/twig": {
         "version": "v2.4.6"
+    },
+    "web-token/jwt-core": {
+        "version": "v1.0.6"
+    },
+    "web-token/jwt-key-mgmt": {
+        "version": "v1.0.6"
+    },
+    "web-token/jwt-signature": {
+        "version": "v1.0.6"
     },
     "wrep/daemonizable-command": {
         "version": "2.1.0"

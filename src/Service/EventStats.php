@@ -110,7 +110,7 @@ class EventStats
                 'content' => $bestRatedStyles
             );
         }
-        if ($mostRatedBeers = $this->em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
+        if ($mostRatedBeers = $this->em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), 5, true)) {
             $stats['most_rated_beers'] = array(
                 'label' => 'Most Checked-in Beers',
                 'template' => 'most_rated_beers',
@@ -188,7 +188,7 @@ class EventStats
     }
     
     private function get_most_checked_in_beer($event) {
-        if ($results = $this->em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $event->getVenues(), $event->getStartDate())) {
+        if ($results = $this->em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $event->getVenues(), $event->getStartDate(), null, 1, true)) {
             $output = array(
                 'line1' => '<span class="info-major">' . $this->translator->trans('stats.most_checked_in_beer.title') . '</span>',
                 'line2' => $this->returnBeerWithLabel($results[0], true) . ' (' . $results[0]->getBrewery()->getName() . ')',

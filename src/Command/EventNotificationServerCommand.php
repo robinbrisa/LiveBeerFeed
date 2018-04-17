@@ -31,8 +31,16 @@ class EventNotificationServerCommand extends ContainerAwareCommand
         $pull->bind('tcp://127.0.0.1:5555'); // Binding to 127.0.0.1 means the only client that can connect is itself
         $pull->on('message', array($pusher, 'onNewMessage'));
         
-        // Set up our WebSocket server for clients wanting real-time updates
-        $webSock = new \React\Socket\Server('0.0.0.0:8080', $loop); // Binding to 0.0.0.0 means remotes can connect
+        $webSock = new \React\Socket\Server('0.0.0.0:8080', $loop); 
+        if ($this->getContainer()->getParameter('websocket_secure') == 1) {
+            $webSock = new \React\Socket\SecureServer($webSock, $loop, [
+                'local_cert'        => $this->getContainer()->getParameter('cert_path'),
+                'local_pk'          => $this->getContainer()->getParameter('cert_key_path'),
+                'allow_self_signed' => FALSE,
+                'verify_peer' => FALSE
+            ]);
+        }
+        
         $webServer = new \Ratchet\Server\IoServer(
             new \Ratchet\Http\HttpServer(
                 new \Ratchet\WebSocket\WsServer(

@@ -6,6 +6,10 @@ parameters:
     untappd_api_client_secret: '%env(UNTAPPD_API_CLIENT_SECRET)%'
     untappd_api_oauth_redirect_url: '%env(UNTAPPD_API_OAUTH_REDIRECT_URL)%'
     websocket: '%env(WEBSOCKET)%'
+    websocket_secure: '%env(WEBSOCKET_SECURE)%'
+    cert_path: '%env(CERT_PATH)%'
+    cert_key_path: '%env(CERT_KEY_PATH)%'
+    push_private_key: '%env(PUSH_PRIVATE_KEY)%'
     locale: en
 
 services:
@@ -37,6 +41,10 @@ services:
             $untappdAPIClientID: '%untappd_api_client_id%'
             $untappdAPIClientSecret: '%untappd_api_client_secret%'
             $untappdAPIOAuthRedirectURL: '%untappd_api_oauth_redirect_url%'
+            
+    App\Service\PushNotification:
+        arguments:
+            $pushPrivateKey: '%push_private_key%'
             
     app.twig_runtime:
         class: App\Twig\AppRuntime

@@ -10,7 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\EventStats;
+use App\Service\PushNotification;
 use Symfony\Component\Translation\TranslatorInterface;
+use App\Entity\PushSubscription;
 
 class LivePushInfoCommand extends Command
 {
@@ -23,12 +25,13 @@ class LivePushInfoCommand extends Command
         ;
     }
     
-    public function __construct(EntityManagerInterface $em, EventStats $stats, TranslatorInterface $translator)
+    public function __construct(EntityManagerInterface $em, EventStats $stats, TranslatorInterface $translator, PushNotification $pushNotification)
     {
         $this->em = $em;
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->stats = $stats;
         $this->translator = $translator;
+        $this->push_notification = $pushNotification;
                 
         parent::__construct();
     }
@@ -48,6 +51,7 @@ class LivePushInfoCommand extends Command
                     continue;
                 }
                 
+                $broadcastMessage = null;
                 $this->translator->setLocale($event->getLocale());
                 
                 $data = array();
@@ -61,6 +65,10 @@ class LivePushInfoCommand extends Command
                         $data['line2'] = $message->getMessageLine2();
                         $data['line3'] = $message->getMessageLine3();
                         $message->setLastTimeDisplayed(new \DateTime());
+                        if (is_null($message->getBroadcastDate())) {
+                            $message->setBroadcastDate(new \DateTime());
+                            $broadcastMessage = $message;
+                        }
                     }
                 } else {
                     if ($statistics = $this->stats->returnRandomStatistic($event)) {
@@ -80,7 +88,20 @@ class LivePushInfoCommand extends Command
                 $socket->connect("tcp://localhost:5555");
                 $socket->send(json_encode($data));
                 $socket->disconnect("tcp://localhost:5555");
+                
+                if ($broadcastMessage) {
+                    $output->writeln(sprintf('[%s] Sending notification for a new message.', date('H:i:s')));
+                    $subscribers = $this->em->getRepository('\App\Entity\PushSubscription')->findBy(array('event' => $event));
+                           
+                    $message = strip_tags($broadcastMessage->getMessageLine1()) . ' ' . strip_tags($broadcastMessage->getMessageLine2()) . ' ' . strip_tags($broadcastMessage->getMessageLine3());
+                    
+                    $this->push_notification->pushNotification($subscribers, $event->getName(), $message, $event->getEventLogoNotification());
+                    
+                    unset($subscribers);
+                    unset($broadcastMessage);
+                }
             }
+            
             
             $output->writeln(sprintf('[%s] Info has been pushed for all current events', date('H:i:s')));
         }

@@ -17,15 +17,15 @@ class EventController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
         
         if (is_null($event)) {
-            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
-            if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID);
+            if (!$event) {
                 throw $this->createNotFoundException('Unknown event');
             }
+            $event = $event[0];
         }
         
         $stats = $stats->getStatsCards($event);
         
-        $em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer();
         return $this->render('event/index.html.twig', [
             'event' => $event,
             'stats' => $stats

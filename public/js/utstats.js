@@ -1,3 +1,9 @@
+var infoLoadTimeout;
+var nextRefreshInfoQueued = false;
+
+var infoLoadDelay = infoLoadDelay || 5000;
+var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
+
 $(document).ready(function() {
 	if ($('#live-feed').length !== 0) {
 		if (locale !== undefined) {
@@ -8,39 +14,34 @@ $(document).ready(function() {
 	}
 	
 	if ($('#event-info').length !== 0) {
-		pushServerEventInfo();
+		pushServerEventInfo();	
+		
+		$("#stats-carousel").on("slide.bs.carousel", function(e) {
+			var $e = $(e.relatedTarget);
+			var idx = $e.index();
+			var itemsPerSlide = 3;
+			var totalItems = $(".carousel-item").length;
+			
+		    if (idx >= totalItems - (itemsPerSlide - 1)) {
+			    var it = itemsPerSlide - (totalItems - idx);
+			    for (var i = 0; i < it; i++) {
+				      // append slides to end
+					if (e.direction == "left") {
+						$(".carousel-item").eq(i).appendTo(".carousel-inner");
+					} else {
+						$(".carousel-item").eq(0).appendTo(".carousel-inner");
+				    }
+			    }
+			}
+		});
 	}
 	
 	
 	if ($('#post-message').length !== 0) {
 		$('#form_startTime').attr('min', minTime);
 	}
-	
-	$("#stats-carousel").on("slide.bs.carousel", function(e) {
-		var $e = $(e.relatedTarget);
-		var idx = $e.index();
-		var itemsPerSlide = 3;
-		var totalItems = $(".carousel-item").length;
-		
-	    if (idx >= totalItems - (itemsPerSlide - 1)) {
-		    var it = itemsPerSlide - (totalItems - idx);
-		    for (var i = 0; i < it; i++) {
-			      // append slides to end
-				if (e.direction == "left") {
-					$(".carousel-item").eq(i).appendTo(".carousel-inner");
-				} else {
-					$(".carousel-item").eq(0).appendTo(".carousel-inner");
-			    }
-		    }
-		}
-	});
+
 });
-
-var infoLoadTimeout;
-var nextRefreshInfoQueued = false;
-
-var infoLoadDelay = infoLoadDelay || 5000;
-var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
 
 function pushServer(){
 	var conn = new ab.Session(websocket, function() {

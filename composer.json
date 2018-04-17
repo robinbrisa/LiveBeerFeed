@@ -12,6 +12,7 @@
 		"jms/serializer-bundle": "^2.3",
 		"knplabs/knp-time-bundle": "^1.8",
 		"mashape/unirest-php": "^3.0",
+		"minishlink/web-push": "^4.0",
 		"php-http/guzzle6-adapter": "^1.1",
 		"php-http/httplug-bundle": "^1.8",
 		"react/zmq": "^0.3.0",

@@ -29,7 +29,10 @@ class MainController extends Controller
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
-                
+        
+        $beer = $em->getRepository('\App\Entity\Beer\Beer')->getBestRatedBeer(null, null, null, null, 5, 5, false);
+        dump($beer);
+        
         if (count($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)) > 0) {
             echo $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)[0]->getId();
         } else {

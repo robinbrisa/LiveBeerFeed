@@ -57,6 +57,11 @@ class Message
     private $last_time_displayed;
     
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $broadcast_date;
+    
+    /**
      * @ORM\ManyToOne(targetEntity="Event", inversedBy="messages")
      * @ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -117,7 +122,7 @@ class Message
     /**
      * Get event
      *
-     * @return \App\Entity\Checkin\Checkin
+     * @return \App\Entity\Event\Event
      */
     public function getEvent()
     {
@@ -191,6 +196,29 @@ class Message
     public function getLastTimeDisplayed()
     {
         return $this->last_time_displayed;
+    }
+    
+    /**
+     * Set broadcastDate
+     *
+     * @param \DateTime $broadcastDate
+     
+     * @return Message
+     */
+    public function setBroadcastDate($broadcastDate)
+    {
+        $this->broadcast_date = $broadcastDate;
+        return $this;
+    }
+    
+    /**
+     * Get broadcastDate
+     *
+     * @return \DateTime
+     */
+    public function getBroadcastDate()
+    {
+        return $this->broadcast_date;
     }
     
     /**

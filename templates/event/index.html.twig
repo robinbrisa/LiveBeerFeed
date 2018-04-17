@@ -38,7 +38,7 @@
             </div>
         </div>
         
-        <button type="button" id="subscribe" class="btn">Subscribe to push notifications</button>
+        <button type="button" id="subscribe" class="btn" disabled>Subscribe to notifications</button>
     	
 		<div id="stats-carousel" class="carousel slide" data-ride="carousel" data-interval="10000">
 			<div class="carousel-inner row w-100 mx-auto">
@@ -69,4 +69,10 @@
 var locale = "{{ event.locale }}";
 var websocket = "{{ websocket }}";
 </script>
+{% endblock %}
+
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/push.js') }}"></script>
 {% endblock %}

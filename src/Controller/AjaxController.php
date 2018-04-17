@@ -9,6 +9,7 @@ use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\EventStats;
+use App\Entity\PushSubscription;
 
 class AjaxController extends Controller
 {
@@ -137,5 +138,56 @@ class AjaxController extends Controller
             'action' => 'list',
             'entity' => $request->query->get('entity'),
         ));
+    }
+    
+    /**
+     * @Route("/ajax/pushSubscription", name="push_subscription")
+     */
+    public function pushSubscriptionAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = Request::createFromGlobals();
+        $method = $request->server->get('REQUEST_METHOD');
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($request->request->get('event'));
+        if (!$event) {
+            throw New \Exception("Invalid event");
+        }
+        switch ($method) {
+            case 'POST':
+                $pushSubscription = new PushSubscription();
+                $pushSubscription->setEndpoint($request->request->get('endpoint'));
+                $pushSubscription->setPublicKey($request->request->get('publicKey'));
+                $pushSubscription->setAuthToken($request->request->get('authToken'));
+                $pushSubscription->setContentEncoding($request->request->get('contentEncoding'));
+                $pushSubscription->setEvent($event);
+                $em->persist($pushSubscription);
+                break;
+            case 'PATCH':
+                $pushSubscription = $em->getRepository('\App\Entity\PushSubscription')->findOneBy(array('endpoint' => $request->request->get('endpoint'), 'event' => $event));
+                if (!$pushSubscription) {
+                    $pushSubscription = new PushSubscription();
+                    $pushSubscription->setEndpoint($request->request->get('endpoint'));
+                    $pushSubscription->setEvent($event);
+                }
+                $pushSubscription->setPublicKey($request->request->get('publicKey'));
+                $pushSubscription->setAuthToken($request->request->get('authToken'));
+                $pushSubscription->setContentEncoding($request->request->get('contentEncoding'));
+                $em->persist($pushSubscription);
+                break;
+            case 'DELETE':
+                $pushSubscription = $em->getRepository('\App\Entity\PushSubscription')->findOneBy(array('endpoint' => $request->request->get('endpoint'), 'event' => $event));
+                if ($pushSubscription) {
+                    $em->remove($pushSubscription);
+                }
+                break;
+            default:
+                throw New \Exception("Invalid action");
+                break;
+        }
+        $em->flush();
+        $output = array('success' => true);
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }

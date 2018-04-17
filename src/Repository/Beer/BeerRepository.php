@@ -70,10 +70,14 @@ class BeerRepository extends ServiceEntityRepository
         ->getResult();
     }
     
-    public function getMostCheckedInBeer($uid = null, $venues = null, $minDate = null, $maxDate = null, $limit = 1) {
-        $qb = $this->createQueryBuilder('b')
-        ->select('b, w, COUNT(c) AS total')
-        ->join('b.checkins', 'c')
+    public function getMostCheckedInBeer($uid = null, $venues = null, $minDate = null, $maxDate = null, $limit = 1, $distinct = false) {
+        $qb = $this->createQueryBuilder('b');
+        if ($distinct) {
+            $qb->select('b, w, COUNT(DISTINCT c.user) AS total');
+        } else {
+            $qb->select('b, w, COUNT(c.user) AS total');
+        }
+        $qb->join('b.checkins', 'c')
         ->join('b.brewery', 'w');
         if (!is_null($uid)) {
             $qb->where('c.user = :id')->setParameter('id', $uid);
@@ -97,10 +101,14 @@ class BeerRepository extends ServiceEntityRepository
         }
     }
     
-    public function getBestRatedBeer($uid = null, $venues = null, $minDate = null, $maxDate = null, $minCheckins = null, $limit = 1) {
-        $qb = $this->createQueryBuilder('b')
-        ->select('b, AVG(c.rating_score) AS avg_rating, COUNT(c) AS total')
-        ->join('b.checkins', 'c');
+    public function getBestRatedBeer($uid = null, $venues = null, $minDate = null, $maxDate = null, $minCheckins = null, $limit = 1, $distinct = false) {
+        $qb = $this->createQueryBuilder('b');
+        if ($distinct) {
+            $qb->select('b, AVG(c.rating_score) AS avg_rating, COUNT(DISTINCT c.user) AS total');
+        } else {
+            $qb->select('b, AVG(c.rating_score) AS avg_rating, COUNT(c) AS total');
+        }
+        $qb->join('b.checkins', 'c');
         if (!is_null($uid)) {
             $qb->andWhere('c.user = :id')->setParameter('id', $uid);
         };
