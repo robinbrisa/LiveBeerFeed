@@ -57,7 +57,7 @@ self.addEventListener('push', function(event) {
 	var options = {
 		body: data.message || "You got a notification!",
 		vibrate: [150, 150, 150, 150, 150],
-		icon: data.icon || "/images/events/notification/beer_icon.png",
+		icon: data.icon || "/images/events/notification/default_icon.jpg",
 		badge: "/images/events/notification/beer_icon.png",
 		data: data.more
 	};

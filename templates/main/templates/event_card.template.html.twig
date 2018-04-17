@@ -4,4 +4,7 @@
 		<h5 class="card-title">{{ event.name }}</h5>
 		<p class="card-text"><i class="fa fa-hourglass-start" aria-hidden="true"></i> {{ event.startDate|date('d/m/Y H:i') }}<br /><i class="fa fa-hourglass-end" aria-hidden="true"></i> {{ event.endDate|date('d/m/Y H:i') }}</p>
 	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item"><a href="/event/{% if event.getSlug %}{{ event.getSlug }}{% else %}{{ event.getId }}{% endif %}">Access live information page</a></li>
+	</ul>
 </div>
