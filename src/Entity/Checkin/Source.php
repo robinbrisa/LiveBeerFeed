@@ -27,7 +27,7 @@ class Source
     private $app_name;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $app_website;
     
