@@ -31,7 +31,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 		console.error('Service Worker Error', error);
 	});
 } else {
-	console.warn('Notifications are not supported');
+	pushButton.html('Notifications are not supported');
 }
 
 function initializeUI() {
@@ -123,7 +123,7 @@ function updateBtn() {
 	if (isSubscribed) {
 		pushButton.html('Unsubscribe from notifications');
 	} else {
-		pushButton.html('Subscribe to notifications');
+		pushButton.html('<i class="fa fa-envelope faa-shake animated button-animation"></i> Subscribe to new notifications <i class="fa fa-hand-o-up faa-vertical animated button-animation" aria-hidden="true"></i>');
 	}
 	pushButton.attr('disabled', false);
 }

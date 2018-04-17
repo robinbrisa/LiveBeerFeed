@@ -750,3 +750,7 @@ rating.small.r200{
 	    visibility: visible;
 	}
 }
+
+.button-animation {
+	padding: 0 3px;
+}
