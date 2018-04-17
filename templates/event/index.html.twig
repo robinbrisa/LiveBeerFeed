@@ -13,10 +13,8 @@
             {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
         }
         {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
-        {% if event.style.majorInfoColor %}
-        	.info-major { color: {{ event.style.majorInfoColor }};}
-        	#subscribe { background-color: {{ event.style.majorInfoColor }}; color: white; }
-        {% endif %}	
+        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
+        #subscribe { background-color: {{ event.style.majorInfoColor }}; color: white; }
     </style>
 {% endif %}
 
