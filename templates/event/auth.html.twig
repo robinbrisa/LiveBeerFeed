@@ -35,10 +35,10 @@
         </div>
         
     	<span class="page-title info-major">Submit a new message</span>
-        	<p>Please authenticate using the key that was provided to you.</p>
+        	<p>Please authenticate using the code that was provided to you.</p>
         	{% if error %}
-        		<div class="alert alert-warning alert-dismissible" role="alert">
-                	Sorry, this access code is unknown. Please retry.
+        		<div class="alert alert-danger alert-dismissible" role="alert">
+                	Sorry, this access code is unknown.
                 	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
         	{% endif %}

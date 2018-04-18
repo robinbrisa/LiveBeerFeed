@@ -6,6 +6,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Service\EventStats;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -62,7 +63,7 @@ class EventController extends Controller
         if (!$session->get('post_access_key/'.$eventID)) {
             $error = false;
             $form = $this->createFormBuilder()
-            ->add('access_key', TextType::class, array('required' => true, 'label' => 'Authentication key'))
+            ->add('access_key', TextType::class, array('required' => true, 'label' => 'Access key'))
             ->add('send', SubmitType::class, array('label' => 'Send'))
             ->getForm();
             
@@ -70,10 +71,12 @@ class EventController extends Controller
             
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
-                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneByAccessKey($data['access_key']);
+                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $data['access_key']));
                 if ($publisher && $publisher->getEvent() === $event) {
                     $session->set('post_access_key/'.$eventID, $data['access_key']);
                     return $this->redirectToRoute('post_message', array('eventID' => $eventID));
+                } else {
+                    $error = true;
                 }
             }
             
@@ -84,7 +87,7 @@ class EventController extends Controller
             ));
         } else {
             $authKey = $session->get('post_access_key/'.$eventID);
-            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneByAccessKey($authKey);
+            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey));
             if (!$publisher) {
                 return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
             }
@@ -93,11 +96,11 @@ class EventController extends Controller
             $message->setEvent($event);
             
             $form = $this->createFormBuilder($message)
-            ->add('message_line_1', TextType::class)
+            ->add('message_line_1', TextType::class, array('attr' => array('maxlength ' => '65')))
             ->add('message_line_1_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
-            ->add('message_line_2', TextType::class)
+            ->add('message_line_2', TextType::class, array('attr' => array('maxlength ' => '65', 'autocapitalize' => 'off')))
             ->add('message_line_2_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
-            ->add('message_line_3', TextType::class)
+            ->add('message_line_3', TextType::class, array('attr' => array('maxlength ' => '65', 'autocapitalize' => 'off')))
             ->add('message_line_3_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
             ->add('startTime', TimeType::class,  array('mapped' => false, 'widget' => 'single_text', 'required' => true ))
             ->add('save', SubmitType::class, array('label' => 'Submit Message'))
@@ -105,7 +108,7 @@ class EventController extends Controller
             
             $form->handleRequest($request);
             
-            if ($form->isSubmitted() && $form->isValid() && $publisher->getRemainingMessages() > 0 && (is_null($publisher->getLastPublicationDate() || $publisher->getMinutesSinceLastPublication() >= 120)) {
+            if ($form->isSubmitted() && $form->isValid() && $publisher->getRemainingMessages() > 0 && (is_null($publisher->getLastPublicationDate()) || $publisher->getMinutesSinceLastPublication() >= 120)) {
                 $message = $form->getData();
                 
                 // To complicated for no good reason
@@ -130,7 +133,7 @@ class EventController extends Controller
                 $message->setPublisher($publisher);
                 $em->persist($message);
                 
-                $publisher->setMinutesSinceLastPublication(new DateTime('now'));
+                $publisher->setLastPublicationDate(new \DateTime('now'));
                 $publisher->setRemainingMessages($publisher->getRemainingMessages() - 1);
                 $em->persist($publisher);
                 
@@ -216,9 +219,9 @@ class EventController extends Controller
         
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            foreach (explode("\n", $data['publishers_list']) as $publisher) {
+            foreach (explode("\r\n", $data['publishers_list']) as $publisherName) {
                 $publisher = new Publisher();
-                $publisher->setName(trim($publisher));
+                $publisher->setName(trim($publisherName));
                 $publisher->setEvent($event);
                 $em->persist($publisher);
             }

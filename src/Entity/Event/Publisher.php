@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="event_publisher")
+ * @ORM\Table(name="event_publisher", uniqueConstraints={@ORM\UniqueConstraint(name="publisher_by_event_unique", columns={"name", "event_id"})})
  * @ORM\Entity(repositoryClass="App\Repository\Event\PublisherRepository")
  */
 class Publisher
@@ -146,7 +146,7 @@ class Publisher
         if (!$this->last_publication_date) {
             return null;
         }
-        $difference = $this->last_publication_date->diff(new DateTime('now'));
+        $difference = $this->last_publication_date->diff(new \DateTime('now'));
         $minutes = $difference->days * 24 * 60;
         $minutes += $difference->h * 60;
         $minutes += $difference->i;

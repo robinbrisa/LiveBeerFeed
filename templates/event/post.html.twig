@@ -34,20 +34,44 @@
             </div>
         </div>
         
-    	<span class="page-title info-major">Submit a new message</span>
+    	<span class="page-title info-major">Submit a new public message</span>
     	{% if not success %}
-    		<p>Authenticated as {{ publisher.name }}. Remaining messages: {{ publisher.remainingMessages }}.<br />
-    		<a href="{{ path('post_logout', { 'eventID': event.id }) }}">Logout</a><p>
-        	<p>This form will allow you to send a message to the "{{ event.name }}" live beer feed. Please remind that this message will be public and be broadcasted to subscribed visitors.<br />
-        	You can use it to make important announcements (plugging a new keg, ...). You can only post a message every 2 hours and the amount of messages you can post during the event is limited.<br />
-        	Please fill the 3 message lines and select the time when it should begin to be broadcasted. Highlighted lines will display in a <span class="info-major">different color</span>.<br />
-        	Your message will last for 10 minutes after the start date.<br />
-        	<b class="info-major">This functionnality must not be shared with visitors.</b></p>
-        	{% if publisher.lastPublicationDate is not null AND publisher.getMinutesSinceLastPublication < 120 %}
-    			<p>Your last message was submited less than 2 hours ago.<br />
-    			You'll be allowed to send a new message at {{ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") }}.</p>
-        	{% elseif publisher.remainingMessages <= 0 %}
-    			<p>You have reached your messages limit and can no longer send a new one.</p>
+    		<div class="alert alert-info" role="alert">
+            	<i class="fa fa-user" aria-hidden="true"></i> Authenticated as <strong>{{ publisher.name }}</strong>.<br />
+            	<a href="{{ path('post_logout', { 'eventID': event.id }) }}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a><br />
+            	<span class="badge badge-{% if publisher.remainingMessages > 0 %}success{% else %}danger{% endif %}">{{ publisher.remainingMessages }}</span> notifications remaining<br />
+                {% if publisher.remainingMessages <= 0 %}
+                	<span class="badge badge-danger">OUT OF NOTIFICATIONS</span>
+                {% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
+                	<span class="badge badge-warning">LOCKED UNTIL {{ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") }}</span>
+                {% else %}
+                	<span class="badge badge-success">NOTIFICATION AVAILABLE</span>
+                {% endif %}
+            </div>
+            <div class="card">
+                <div class="card-body">
+            	<strong>Important read:</strong><br />
+            	This form will allow you to send a message to the "{{ event.name }}" live beer feed.<br /> 
+            	Please keep in mind that this message will be public and that it will be broadcasted to subscribed visitors.<br />
+            	You can use it to make important announcements (e.g. plugging a rare keg, ...).<br /> 
+            	You can only post a message every 2 hours and the amount of notifications you can send during the event is limited.<br />
+            	You will be identified as the sender of the notification.<br />
+            	Please fill the 3 message lines and select the time when you want the notification to be broadcasted.<br /> 
+            	Highlighted lines will display in a <span class="info-major">different color</span>.<br />
+            	Your message will be displayed for 10 minutes after the start date.<br />
+            	<strong class="info-major">This functionnality must not be shared with visitors.</strong>
+            	</div>
+            </div>
+            <hr class="my-2">
+        	{% if publisher.remainingMessages <= 0 %}
+        		<div class="alert alert-danger" role="alert">
+    				You have reached your messages limit and can no longer send a new one.<br />
+    			</div>
+        	{% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
+        		<div class="alert alert-warning" role="alert">
+    				Your last notification was submited less than 2 hours ago.<br />
+    				You'll be allowed to send a new message at <strong>{{ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") }}</strong>.
+    			</div>
         	{% else %}
             	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
             		<div id="event-upcoming">
@@ -67,19 +91,16 @@
                             <div class="form-group">
                                 {{ form_label(form.message_line_1) }}
             					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
-                                {{ form_errors(form.message_line_1) }}
                                 {{ form_widget(form.message_line_1) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(form.message_line_2) }}
             					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
-                                {{ form_errors(form.message_line_2) }}
                                 {{ form_widget(form.message_line_2) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(form.message_line_3) }}
             					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
-                                {{ form_errors(form.message_line_3) }}
                                 {{ form_widget(form.message_line_3) }}
                             </div>
                             {{ form_widget(form) }}
