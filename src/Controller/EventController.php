@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use App\Entity\Event\Message;
+use App\Entity\Event\Publisher;
 
 class EventController extends Controller
 {
@@ -52,13 +53,14 @@ class EventController extends Controller
         if (is_null($event)) {
             $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
             if (is_null($event)) {
-                throw $this->createNotFoundException('Unkown event');
+                throw $this->createNotFoundException('Unknown event');
             }
         }
         
         $session = $request->getSession();
         
-        if (!$session->get('post_access_key')) {
+        if (!$session->get('post_access_key/'.$eventID)) {
+            $error = false;
             $form = $this->createFormBuilder()
             ->add('access_key', TextType::class, array('required' => true, 'label' => 'Authentication key'))
             ->add('send', SubmitType::class, array('label' => 'Send'))
@@ -68,15 +70,25 @@ class EventController extends Controller
             
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
-                $session->set('post_access_key', $data['access_key']);
-                return $this->redirectToRoute('post_message', array('eventID' => $eventID));
+                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneByAccessKey($data['access_key']);
+                if ($publisher && $publisher->getEvent() === $event) {
+                    $session->set('post_access_key/'.$eventID, $data['access_key']);
+                    return $this->redirectToRoute('post_message', array('eventID' => $eventID));
+                }
             }
             
             return $this->render('event/auth.html.twig', array(
                 'form' => $form->createView(),
                 'event' => $event,
+                'error' => $error
             ));
         } else {
+            $authKey = $session->get('post_access_key/'.$eventID);
+            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneByAccessKey($authKey);
+            if (!$publisher) {
+                return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
+            }
+            
             $message = new Message();
             $message->setEvent($event);
             
@@ -93,7 +105,7 @@ class EventController extends Controller
             
             $form->handleRequest($request);
             
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid() && $publisher->getRemainingMessages() > 0 && (is_null($publisher->getLastPublicationDate() || $publisher->getMinutesSinceLastPublication() >= 120)) {
                 $message = $form->getData();
                 
                 // To complicated for no good reason
@@ -115,7 +127,13 @@ class EventController extends Controller
                 
                 $message->setStartDate($startDate);
                 $message->setEndDate($endDate);
+                $message->setPublisher($publisher);
                 $em->persist($message);
+                
+                $publisher->setMinutesSinceLastPublication(new DateTime('now'));
+                $publisher->setRemainingMessages($publisher->getRemainingMessages() - 1);
+                $em->persist($publisher);
+                
                 $em->flush();
                 return $this->redirectToRoute('post_message_success', array('eventID' => $eventID));
             }
@@ -123,10 +141,10 @@ class EventController extends Controller
             return $this->render('event/post.html.twig', array(
                 'form' => $form->createView(),
                 'event' => $event,
+                'publisher' => $publisher,
                 'success' => false
             ));
         }
-        
 
     }
     
@@ -141,7 +159,7 @@ class EventController extends Controller
         if (is_null($event)) {
             $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
             if (is_null($event)) {
-                throw $this->createNotFoundException('Unkown event');
+                throw $this->createNotFoundException('Unknown event');
             }
         }
         
@@ -151,4 +169,67 @@ class EventController extends Controller
         ));
     }
     
+    /**
+     * @Route("/event/{eventID}/logout", name="post_logout")
+     */
+    public function post_logout($eventID, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unknown event');
+            }
+        }
+        
+        $session = $request->getSession();
+        $session->remove('post_access_key/'.$eventID);
+        return $this->redirectToRoute('post_message', array('eventID' => $eventID));
+    }
+    
+    /**
+     * @Route("/event/{eventID}/publishers", name="post_mass_create_publishers")
+     */
+    public function post_mass_create_publishers($eventID, Request $request)
+    {
+        // REQUIRE ADMIN RIGHTS
+        
+        $success = false;
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unknown event');
+            }
+        }
+        
+        $form = $this->createFormBuilder()
+        ->add('publishers_list', TextareaType::class, array('required' => true, 'label' => 'Publishers'))
+        ->add('send', SubmitType::class, array('label' => 'Register'))
+        ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            foreach (explode("\n", $data['publishers_list']) as $publisher) {
+                $publisher = new Publisher();
+                $publisher->setName(trim($publisher));
+                $publisher->setEvent($event);
+                $em->persist($publisher);
+            }
+            $em->flush();
+            $success = true;
+        }
+        
+        return $this->render('event/create_publishers.html.twig', array(
+            'form' => $form->createView(),
+            'event' => $event,
+            'success' => $success
+        ));
+    }
 }

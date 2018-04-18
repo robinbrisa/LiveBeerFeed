@@ -68,6 +68,12 @@ class Message
     private $event;
     
     /**
+     * @ORM\ManyToOne(targetEntity="Publisher")
+     * @ORM\JoinColumn(name="publisher_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $publisher;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -82,7 +88,7 @@ class Message
     
     public function __toString()
     {
-        $name = '[' . strip_tags($this->message_line_1) . "|" . strip_tags($this->message_line_2) . "|" . strip_tags($this->message_line_3) . ']';
+        $name = strip_tags($this->message_line_1) . "|" . strip_tags($this->message_line_2) . "|" . strip_tags($this->message_line_3);
         $timeLimits = "";
         if ($this->start_date) {
             $timeLimits = ' (Starting' . $this->start_date->format('d-m-y H:i') . ')';
@@ -127,6 +133,30 @@ class Message
     public function getEvent()
     {
         return $this->event;
+    }
+    
+    /**
+     * Set publisher
+     *
+     * @param \App\Entity\Event\Publisher $publisher
+     *
+     * @return Message
+     */
+    public function setPublisher(\App\Entity\Event\Publisher $publisher = null)
+    {
+        $this->publisher = $publisher;
+        
+        return $this;
+    }
+    
+    /**
+     * Get event
+     *
+     * @return \App\Entity\Event\Publisher
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
     }
     
     /**

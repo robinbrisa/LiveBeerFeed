@@ -34,11 +34,11 @@
             </div>
         </div>
         
-    	<span class="page-title info-major">Submit a new message</span>
-        	<p>Please authenticate using the key that was provided to you.</p>
-        	{% if error %}
-        		<div class="alert alert-warning alert-dismissible" role="alert">
-                	Sorry, this access code is unknown. Please retry.
+    	<span class="page-title info-major">Import publishers</span>
+        	<p>Please submit a list of all the allowed publishers for the event (1 ligne per publisher)</p>
+        	{% if success %}
+        		<div class="alert alert-success alert-dismissible" role="alert">
+                	The publishers list has successfully been imported.
                 	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
         	{% endif %}

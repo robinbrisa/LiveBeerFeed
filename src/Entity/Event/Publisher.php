@@ -141,6 +141,17 @@ class Publisher
         
         return $this;
     }
+    
+    public function getMinutesSinceLastPublication() {
+        if (!$this->last_publication_date) {
+            return null;
+        }
+        $difference = $this->last_publication_date->diff(new DateTime('now'));
+        $minutes = $difference->days * 24 * 60;
+        $minutes += $difference->h * 60;
+        $minutes += $difference->i;
+        return $minutes;
+    }
 
      /**
      * Get $remaining_messages
