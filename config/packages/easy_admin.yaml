@@ -37,3 +37,13 @@ easy_admin:
                     - { property: 'link_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
                     - { property: 'major_info_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
                     - { property: 'untappd_logo_style', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Black': 'black', 'White': 'white' } } }
+        Publisher:
+            class: App\Entity\Event\Publisher
+            form:
+                fields:
+                    - name
+                    - { property: 'access_key', type: 'Symfony\Component\Form\Extension\Core\Type\TextType', type_options: { disabled: true } }
+                    - { property : 'last_publication_date', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { date_widget: single_text, time_widget: single_text } }
+                    - remaining_messages
+                    - event
+                    

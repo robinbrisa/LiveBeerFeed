@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Message To {{ event.name }}{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+        
+{% block body %}
+{% if event.style %}
+    <style>
+    	#live-venue-title {
+            {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
+            {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
+        }
+        {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
+        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
+    </style>
+{% endif %}
+
+<div class="main-wrapper">
+    <div id="post-message" class="container">
+        <div id="live-venue-title">
+        	{% if event.style and event.style.untappdLogoStyle %}
+        		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
+        	{% else %}
+        		{% set untappdLogo = 'untappd_black' %}
+        	{% endif %}
+            <div class="description">
+            	{% if event.eventLogo %}
+            		<img src="{{ asset("images/events/") ~ event.eventLogo }}" />
+            	{% else %}
+    				{{ event.name }}
+            	{% endif %}
+            </div>
+        </div>
+        
+    	<span class="page-title info-major">Submit a new message</span>
+        	<p>Please authenticate using the key that was provided to you.</p>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+    </div>
+    
+</div>
+
+<script>
+	var minTime = "{{ "now"|date('H:i') }}"
+</script>
+
+{% endblock %}
