@@ -93,7 +93,7 @@ event:
         subscribe: 'S''abonner aux notifications'
         unsubscribe: 'Se désabonner des notifications'
         blocked: 'Les notifications sont bloquées'
-        not_supported: 'Les notifications ne sont pas supportées'
+        not_supported: 'Navigateur incompatible avec les notifications'
     post:
         title: 'Envoyer un nouveau message public'
         authentication_info: 'Authentifié en tant que %publisher%.'
