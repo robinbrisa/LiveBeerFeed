@@ -91,42 +91,42 @@ class EventStats
         
         if ($bestRatedBeers = $this->em->getRepository('\App\Entity\Beer\Beer')->getBestRatedBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), $minBeerRatings, 5)) {
             $stats['best_rated_beers'] = array(
-                'label' => 'Best Rated Beers',
+                'label' => 'stats.beer_rated_beers.title',
                 'template' => 'best_rated_beers',
                 'content' => $bestRatedBeers
             );
         }
         if ($bestRatedBreweries = $this->em->getRepository('\App\Entity\Brewery\Brewery')->getBestRatedBrewery(null, $venues, $event->getStartDate(), $event->getEndDate(), $minBreweryRatings, 5)) {
             $stats['best_rated_breweries'] = array(
-                'label' => 'Best Rated Breweries',
+                'label' => 'stats.beer_rated_breweries.title',
                 'template' => 'best_rated_breweries',
                 'content' => $bestRatedBreweries
             );
         }
         if ($bestRatedStyles = $this->em->getRepository('\App\Entity\Beer\Style')->getBestRatedStyle(null, $venues, $event->getStartDate(), $event->getEndDate(), $minStyleRatings, 5)) {
             $stats['best_rated_styles'] = array(
-                'label' => 'Best Rated Styles',
+                'label' => 'stats.beer_rated_styles.title',
                 'template' => 'best_rated_styles',
                 'content' => $bestRatedStyles
             );
         }
         if ($mostRatedBeers = $this->em->getRepository('\App\Entity\Beer\Beer')->getMostCheckedInBeer(null, $venues, $event->getStartDate(), $event->getEndDate(), 5, true)) {
             $stats['most_rated_beers'] = array(
-                'label' => 'Most Checked-in Beers',
+                'label' => 'stats.most_checked_in_beers.title',
                 'template' => 'most_rated_beers',
                 'content' => $mostRatedBeers
             );
         }
         if ($mostRatedBreweries = $this->em->getRepository('\App\Entity\Brewery\Brewery')->getMostCheckedInBrewery(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
             $stats['most_rated_breweries'] = array(
-                'label' => 'Most Checked-in Breweries',
+                'label' => 'stats.most_checked_in_breweries.title',
                 'template' => 'most_rated_breweries',
                 'content' => $mostRatedBreweries
             );
         }
         if ($mostRatedStyles = $this->em->getRepository('\App\Entity\Beer\Style')->getMostCheckedInStyle(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
             $stats['most_rated_styles'] = array(
-                'label' => 'Most Checked-in Styles',
+                'label' => 'stats.most_checked_in_styles.title',
                 'template' => 'most_rated_styles',
                 'content' => $mostRatedStyles
             );

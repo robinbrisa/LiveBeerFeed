@@ -51,6 +51,8 @@ class EventController extends Controller
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
         
+        $success = false;
+        
         if (is_null($event)) {
             $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
             if (is_null($event)) {
@@ -58,13 +60,22 @@ class EventController extends Controller
             }
         }
         
+        if ($event->getStartDate() > new \DateTime('now') || $event->getEndDate() < new \DateTime('now')) {
+            return $this->render('event/auth.html.twig', array(
+                'form' => null,
+                'event' => $event,
+                'error' => false,
+                'closed' => true
+            ));
+        }
+        
         $session = $request->getSession();
         
         if (!$session->get('post_access_key/'.$eventID)) {
             $error = false;
             $form = $this->createFormBuilder()
-            ->add('access_key', TextType::class, array('required' => true, 'label' => 'Access key'))
-            ->add('send', SubmitType::class, array('label' => 'Send'))
+            ->add('access_key', TextType::class, array('required' => true, 'label' => 'event.form.access_key'))
+            ->add('send', SubmitType::class, array('label' => 'event.form.send'))
             ->getForm();
             
             $form->handleRequest($request);
@@ -83,7 +94,8 @@ class EventController extends Controller
             return $this->render('event/auth.html.twig', array(
                 'form' => $form->createView(),
                 'event' => $event,
-                'error' => $error
+                'error' => $error,
+                'closed' => false
             ));
         } else {
             $authKey = $session->get('post_access_key/'.$eventID);
@@ -96,14 +108,14 @@ class EventController extends Controller
             $message->setEvent($event);
             
             $form = $this->createFormBuilder($message)
-            ->add('message_line_1', TextType::class, array('attr' => array('maxlength ' => '65')))
-            ->add('message_line_1_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
-            ->add('message_line_2', TextType::class, array('attr' => array('maxlength ' => '65', 'autocapitalize' => 'off')))
-            ->add('message_line_2_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
-            ->add('message_line_3', TextType::class, array('attr' => array('maxlength ' => '65', 'autocapitalize' => 'off')))
-            ->add('message_line_3_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'Highlighted'))
-            ->add('startTime', TimeType::class,  array('mapped' => false, 'widget' => 'single_text', 'required' => true ))
-            ->add('save', SubmitType::class, array('label' => 'Submit Message'))
+            ->add('message_line_1', TextType::class, array('attr' => array('maxlength ' => '65'), 'label' => 'event.form.message_line_1'))
+            ->add('message_line_1_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'event.form.highlight'))
+            ->add('message_line_2', TextType::class, array('attr' => array('maxlength ' => '65', 'autocapitalize' => 'off'), 'label' => 'event.form.message_line_2'))
+            ->add('message_line_2_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'event.form.highlight'))
+            ->add('message_line_3', TextType::class, array('attr' => array('maxlength ' => '65', 'autocapitalize' => 'off'), 'label' => 'event.form.message_line_3'))
+            ->add('message_line_3_important', CheckboxType::class,  array('required' => false, 'mapped' => false, 'label' => 'event.form.highlight'))
+            ->add('startTime', TimeType::class,  array('mapped' => false, 'widget' => 'single_text', 'required' => true, 'label' => 'event.form.start_time'))
+            ->add('save', SubmitType::class, array('label' => 'event.form.submit'))
             ->getForm();
             
             $form->handleRequest($request);
@@ -138,38 +150,17 @@ class EventController extends Controller
                 $em->persist($publisher);
                 
                 $em->flush();
-                return $this->redirectToRoute('post_message_success', array('eventID' => $eventID));
+                $success = true;
             }
             
             return $this->render('event/post.html.twig', array(
                 'form' => $form->createView(),
                 'event' => $event,
                 'publisher' => $publisher,
-                'success' => false
+                'success' => $success
             ));
         }
 
-    }
-    
-    /**
-     * @Route("/event/{eventID}/post/success", name="post_message_success")
-     */
-    public function post_event_message_success($eventID)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
-        
-        if (is_null($event)) {
-            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
-            if (is_null($event)) {
-                throw $this->createNotFoundException('Unknown event');
-            }
-        }
-        
-        return $this->render('event/post.html.twig', array(
-            'event' => $event,
-            'success' => true
-        ));
     }
     
     /**
@@ -197,7 +188,7 @@ class EventController extends Controller
      */
     public function post_mass_create_publishers($eventID, Request $request)
     {
-        // REQUIRE ADMIN RIGHTS
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         
         $success = false;
         $em = $this->getDoctrine()->getManager();
@@ -211,8 +202,8 @@ class EventController extends Controller
         }
         
         $form = $this->createFormBuilder()
-        ->add('publishers_list', TextareaType::class, array('required' => true, 'label' => 'Publishers'))
-        ->add('send', SubmitType::class, array('label' => 'Register'))
+        ->add('publishers_list', TextareaType::class, array('required' => true, 'label' => 'event.form.publishers'))
+        ->add('send', SubmitType::class, array('label' => 'event.form.register'))
         ->getForm();
         
         $form->handleRequest($request);

@@ -34,84 +34,72 @@
             </div>
         </div>
         
-    	<span class="page-title info-major">Submit a new public message</span>
-    	{% if not success %}
-    		<div class="alert alert-info" role="alert">
-            	<i class="fa fa-user" aria-hidden="true"></i> Authenticated as <strong>{{ publisher.name }}</strong>.<br />
-            	<a href="{{ path('post_logout', { 'eventID': event.id }) }}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a><br />
-            	<span class="badge badge-{% if publisher.remainingMessages > 0 %}success{% else %}danger{% endif %}">{{ publisher.remainingMessages }}</span> notifications remaining<br />
-                {% if publisher.remainingMessages <= 0 %}
-                	<span class="badge badge-danger">OUT OF NOTIFICATIONS</span>
-                {% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
-                	<span class="badge badge-warning">LOCKED UNTIL {{ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") }}</span>
-                {% else %}
-                	<span class="badge badge-success">NOTIFICATION AVAILABLE</span>
-                {% endif %}
-            </div>
-            <div class="card">
-                <div class="card-body">
-            	<strong>Important read:</strong><br />
-            	This form will allow you to send a message to the "{{ event.name }}" live beer feed.<br /> 
-            	Please keep in mind that this message will be public and that it will be broadcasted to subscribed visitors.<br />
-            	You can use it to make important announcements (e.g. plugging a rare keg, ...).<br /> 
-            	You can only post a message every 2 hours and the amount of notifications you can send during the event is limited.<br />
-            	You will be identified as the sender of the notification.<br />
-            	Please fill the 3 message lines and select the time when you want the notification to be broadcasted.<br /> 
-            	Highlighted lines will display in a <span class="info-major">different color</span>.<br />
-            	Your message will be displayed for 10 minutes after the start date.<br />
-            	<strong class="info-major">This functionnality must not be shared with visitors.</strong>
-            	</div>
-            </div>
-            <hr class="my-2">
-        	{% if publisher.remainingMessages <= 0 %}
-        		<div class="alert alert-danger" role="alert">
-    				You have reached your messages limit and can no longer send a new one.<br />
-    			</div>
-        	{% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
-        		<div class="alert alert-warning" role="alert">
-    				Your last notification was submited less than 2 hours ago.<br />
-    				You'll be allowed to send a new message at <strong>{{ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") }}</strong>.
-    			</div>
-        	{% else %}
-            	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
-            		<div id="event-upcoming">
-                    	<div class="alert alert-primary" role="alert">
-                    		<div class="large-icon">
-                    			<i class="fa fa-clock-o" aria-hidden="true"></i>
-                    		</div>
-                			<b>You're too early!</b></br>
-                		    {{ event.name }} hasn't started yet. However, you can already subscribe to receive upcoming notifications!</br>
-                			This event will start <span id="time-left-event" data-date="{{ event.startDate|date("D, d M Y H:i:s O") }}"></span>. This page will automatically refresh.
-                   		 </div>
-            		</div>
-          		{% else %}
-                	<div class="card card-block bg-faded">
-                		<div class="card-body">
-                            {{ form_start(form) }}
-                            <div class="form-group">
-                                {{ form_label(form.message_line_1) }}
-            					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
-                                {{ form_widget(form.message_line_1) }}
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.message_line_2) }}
-            					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
-                                {{ form_widget(form.message_line_2) }}
-                            </div>
-                            <div class="form-group">
-                                {{ form_label(form.message_line_3) }}
-            					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
-                                {{ form_widget(form.message_line_3) }}
-                            </div>
-                            {{ form_widget(form) }}
-                            {{ form_end(form) }}
-                        </div>
-            		</div>
-            	{% endif %}
-        	{% endif %}
+    	<span class="page-title info-major">{{ 'event.post.title'|trans }}</span>
+		<div class="alert alert-info" role="alert">
+        	<i class="fa fa-user" aria-hidden="true"></i> {% trans with {'%publisher%': '<strong>' ~ publisher.name ~ '</strong>' } %}event.post.authentication_info{% endtrans %}<br />
+        	<a href="{{ path('post_logout', { 'eventID': event.id }) }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ "event.post.logout"|trans }}</a><br />
+        	<span class="badge badge-{% if publisher.remainingMessages > 0 %}success{% else %}danger{% endif %}">{{ publisher.remainingMessages }}</span> {% transchoice publisher.remainingMessages %}event.post.notifications_remaining{% endtranschoice %}<br />
+            {% if publisher.remainingMessages <= 0 %}
+            	<span class="badge badge-danger">{{ "event.post.out_of_notifications"|trans }}</span>
+            {% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
+            	<span class="badge badge-warning">{% trans with {'%time%': publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") } %}event.post.locked_until{% endtrans %}</span>
+            {% else %}
+            	<span class="badge badge-success">{{ "event.post.notification_available"|trans }}</span>
+            {% endif %}
+        </div>
+    	{% if success %}
+        	<div class="alert alert-success" role="alert">
+        		{{ "event.post.success"|trans }}
+       		 </div>
+    	{% endif %}
+        <div class="card">
+            <div class="card-body">
+        	<strong>{{ "event.post.disclaimer.important"|trans }}</strong><br />
+        	{% trans with {'%event%': event.name } %}event.post.disclaimer.this_form{% endtrans %}<br /> 
+        	{{ "event.post.disclaimer.keep_in_mind"|trans }}<br />
+        	{{ "event.post.disclaimer.you_can_use_it"|trans }}<br /> 
+        	{{ "event.post.disclaimer.post_limit"|trans }}<br /> 
+        	{{ "event.post.disclaimer.will_be_identified"|trans }}<br /> 
+        	{{ "event.post.disclaimer.fill_the_lines"|trans }}<br /> 
+        	{{ "event.post.disclaimer.highlighted"|trans|raw }}<br /> 
+        	{{ "event.post.disclaimer.display_time"|trans }}<br /> 
+        	<strong class="info-major">{{ "event.post.disclaimer.must_not_share"|trans }}</strong>
+        	</div>
+        </div>
+        <hr class="my-2">
+    	{% if publisher.remainingMessages <= 0 %}
+    		<div class="alert alert-danger" role="alert">
+				{{ "event.post.limit_reached"|trans }}
+			</div>
+    	{% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
+    		<div class="alert alert-warning" role="alert">
+				{{ "event.post.currently_locked"|trans }}<br />
+				{% trans with {'%time%': '<strong>' ~ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") ~ '</strong>' } %}event.post.locked_until_alert{% endtrans %}
+			</div>
     	{% else %}
-    		<p>Your message has successfully been registered. Thanks!</p>
-    	{% endif %}	
+        	<div class="card card-block bg-faded">
+        		<div class="card-body">
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.message_line_1) }}
+    					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
+                        {{ form_widget(form.message_line_1) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.message_line_2) }}
+    					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
+                        {{ form_widget(form.message_line_2) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.message_line_3) }}
+    					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
+                        {{ form_widget(form.message_line_3) }}
+                    </div>
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+    		</div>
+    	{% endif %}
     </div>
     
 </div>

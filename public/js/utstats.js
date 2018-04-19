@@ -5,10 +5,11 @@ var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
 
 $(document).ready(function() {
+	if (locale !== undefined) {
+		moment.locale(locale);
+	}
+	
 	if ($('#live-feed').length !== 0) {
-		if (locale !== undefined) {
-			moment.locale(locale);
-		}
 		refreshTimes();
 		pushServer();
 	}

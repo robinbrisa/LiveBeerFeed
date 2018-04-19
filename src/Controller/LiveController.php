@@ -37,10 +37,11 @@ class LiveController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
         
         if (is_null($event)) {
-            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
-            if (is_null($event)) {
-                throw $this->createNotFoundException('Unkown event');
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID);
+            if (!$event) {
+                throw $this->createNotFoundException('Unknown event');
             }
+            $event = $event[0];
         }
         
         $session = $this->get('session');
@@ -69,10 +70,11 @@ class LiveController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
         
         if (is_null($event)) {
-            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
-            if (is_null($event)) {
-                throw $this->createNotFoundException('This event is unknown');
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID);
+            if (!$event) {
+                throw $this->createNotFoundException('Unknown event');
             }
+            $event = $event[0];
         }
         
         $session = $this->get('session');

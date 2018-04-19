@@ -34,17 +34,47 @@
             </div>
         </div>
         
-    	<span class="page-title info-major">Submit a new message</span>
-        	<p>Please authenticate using the code that was provided to you.</p>
-        	{% if error %}
-        		<div class="alert alert-danger alert-dismissible" role="alert">
-                	Sorry, this access code is unknown.
-                	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <span class="page-title info-major">{{ 'event.post.title'|trans }}</span>
+    	{% if closed %}
+        	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
+        		<div id="event-upcoming">
+                	<div class="alert alert-primary" role="alert">
+                		<div class="large-icon">
+                			<i class="fa fa-clock-o" aria-hidden="true"></i>
+                		</div>
+            			<b>{{ "general.too_early"|trans }} 😉</b></br>
+        	            {% trans with { '%event%': event.name } %}general.not_started_yet{% endtrans %}<br />
+            		    {{ "general.cant_send_notifications_yet"|trans }}
+               		 </div>
+        		</div>
+      		{% elseif "now"|date('Y-m-d H:i:s') > event.endDate|date('Y-m-d H:i:s') %}
+        		<div id="event-upcoming">
+                	<div class="alert alert-primary" role="alert">
+                		<div class="large-icon">
+                			<i class="fa fa-clock-o" aria-hidden="true"></i>
+                		</div>
+            			<b>{{ "general.too_late"|trans }} 😉</b></br>
+        	            {% trans with { '%event%': event.name } %}general.is_over{% endtrans %}<br />
+            		    {{ "general.cant_send_notifications_anymore"|trans }}
+               		 </div>
+        		</div>
+      		{% endif %}
+    	{% else %}
+            <div class="card">
+                <div class="card-body">
+                	<p><strong>{{ "event.post.please_auth"|trans }}</strong></p>
+                	{% if error %}
+                		<div class="alert alert-danger alert-dismissible" role="alert">
+                        	{{ "event.form.unknown_access_key"|trans }}
+                        	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                	{% endif %}
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
                 </div>
-        	{% endif %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
+            </div>
+        {% endif %}
     </div>
     
 </div>

@@ -3,6 +3,8 @@
 const applicationServerPublicKey = 'BPcHVWxT9OtIubNDDePH2yP6QaNRJ3JvbLAMXPGt-FigOR5i8Yl5fomNN6ZHDTG67EQIAaDGnRZQeAZW1NuuElQ';
 const pushButton = $("#subscribe");
 
+var translation = translation || { subscribe: 'Subscribe to live notifications', unsubscribe: 'Unsubscribe from notifications', blocked: 'Notifications have been blocked' };
+
 let isSubscribed = false;
 let swRegistration = null;
 
@@ -115,15 +117,15 @@ function updateSubscriptionOnServer(subscription, method) {
 
 function updateBtn() {
 	if (Notification.permission === 'denied') {
-	    pushButton.html('Notifications have been blocked');
+	    pushButton.html(translation.blocked);
 	    pushButton.attr('disabled', true);
 	    updateSubscriptionOnServer(null);
 	    return;
 	}
 	if (isSubscribed) {
-		pushButton.html('Unsubscribe from notifications');
+		pushButton.html(translation.unsubscribe);
 	} else {
-		pushButton.html('<i class="fa fa-envelope button-animation"></i> Subscribe to live notifications <i class="fa fa-hand-o-up faa-vertical animated button-animation" aria-hidden="true"></i>');
+		pushButton.html('<i class="fa fa-envelope button-animation"></i> ' + translation.subscribe + ' <i class="fa fa-hand-o-up faa-vertical animated button-animation" aria-hidden="true"></i>');
 	}
 	pushButton.attr('disabled', false);
 }

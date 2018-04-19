@@ -12,32 +12,34 @@
 		<p class="lead">Get live information and statistics during your favorite beer events. 
 		<br />Receive notifications from the organizers and brewers.</p>
 		<hr class="my-2">
+		<h1 class="display-4">Current events</h3>
         {% if currentEvents|length > 0 %}
-			<h1 class="display-4">Current events</h3>
+			<div class="clearfix">
 		    {% for event in currentEvents %}
                 {% include 'main/templates/current_event_card.template.html.twig' with { 'event': event } %}
             {% endfor %}
+            </div>
         {% else %}
         	<p>We aren't tracking any events at the moment.</p>
         {% endif %}
-		<hr class="my-4">
-			<h1 class="display-4">Upcoming events</h3>
-            {% if upcomingEvents|length > 0 %}
-    		    {% for event in upcomingEvents %}
-                    {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
-                {% endfor %}
-            {% else %}
-            	<p>There are no upcoming events at the moment.</p>
-            {% endif %}
-		<hr class="my-4">
-            {% if previousEvents|length > 0 %}
-				<h1 class="display-4">Previous events</h1>
-    		    {% for event in previousEvents %}
-                    {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
-                {% endfor %}
-            {% else %}
-            	<p>There are no previous events at the moment.</p>
-            {% endif %}
+        {% if upcomingEvents|length > 0 %}
+    		<hr class="my-4">
+    		<h1 class="display-4">Upcoming events</h3>
+			<div class="clearfix">
+		    {% for event in upcomingEvents %}
+                {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
+            {% endfor %}
+        	</div>
+        {% endif %}
+        {% if previousEvents|length > 0 %}
+			<hr class="my-4">
+			<h1 class="display-4">Previous events</h1>
+			<div class="clearfix">
+		    {% for event in previousEvents %}
+                {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
+            {% endfor %}
+    		</div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

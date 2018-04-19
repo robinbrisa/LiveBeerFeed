@@ -16,11 +16,23 @@ stats:
     beer_rated_style:
         title: 'Style le mieux noté'
     most_checked_in_beer:
-        title: 'Bière ayant le plus de <i>check-ins</i>'
+        title: 'Bière la plus notée'
     most_checked_in_brewery:
-        title: 'Brasserie ayant le plus de <i>check-ins</i>'
+        title: 'Brasserie la plus notée'
     most_checked_in_style:
-        title: 'Style ayant le plus de <i>check-ins</i>'
+        title: 'Style le plus noté'
+    beer_rated_beers:
+        title: 'Bières les mieux notées'
+    beer_rated_breweries:
+        title: 'Brasseries les mieux notées'
+    beer_rated_styles:
+        title: 'Styles les mieux notés'
+    most_checked_in_beers:
+        title: 'Bières les plus notées'
+    most_checked_in_breweries:
+        title: 'Brasseries les plus notées'
+    most_checked_in_styles:
+        title: 'Styles les plus notés'
     ratings_average:
         title: 'Note moyenne des <i>check-ins</i>'
         total: '<i>check-ins</i> avec une note'
@@ -47,3 +59,58 @@ stats:
     unique_users:
         title: 'Utilisateurs <i>Untappd</i> aperçus'
         total: '%count% utilisateurs étaient actifs aujourd''hui'
+general:
+    too_early: "Vous arrivez trop tôt !"
+    not_started_yet: "%event% n'a pas encore commencé."
+    cant_send_notifications_yet: 'Il n''est pas possible d''envoyer de notifications pour l''instant.'
+    too_late: "Vous arrivez trop tard !"
+    is_over: "%event% est terminé."
+    cant_send_notifications_anymore: 'Il n''est plus possible d''envoyer de nouvelles notifications.'
+event:
+    form:
+        publishers: 'Publicateurs'
+        register: 'Enregistrer'
+        message_line_1: '1ère ligne du message'
+        message_line_2: '2ème ligne du message'
+        message_line_3: '3ème ligne du message'
+        highlight: 'Surligner'
+        start_time: 'Heure de début'
+        submit: 'Envoyer'
+        access_key: "Code d'accès"
+        unknown_access_key: "Désolé, ce code d'accès est inconnu."
+        send: "Envoyer"
+    page:
+        over: 'Cet évènement est terminé'
+        push_incompatible: 'Navigateur incompatible avec les notifications'
+        statistics: 'Statistiques de l''évènement'
+        early_subscribe: 'Vous pouvez cependant déjà vous abonner pour recevoir les notifications futures !'
+        will_start_in: 'Cet évènement commencera %time%. Cette page s''actualisera automatiquement.'
+        latest_notifications: 'Dernières notifications'
+    js:
+        subscribe: 'S''abonner aux notifications'
+        unsubscribe: 'Se désabonner des notifications'
+        blocked: 'Les notifications sont bloquées'
+    post:
+        title: 'Envoyer un nouveau message public'
+        authentication_info: 'Authentifié en tant que %publisher%.'
+        logout: 'Se déconnecter'
+        notifications_remaining: '{0}notifications restantes|{1}notification restante|]1, Inf[notifications restantes'
+        out_of_notifications: 'PLUS DE NOTIFICATIONS'
+        locked_until: 'VERROUILLÉ JUSQU''À %time%'
+        notification_available: 'NOTIFICATION DISPONIBLE'
+        success: "Votre message a été envoyé avec succès."
+        limit_reached: "Vous avez atteint votre limite de notifications et ne pouvez plus en envoyer de nouvelles."
+        currently_locked: "Votre dernière notification a été envoyée il y a moins de 2 heures."
+        locked_until_alert: "Vous pourrez à nouveau en envoyer à partir de %time%."
+        please_auth: "Veuillez vous identifier à l'aide du code d'accès qui vous a été communiqué."
+        disclaimer:
+            important: 'Lecture importante :'
+            this_form: 'Ce formulaire vous permet d''envoyer un message sur le <i>live beer feed</i> de "%event%".'
+            keep_in_mind: 'Gardez en tête que ce message sera public et qu''il sera notifié directement aux visiteurs abonnés.'
+            you_can_use_it: 'Vous pouvez vous en servir pour des annonces importantes (par exemple, le branchement d''un fût rare ou exclusif, ...).'
+            post_limit: 'Vous ne pouvez envoyer qu''un message toutes les 2 heures et le nombre de notifications que vous pouvez envoyer est limité.'
+            will_be_identified: 'Vous serez identifié comme l''expéditeur de cette notification.'
+            fill_the_lines: 'Veuillez saisir les 3 lignes de votre message et l''heure à laquelle vous souhaitez le début de sa diffusion.'
+            highlighted: 'Les lignes surlignées s''afficheront dans une <span class="info-major">couleur différente</span>.'
+            display_time: 'Votre message sera affiché pendant 10 minutes après l''heure de début.'
+            must_not_share: 'Cette fonctionnalité ne doit pas être partagée avec les visiteurs.'

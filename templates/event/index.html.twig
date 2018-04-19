@@ -14,7 +14,7 @@
         }
         {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
         {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
-        #subscribe { background-color: {{ event.style.majorInfoColor }}; color: white; }
+        .subscribe-button { background-color: {{ event.style.majorInfoColor }}; color: white; }
     </style>
 {% endif %}
 
@@ -36,9 +36,13 @@
             </div>
         </div>
         
-        <button type="button" id="subscribe" class="btn" disabled>Can't receive notifications on this browser</button>
+  		{% if "now"|date('Y-m-d H:i:s') > event.endDate|date('Y-m-d H:i:s') %}
+        	<button type="button" class="subscribe-button btn" disabled>{{ "event.page.over"|trans }}</button>
+  		{% else %}
+        	<button type="button" id="subscribe" class="subscribe-button btn" disabled>{{ "event.page.push_incompatible"|trans }}</button>
+        {% endif %}
     	
-   		<span class="page-title info-major">Statistics</span>
+   		<span class="page-title info-major">{{ "event.page.statistics"|trans }}</span>
    		
   		{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
     		<div id="event-upcoming">
@@ -46,9 +50,9 @@
             		<div class="large-icon">
             			<i class="fa fa-clock-o" aria-hidden="true"></i>
             		</div>
-        			<b>You're too early!</b></br>
-        		    {{ event.name }} hasn't started yet. However, you can already subscribe to receive upcoming notifications!</br>
-        			This event will start <span id="time-left-event" data-date="{{ event.startDate|date("D, d M Y H:i:s O") }}"></span>. This page will automatically refresh.
+        			<b>{{ "general.too_early"|trans }} 😉</b></br>
+                    {% trans with { '%event%': event.name } %}general.not_started_yet{% endtrans %} {{ "event.page.early_subscribe"|trans }}</br>
+        			{% trans with { '%time%': '<span id="time-left-event" data-date="' ~ event.startDate|date("D, d M Y H:i:s O") ~ '"></span>' } %}event.page.will_start_in{% endtrans %}
            		 </div>
     		</div>
   		{% else %}
@@ -59,7 +63,7 @@
                 {% for key, stat in stats %}
         			<div class="carousel-item col-md-4 {% if i == 0 %}active{% endif %}">
                 		<div class="card" data-stat="{{ key }}">
-                			<span class="page-title stat-title info-major">{{ stat.label }}</span>
+                			<span class="page-title stat-title info-major">{{ stat.label|trans }}</span>
                             {% include 'event/templates/' ~ stat.template ~ '.html.twig' with { 'data': stat.content } %}
                 		</div>
                 	</div>
@@ -93,7 +97,7 @@
 		
    		<div id="latest-notifications" {% if messages|length == 0 %}style="display:none;"{% endif %}>
 			<hr class="my-3">
-   			<span class="page-title info-major">Latest notifications</span>
+   			<span class="page-title info-major">{{ 'event.page.latest_notifications'|trans }}</span>
    			<div id="latest-notifications-block">
    			{% for message in messages %}
 	            {% include 'event/templates/notification.template.html.twig' with { 'message': message } %}
@@ -111,7 +115,9 @@ var websocket = "{{ websocket }}";
 
 {% block javascripts %}
 	{{ parent() }}
+	<script>var translation = { subscribe: '{{ "event.js.subscribe"|trans }}', unsubscribe: '{{ "event.js.unsubscribe"|trans }}', blocked: '{{ "event.js.blocked"|trans }}' }</script>
 	<script src="{{ asset('js/push.js') }}"></script>
+	
 	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
 		{% set seconds = event.startDate|date('U') - "now"|date('U') %}
 		<script>

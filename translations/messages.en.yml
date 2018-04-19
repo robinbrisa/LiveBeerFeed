@@ -21,6 +21,18 @@ stats:
         title: 'Most Checked-in Brewery'
     most_checked_in_style:
         title: 'Most Checked-in Style'
+    beer_rated_beers:
+        title: 'Best Rated Beers'
+    beer_rated_breweries:
+        title: 'Best Rated Breweries'
+    beer_rated_styles:
+        title: 'Best Rated Styles'
+    most_checked_in_beers:
+        title: 'Most Checked-in Beers'
+    most_checked_in_breweries:
+        title: 'Most Checked-in Breweries'
+    most_checked_in_styles:
+        title: 'Most Checked-in Styles'
     ratings_average:
         title: 'Check-in Ratings Average'
         total: 'check-ins with ratings'
@@ -47,3 +59,58 @@ stats:
     unique_users:
         title: 'Active Untappd Users'
         total: '%count% users were active around here today'
+general:
+    too_early: "You're too early!"
+    not_started_yet: "%event% hasn't started yet."
+    cant_send_notifications_yet: 'It is not possible to send new notifications yet.'
+    too_late: "You're too late!"
+    is_over: "%event% is over."
+    cant_send_notifications_anymore: 'It is no longer possible to send new notifications.'
+event:
+    form:
+        publishers: 'Publishers'
+        register: 'Register'
+        message_line_1: 'Message 1st line'
+        message_line_2: 'Message 2nd line'
+        message_line_3: 'Message 3rd line'
+        highlight: 'Highlight'
+        start_time: 'Start time'
+        submit: 'Submit'
+        access_key: 'Access code'
+        unknown_access_key: "Sorry, this access code is unknown."
+        send: 'Send'
+    page:
+        over: 'This event is over'
+        push_incompatible: 'Can''t receive notifications on this browser'
+        statistics: 'Event Statistics'
+        early_subscribe: 'However, you can already subscribe to receive upcoming notifications!'
+        will_start_in: 'This event will start %time%. This page will automatically refresh.'
+        latest_notifications: 'Latest notifications'
+    js:
+        subscribe: 'Subscribe to live notifications'
+        unsubscribe: 'Unsubscribe from notifications'
+        blocked: 'Notifications have been blocked'
+    post:
+        title: 'Submit a new public message'
+        authentication_info: 'Authenticated as %publisher%.'
+        logout: 'Logout'
+        notifications_remaining: '{0}notifications remaining|{1}notification remaining|]1, Inf[notifications remaining'
+        out_of_notifications: 'OUT OF NOTIFICATIONS'
+        locked_until: 'LOCKED UNTIL %time%'
+        notification_available: 'NOTIFICATION AVAILABLE'
+        success: "Your message has successfully been sent."
+        limit_reached: "You have reached your notifications limit and can no longer send a new one."
+        currently_locked: "Your last notification was submited less than 2 hours ago."
+        locked_until_alert: "You'll be allowed to send a new message at %time%."
+        please_auth: "Please authenticate using the code that was provided to you."
+        disclaimer:
+            important: 'Important read:'
+            this_form: 'This form will allow you to send a message to the "%event%" live beer feed.'
+            keep_in_mind: 'Please keep in mind that this message will be public and that it will be broadcasted to subscribed visitors.'
+            you_can_use_it: 'You can use it to make important announcements (e.g. putting an exclusive or rare beer on tap, ...).'
+            post_limit: 'You can only post a message every 2 hours and the amount of notifications you can send during the event is limited.'
+            will_be_identified: 'You will be identified as the sender of the notification.'
+            fill_the_lines: 'Please fill the 3 message lines and select the time when you want the notification to be broadcasted.'
+            highlighted: 'Highlighted lines will display in a <span class="info-major">different color</span>.'
+            display_time: 'Your message will be displayed for 10 minutes after the start time.'
+            must_not_share: 'This functionnality must not be shared with visitors.'

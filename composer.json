@@ -28,6 +28,7 @@
 		"symfony/orm-pack": "^1.0",
 		"symfony/property-access": "^4.0",
 		"symfony/security": "^4.0",
+		"symfony/security-bundle": "^4.0",
 		"symfony/security-core": "^4.0",
 		"symfony/serializer": "^4.0",
 		"symfony/swiftmailer-bundle": "^3.2",
