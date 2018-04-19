@@ -93,6 +93,7 @@ event:
         subscribe: 'Subscribe to live notifications'
         unsubscribe: 'Unsubscribe from notifications'
         blocked: 'Notifications have been blocked'
+        not_supported: 'Notifications are not supported'
     post:
         title: 'Submit a new public message'
         authentication_info: 'Authenticated as %publisher%.'

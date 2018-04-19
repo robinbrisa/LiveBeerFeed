@@ -115,7 +115,7 @@ var websocket = "{{ websocket }}";
 
 {% block javascripts %}
 	{{ parent() }}
-	<script>var translation = { subscribe: '{{ "event.js.subscribe"|trans }}', unsubscribe: '{{ "event.js.unsubscribe"|trans }}', blocked: '{{ "event.js.blocked"|trans }}' }</script>
+	<script>var translation = { subscribe: '{{ "event.js.subscribe"|trans }}', unsubscribe: '{{ "event.js.unsubscribe"|trans }}', blocked: '{{ "event.js.blocked"|trans }}', not_supported: '{{ "event.js.not_supported"|trans }}' }</script>
 	<script src="{{ asset('js/push.js') }}"></script>
 	
 	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}

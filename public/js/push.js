@@ -3,7 +3,7 @@
 const applicationServerPublicKey = 'BPcHVWxT9OtIubNDDePH2yP6QaNRJ3JvbLAMXPGt-FigOR5i8Yl5fomNN6ZHDTG67EQIAaDGnRZQeAZW1NuuElQ';
 const pushButton = $("#subscribe");
 
-var translation = translation || { subscribe: 'Subscribe to live notifications', unsubscribe: 'Unsubscribe from notifications', blocked: 'Notifications have been blocked' };
+var translation = translation || { subscribe: 'Subscribe to live notifications', unsubscribe: 'Unsubscribe from notifications', blocked: 'Notifications have been blocked', not_supported: 'Notifications are not supported' };
 
 let isSubscribed = false;
 let swRegistration = null;
@@ -33,7 +33,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 		console.error('Service Worker Error', error);
 	});
 } else {
-	pushButton.html('Notifications are not supported');
+	pushButton.html(translation.not_supported);
 }
 
 function initializeUI() {
