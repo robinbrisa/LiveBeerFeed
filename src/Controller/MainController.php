@@ -34,27 +34,38 @@ class MainController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
         
-        $msg = $em->getRepository('\App\Entity\Event\Message')->findLatestEventMessageByBroadcastDate($event, new \DateTime('- 5 hours'));
-        dump($msg);
+        $messages = $em->getRepository('\App\Entity\Event\Message')->findBy(array('event' => $event), array('start_date' => 'ASC'));
         
-        if (count($em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)) > 0) {
-            echo $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 1)[0]->getId();
-        } else {
-            echo "No checkin";
-        }
         
-        $styles = $em->getRepository('\App\Entity\Beer\Style')->findAll();
+        echo '<div class="container">';
         
-        foreach ($styles as $style) {
-            echo '<div id="info-content" style="width:500px;">';
-            echo '<div class="line">';
-            echo '<div class="color-wrapper live-style-color-container"><div class="ranking-style-color" style="float:left; background-color: ' . $style->getColor() . '; width:32px;"></div></div>';
-            echo '<span class="name">' . $style->getName() . '</span>';
-            echo '</div>';
+        echo '<h3>Programmed messages / notifications</h3>';
+        
+        foreach ($messages as $message) {
+            $dateRange = null;
+            if ($message->getStartDate()) {
+                $dateRange = '<b>Starting:</b> ' . $message->getStartDate()->format('d/m/Y H:i:s');
+            }
+            if ($message->getEndDate()) {
+                if ($dateRange) {
+                    $dateRange .= "<br />";
+                }
+                $dateRange .= '<b>Ending:</b> ' . $message->getEndDate()->format('d/m/Y H:i:s');
+            }
+            if (!$dateRange) {
+                $dateRange = "Permanent";
+            }
+            echo '<div>' . $dateRange . '</div>';
+            echo '<div id="info-content">';
+            echo '<div class="line"><span class="info-line-text">' . $message->getMessageLine1() . '</span></div>';
+            echo '<div class="line"><span class="info-line-text">' . $message->getMessageLine2() . '</span></div>';
+            echo '<div class="line"><span class="info-line-text">' . $message->getMessageLine3() . '</span></div>';
             echo '</div>';
         }
         
         $statsDebug = $stats->debugStatistics($event);
+        
+        echo '<h3>Displayed stats</h3>';
         
         echo '<div style="width: 500px; margin-left: 30px;">';
         foreach ($statsDebug as $function => $value) {
@@ -69,6 +80,21 @@ class MainController extends Controller
                 echo '<div>Returned false</div>';
             }
         }
+        echo '</div>';
+        
+        echo '<h3>Style colors</h3>';
+        
+        $styles = $em->getRepository('\App\Entity\Beer\Style')->findAll();
+        
+        foreach ($styles as $style) {
+            echo '<div id="info-content" style="width:500px;">';
+            echo '<div class="line">';
+            echo '<div class="color-wrapper live-style-color-container"><div class="ranking-style-color" style="float:left; background-color: ' . $style->getColor() . '; width:32px;"></div></div>';
+            echo '<span class="name">' . $style->getName() . '</span>';
+            echo '</div>';
+            echo '</div>';
+        }
+        
         echo '</div>';
         
         return $this->render('main/debug.html.twig', [
