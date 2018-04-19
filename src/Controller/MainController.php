@@ -39,6 +39,8 @@ class MainController extends Controller
         
         echo '<div class="container">';
         
+        echo '<h2>Debug dump for ' . $event->getName() . '</h2>';
+        
         echo '<h3>Programmed messages / notifications</h3>';
         
         foreach ($messages as $message) {

@@ -3,6 +3,7 @@ var nextRefreshInfoQueued = false;
 
 var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
+var eventPageInfoScrollAnimationDuration = eventPageInfoScrollAnimationDuration || 2000;
 
 $(document).ready(function() {
 	if (locale !== undefined) {
@@ -35,6 +36,10 @@ $(document).ready(function() {
 			    }
 			}
 		});
+		
+		setInterval(function(){
+			scrollLatestNotifications();
+		}, 8000)
 	}
 	
 	
@@ -195,4 +200,19 @@ function refreshTimes() {
 	$('.checkin-date').each(function() {
 		$(this).html("(" + moment($(this).data('date')).fromNow() + ")");
 	});
+}
+
+function scrollLatestNotifications() {
+    if (document.visibilityState == "visible") {
+		$(".info-line-text").each(function() {
+			if ($(this).width() > $("#info-content").width()) {
+				var scrollLength = $("#info-content").width() - $(this).width() - 6;
+				$(this).animate({ left: scrollLength }, { duration : eventPageInfoScrollAnimationDuration, easing : "swing" }).promise().then(
+					function() {
+						$(this).delay(2000).animate({ left: 0 }, { duration : eventPageInfoScrollAnimationDuration / 3, easing : "swing" });
+					}
+				);
+			}
+		});
+    }
 }
