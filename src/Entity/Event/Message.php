@@ -21,21 +21,21 @@ class Message
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max = 65, maxMessage = "Line 1 is too long")
+     * @Assert\Length(max = 90, maxMessage = "Line 1 is too long")
      * @ORM\Column(type="string")
      */
     private $message_line_1;
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max = 65, maxMessage = "Line 2 is too long")
+     * @Assert\Length(max = 90, maxMessage = "Line 2 is too long")
      * @ORM\Column(type="string")
      */
     private $message_line_2;
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max = 65, maxMessage = "Line 3 is too long")
+     * @Assert\Length(max = 90, maxMessage = "Line 3 is too long")
      * @ORM\Column(type="string")
      */
     private $message_line_3;
