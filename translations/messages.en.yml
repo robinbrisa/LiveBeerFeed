@@ -86,6 +86,9 @@ event:
         early_subscribe: 'However, you can already subscribe to receive upcoming notifications!'
         will_start_in: 'This event will start %time%. This page will automatically refresh.'
         latest_notifications: 'Latest notifications'
+        building_stats: 'We are currently building relevant statistics for the event.'
+        stats_will_appear: 'They will appear as soon as we get enough data.'
+        come_back_later: 'Please come back later!'
     js:
         subscribe: 'Subscribe to live notifications'
         unsubscribe: 'Unsubscribe from notifications'

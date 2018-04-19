@@ -86,6 +86,9 @@ event:
         early_subscribe: 'Vous pouvez cependant déjà vous abonner pour recevoir les notifications futures !'
         will_start_in: 'Cet évènement commencera %time%. Cette page s''actualisera automatiquement.'
         latest_notifications: 'Dernières notifications'
+        building_stats: 'Nous construisons actuellement des stats pour cet évènement.'
+        stats_will_appear: 'Elles apparaîtront dès que nous aurons assez de données.'
+        come_back_later: 'Revenez plus tard !'
     js:
         subscribe: 'S''abonner aux notifications'
         unsubscribe: 'Se désabonner des notifications'
