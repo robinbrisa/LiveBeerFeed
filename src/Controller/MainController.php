@@ -104,6 +104,40 @@ class MainController extends Controller
     }
     
     
+    /**
+     * @Route("/emailtest", name="email_test")
+     */
+    public function emailTest(\Swift_Mailer $mailer) {
+        $name = "Name";
+        $message = (new \Swift_Message('Your access code to send public messages during Lyon Bière Festival #3'))
+        ->setFrom('robin@livebeerfeed.com')
+        ->setTo('robin.brisa@gmail.com')
+        ->setBody(
+            $this->renderView(
+                // templates/emails/registration.html.twig
+                'email/access_code.html.twig',
+                array('name' => $name)
+                ),
+            'text/html'
+            )
+            /*
+             * If you also want to include a plaintext version of the message
+             ->addPart(
+             $this->renderView(
+             'emails/registration.txt.twig',
+             array('name' => $name)
+             ),
+             'text/plain'
+             )
+             */
+        ;
+        
+        $mailer->send($message);
+        
+        return $this->render('main/debug.html.twig', [
+        ]);
+    }
+    
     
     /**
      * @Route("/global", name="global_stats")
