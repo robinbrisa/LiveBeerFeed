@@ -114,33 +114,6 @@ class AjaxController extends Controller
     }
     
     /**
-     * @Route("/ajax/reloadClients", name="reload_clients")
-     */
-    public function reloadClientsAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $id = $request->query->get('id');
-        $event = $em->getRepository('App\Entity\Event\Event')->find($id);
-        
-        $magicArray = array(
-            'push_topic' => 'info-event-'.$event->getId(),
-            'push_type' => 'info',
-            'action' => 'reload'
-        );
-        
-        $context = new \ZMQContext();
-        $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
-        $socket->connect("tcp://localhost:5555");
-        $socket->send(json_encode($magicArray));
-        
-        // redirect to the 'list' view of the given entity
-        return $this->redirectToRoute('easyadmin', array(
-            'action' => 'list',
-            'entity' => $request->query->get('entity'),
-        ));
-    }
-    
-    /**
      * @Route("/ajax/pushSubscription", name="push_subscription")
      */
     public function pushSubscriptionAction()

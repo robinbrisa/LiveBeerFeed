@@ -35,16 +35,21 @@
         </div>
         
     	<span class="page-title info-major">Import publishers</span>
-        	<p>Please submit a list of all the allowed publishers for the event (1 ligne per publisher)</p>
-        	{% if success %}
-        		<div class="alert alert-success alert-dismissible" role="alert">
-                	The publishers list has successfully been imported.
-                	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-        	{% endif %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
+    		<div class="card">
+    			<div class="card-body">
+                	<p>Please submit a list of all the allowed publishers for the event (1 ligne per publisher)</p>
+                	<p>Data format: "name[|email[|language(en/fr)]]". Email and language are not required. Name is unique by event, adding an existing name will cause the existing one to be refreshed.</p>
+                	{% if success %}
+                		<div class="alert alert-success alert-dismissible" role="alert">
+                        	The publishers list has successfully been imported.
+                        	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                	{% endif %}
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+               </div>
+          </div>
     </div>
     
 </div>

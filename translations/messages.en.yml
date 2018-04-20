@@ -66,6 +66,9 @@ general:
     too_late: "You're too late!"
     is_over: "%event% is over."
     cant_send_notifications_anymore: 'It is no longer possible to send new notifications.'
+email:
+    notify_title: 'Your access code to send notifications during %event%'
+    notify_title_batch: 'Access codes list pour to send notifications during %event%'
 event:
     form:
         publishers: 'Publishers'

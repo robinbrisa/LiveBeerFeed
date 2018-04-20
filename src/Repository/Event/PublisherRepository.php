@@ -19,6 +19,20 @@ class PublisherRepository extends ServiceEntityRepository
         parent::__construct($registry, Publisher::class);
     }
 
+    public function findPublishersToNotifyByEmail() {
+        $qb = $this->createQueryBuilder('p')
+        ->andWhere('p.notified = :notified')->setParameter('notified', 0)
+        ->andWhere('p.email IS NOT NULL')
+        ->getQuery()
+        ->getResult();
+        
+        $publishers = array();
+        foreach ($qb as $publisher) {
+            $publishers[$publisher->getEvent()->getId()][$publisher->getEmail()][] = $publisher;
+        }
+        return $publishers;
+    }
+    
 //    /**
 //     * @return Publisher[] Returns an array of Publisher objects
 //     */

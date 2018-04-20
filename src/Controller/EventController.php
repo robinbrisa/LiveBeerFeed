@@ -210,9 +210,18 @@ class EventController extends Controller
         
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            foreach (explode("\r\n", $data['publishers_list']) as $publisherName) {
-                $publisher = new Publisher();
-                $publisher->setName(trim($publisherName));
+            foreach (explode("\r\n", $data['publishers_list']) as $publisherData) {
+                $dataArray = explode("|", $publisherData);
+                if (!$publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('name' => trim($dataArray[0])))) {
+                    $publisher = new Publisher();
+                    $publisher->setName(trim($dataArray[0]));
+                }
+                if (count($dataArray) > 1 && filter_var($dataArray[1], FILTER_VALIDATE_EMAIL)) {
+                    $publisher->setEmail($dataArray[1]);
+                    if (count($dataArray) > 2 && ($dataArray[2] == "fr" || $dataArray[2] == "en")) {
+                        $publisher->setLanguage($dataArray[2]);
+                    }
+                }
                 $publisher->setEvent($event);
                 $em->persist($publisher);
             }

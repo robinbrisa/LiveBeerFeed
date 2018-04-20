@@ -66,6 +66,9 @@ general:
     too_late: "Vous arrivez trop tard !"
     is_over: "%event% est terminé."
     cant_send_notifications_anymore: 'Il n''est plus possible d''envoyer de nouvelles notifications.'
+email:
+    notify_title: 'Votre code d''accès pour envoyer des notifications pendant %event%'
+    notify_title_batch: 'Liste de codes d''accès pour envoyer des notifications pendant %event%'
 event:
     form:
         publishers: 'Publicateurs'

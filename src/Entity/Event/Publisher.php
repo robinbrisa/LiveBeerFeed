@@ -45,6 +45,21 @@ class Publisher
     private $event;
     
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $email;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $language = 'en';
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $notified = false;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -56,6 +71,78 @@ class Publisher
      */
     private $updated_at;
     
+     /**
+     * Get $email
+     *
+     * @return mixed
+    */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+     /**
+     * Set $email
+     *
+     * @param mixed $email
+     *
+     * @return Publisher
+    */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        
+        return $this;
+    }
+
+     /**
+     * Get $language
+     *
+     * @return string
+    */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+     /**
+     * Set $language
+     *
+     * @param string $language
+     *
+     * @return Publisher
+    */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+        
+        return $this;
+    }
+
+     /**
+     * Get $notified
+     *
+     * @return mixed
+    */
+    public function getNotified()
+    {
+        return $this->notified;
+    }
+
+     /**
+     * Set $notified
+     *
+     * @param mixed $notified
+     *
+     * @return Publisher
+    */
+    public function setNotified($notified)
+    {
+        $this->notified = $notified;
+        
+        return $this;
+    }
+
     public function __toString()
     {
         return $this->name;

@@ -1,0 +1,9 @@
+{# app/Resources/views/easy_admin/Publisher/list.html.twig #}
+{% extends '@EasyAdmin/default/list.html.twig' %}
+
+{% block global_actions %}
+	{{ parent() }}
+	<div class="button-action">
+		<a class="btn btn-success" href="{{ url('notify_publishers') }}" target="_self">Notify Publishers</a>
+    </div>
+{% endblock %}
