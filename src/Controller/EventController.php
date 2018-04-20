@@ -53,7 +53,7 @@ class EventController extends Controller
     
     
     /**
-     * @Route("/",name="subdomain_alias", host="{eventID}.livebeerfeed.com", defaults={"subdomain"="lbf3"}, requirements={"subdomain"="lbf3"})
+     * @Route("/",name="subdomain_alias", host="{subdomain}.livebeerfeed.com", defaults={"subdomain"="lbf3"}, requirements={"subdomain"="lbf3"}, condition="subdomain != 'www'")
      */
     public function subdomainAlias($subdomain)
     {
