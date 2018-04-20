@@ -57,7 +57,7 @@ class EventController extends Controller
      */
     public function subdomainAlias($subdomain)
     {
-        return $this->redirectToRoute('event', array('eventID' => $subdomain));
+        return $this->redirect('https://www.livebeerfeed.com/event/'.$subdomain);
     }
     
     /**

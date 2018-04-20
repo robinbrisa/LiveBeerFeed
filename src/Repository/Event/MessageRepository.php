@@ -47,7 +47,7 @@ class MessageRepository extends ServiceEntityRepository
             $qb->expr()->isNull('m.end_date'),
             $qb->expr()->gte('m.end_date', ':end_date')
         ));
-        $qb->andWhere('validation_pending = 0');
+        $qb->andWhere('m.validation_pending = 0');
         return $qb->setParameter('end_date', new \DateTime(''))
         ->andWhere('m.event = :event')->setParameter('event', $event)
         ->orderBy('m.last_time_displayed', 'ASC')
@@ -55,6 +55,15 @@ class MessageRepository extends ServiceEntityRepository
         ->getQuery()
         ->getOneOrNullResult()
         ;
+    }
+    
+    public function findMessagesWaitingForValidation()
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.validation_pending = 1')
+            ->orderBy('m.start_time', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
     
     public function findLatestEventMessageByBroadcastDate($event, $minDate = null, $maxDate = null) {

@@ -39,6 +39,21 @@ class AdminController extends Controller
     }
     
     /**
+     * @Route("/admin/messages", name="validate_messages")
+     */
+    public function validateMessagesAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $em = $this->getDoctrine()->getManager();
+        $messages = $em->getRepository('App\Entity\Event\Message')->findMessagesWaitingForValidation();
+        
+        return $this->render('admin/validate.html.twig', [
+            'messages' => $messages,
+        ]);
+    }
+    
+    /**
      * @Route("/admin/notify_publishers", name="notify_publishers")
      */
     public function notifyPublishers(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator) {
