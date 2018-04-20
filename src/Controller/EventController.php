@@ -44,6 +44,23 @@ class EventController extends Controller
     }
     
     /**
+     * @Route("/e/{eventID}", name="event_alias")
+     */
+    public function event_alias($eventID)
+    {
+        return $this->redirectToRoute('event', array('eventID' => $eventID));
+    }
+    
+    
+    /**
+     * @Route("/",name="subdomain_alias", host="{eventID}.livebeerfeed.com", defaults={"subdomain"="lbf3"}, requirements={"subdomain"="lbf3"})
+     */
+    public function subdomainAlias($subdomain)
+    {
+        return $this->redirectToRoute('event', array('eventID' => $subdomain));
+    }
+    
+    /**
      * @Route("/event/{eventID}/post", name="post_message")
      */
     public function post_event_message($eventID, Request $request)
@@ -129,6 +146,10 @@ class EventController extends Controller
                 $startDate->modify('+'.$minutesToAdd.' minutes');
                 $endDate = clone $startDate;
                 $endDate = $endDate->modify('+ 10 minutes');
+                
+                if ($event->getModerated()) {
+                    $message->setValidationPending(1);
+                }
                 
                 if ($form->get('message_line_1_important')->getData()) {
                     $message->setMessageLine1('<span class="info-major">' . $message->getMessageLine1() . '</span>');

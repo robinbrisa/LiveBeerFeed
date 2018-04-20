@@ -121,3 +121,4 @@ event:
             highlighted: 'Les lignes surlignées s''afficheront dans une <span class="info-major">couleur différente</span>.'
             display_time: 'Votre message sera affiché pendant 10 minutes après l''heure de début.'
             must_not_share: 'Cette fonctionnalité ne doit pas être partagée avec les visiteurs.'
+            validation: '<strong>Note:</strong> Votre message sera validé avant publication, ce qui pourrait légèrement repousser sa date de début d''affichage.'

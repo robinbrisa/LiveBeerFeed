@@ -686,12 +686,13 @@ rating.small.r200{
 
 .message-timestamp {
 	border-top: 3px solid #e2e2e2;
-    width: 80px;
+    min-width: 80px;
     border-left: 3px solid #e2e2e2;
     border-right: 3px solid #e2e2e2;
-    padding: 0 4px;
+    padding: 0 10px;
     text-align: center;
     font-size: 18px;
+    display: inline-block;
 }
 
 .large-icon {

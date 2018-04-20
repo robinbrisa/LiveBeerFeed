@@ -59,9 +59,11 @@
         	{{ "event.post.disclaimer.keep_in_mind"|trans }}<br />
         	{{ "event.post.disclaimer.you_can_use_it"|trans }}<br /> 
         	{{ "event.post.disclaimer.post_limit"|trans }}<br /> 
+        	{{ "event.post.disclaimer.will_be_identified"|trans }}<br /> 
         	{{ "event.post.disclaimer.fill_the_lines"|trans }}<br /> 
         	{{ "event.post.disclaimer.highlighted"|trans|raw }}<br /> 
         	{{ "event.post.disclaimer.display_time"|trans }}<br /> 
+        	{% if event.moderated %}{{ "event.post.disclaimer.validation"|trans|raw }}<br /> {% endif %}
         	<strong class="info-major">{{ "event.post.disclaimer.must_not_share"|trans }}</strong>
         	</div>
         </div>

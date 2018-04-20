@@ -47,6 +47,7 @@ class MessageRepository extends ServiceEntityRepository
             $qb->expr()->isNull('m.end_date'),
             $qb->expr()->gte('m.end_date', ':end_date')
         ));
+        $qb->andWhere('validation_pending = 0');
         return $qb->setParameter('end_date', new \DateTime(''))
         ->andWhere('m.event = :event')->setParameter('event', $event)
         ->orderBy('m.last_time_displayed', 'ASC')

@@ -88,6 +88,11 @@ class Event
     private $screen_size = 'normal';
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $moderated = false;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -99,6 +104,30 @@ class Event
      */
     private $updated_at;
     
+     /**
+     * Get $moderated
+     *
+     * @return boolean
+    */
+    public function getModerated()
+    {
+        return $this->moderated;
+    }
+
+     /**
+     * Set $moderated
+     *
+     * @param boolean $moderated
+     *
+     * @return Event
+    */
+    public function setModerated($moderated)
+    {
+        $this->moderated = $moderated;
+        
+        return $this;
+    }
+
     public function __toString()
     {
         return $this->name;

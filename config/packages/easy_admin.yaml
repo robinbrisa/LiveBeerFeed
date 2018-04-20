@@ -14,6 +14,7 @@ easy_admin:
                     - style
                     - { property: 'screen_size', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Normal': 'normal', 'Small': 'small' } } }
                     - { property: 'locale', type: 'Symfony\Component\Form\Extension\Core\Type\LanguageType', type_options: { required: true, choices: { 'English': 'en', 'Français': 'fr' }, choice_loader: null } }
+                    - moderated
             list:
                 actions:
                     - { name: 'reload_clients', icon: 'refresh', type: 'route' }
@@ -26,6 +27,7 @@ easy_admin:
                     - message_line_3
                     - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
                     - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
+                    - do_not_broadcast
                     - event
         Style:
             class: App\Entity\Event\Style

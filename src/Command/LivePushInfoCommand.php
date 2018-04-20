@@ -94,9 +94,16 @@ class LivePushInfoCommand extends Command
                     $output->writeln(sprintf('[%s] Sending notification for a new message.', date('H:i:s')));
                     $subscribers = $this->em->getRepository('\App\Entity\PushSubscription')->findBy(array('event' => $event));
                            
-                    $message = strip_tags($broadcastMessage->getMessageLine1()) . ' ' . strip_tags($broadcastMessage->getMessageLine2()) . ' ' . strip_tags($broadcastMessage->getMessageLine3());
+                    if ($message->getPublisher()) {
+                        $title = $message->getPublisher()->getName() . ' @ ' . $event->getName();
+                    } else {
+                        $title = $event->getName();
+                    }
                     
-                    $this->push_notification->pushNotification($subscribers, $event->getName(), $message, $event->getEventLogoNotification(), array('eventID' => $event->getId()));
+                    $message = strip_tags($broadcastMessage->getMessageLine1()) . ' ' . strip_tags($broadcastMessage->getMessageLine2()) . ' ' . strip_tags($broadcastMessage->getMessageLine3());
+                    if (!$message->getDoNotBroadcast()) {
+                        $this->push_notification->pushNotification($subscribers, $title, $message, $event->getEventLogoNotification(), array('eventID' => $event->getId()));
+                    }
                     
                     $data['push_type'] = 'notification';
                     $data['push_topic'] = 'notifications-'.$event->getId();

@@ -121,3 +121,4 @@ event:
             highlighted: 'Highlighted lines will display in a <span class="info-major">different color</span>.'
             display_time: 'Your message will be displayed for 10 minutes after the start time.'
             must_not_share: 'This functionnality must not be shared with visitors.'
+            validation: '<strong>Note:</strong> Your message will be validated before being published, which could lightly postpone the time when it begins to display.'

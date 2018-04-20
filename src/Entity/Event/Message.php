@@ -62,6 +62,16 @@ class Message
     private $broadcast_date;
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $validation_pending = 1;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $do_not_broadcast = 0;
+    
+    /**
      * @ORM\ManyToOne(targetEntity="Event", inversedBy="messages")
      * @ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -86,6 +96,54 @@ class Message
     private $updated_at;
     
     
+    /**
+     * Get $validation_pending
+     *
+     * @return number
+    */
+    public function getValidationPending()
+    {
+        return $this->validation_pending;
+    }
+
+     /**
+     * Set $validation_pending
+     *
+     * @param number $validation_pending
+     *
+     * @return Message
+    */
+    public function setValidationPending($validation_pending)
+    {
+        $this->validation_pending = $validation_pending;
+        
+        return $this;
+    }
+
+    /**
+     * Get $do_not_broadcast
+     *
+     * @return number
+    */
+    public function getDoNotBroadcast()
+    {
+        return $this->do_not_broadcast;
+    }
+
+     /**
+     * Set $do_not_broadcast
+     *
+     * @param number $do_not_broadcast
+     *
+     * @return Message
+    */
+    public function setDoNotBroadcast($do_not_broadcast)
+    {
+        $this->do_not_broadcast = $do_not_broadcast;
+        
+        return $this;
+    }
+
     public function __toString()
     {
         $name = strip_tags($this->message_line_1) . "|" . strip_tags($this->message_line_2) . "|" . strip_tags($this->message_line_3);
