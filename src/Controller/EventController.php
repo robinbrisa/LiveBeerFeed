@@ -53,15 +53,11 @@ class EventController extends Controller
     
     
     /**
-     * @Route("/",name="subdomain_alias", host="{subdomain}.livebeerfeed.com", defaults={"subdomain"="lbf3"}, requirements={"subdomain"="lbf3"}, condition="subdomain != 'www'")
+     * @Route("/",name="subdomain_alias", host="{subdomain}.livebeerfeed.com", requirements={"subdomain"="lbf3"})
      */
     public function subdomainAlias($subdomain)
     {
-        if ($subdomain = "www") {
-            return $this->redirectToRoute('homepage');
-        } else {
-            return $this->redirect('https://www.livebeerfeed.com/event/'.$subdomain);
-        }
+        return $this->redirect('https://www.livebeerfeed.com/event/'.$subdomain);
     }
     
     /**
