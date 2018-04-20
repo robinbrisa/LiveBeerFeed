@@ -59,6 +59,11 @@ stats:
     unique_users:
         title: 'Active Untappd Users'
         total: '%count% users were active around here today'
+    most_active_users:
+        title: 'Most active users'
+        last_four_hours: 'Most active users (last 4 hours)'
+        first: 'First check-in'
+    checkins: '{0}%count% check-ins|{1}%count% check-in|]1, Inf[%count% check-ins'
 general:
     too_early: "You're too early!"
     not_started_yet: "%event% hasn't started yet."

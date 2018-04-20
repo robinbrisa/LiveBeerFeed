@@ -10,7 +10,7 @@
     	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine3|raw }}</span></div>
     </div>
     <a class="btn btn-warning" href="/admin?entity=Message&action=edit&id={{ message.id }}&referer={{ app.request.pathinfo }}">Edit</a>
-    <a class="btn btn-danger" href="/admin/validate/decline?id={{ message.id }}&referer={{ app.request.pathinfo }}">Decline</a>
-    <a class="btn btn-primary" href="/admin/validate/confirm?id={{ message.id }}&no_broadcast=true&referer={{ app.request.pathinfo }}">No Bcast</a>
-    <a class="btn btn-success" href="/admin/validate/confirm?id={{ message.id }}&referer={{ app.request.pathinfo }}">Validate</a>
+    <a class="btn btn-danger" href="/admin/validate/decline?id={{ message.id }}&referer=/admin/validate">Decline</a>
+    <a class="btn btn-primary" href="/admin/validate/confirm?id={{ message.id }}&no_broadcast=true&referer=/admin/validate">No Bcast</a>
+    <a class="btn btn-success" href="/admin/validate/confirm?id={{ message.id }}&referer=/admin/validate">Validate</a>
 </div>

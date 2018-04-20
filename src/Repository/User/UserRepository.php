@@ -61,10 +61,10 @@ class UserRepository extends ServiceEntityRepository
         ->getResult();
     }
     
-    public function getMostCheckinsCount($uid = null, $venues = null, $minDate = null, $maxDate = null)
+    public function getMostCheckinsCount($uid = null, $venues = null, $minDate = null, $maxDate = null, $limit = 1)
     {
         $qb = $this->createQueryBuilder('u')
-        ->select('u, COUNT(c) AS total')
+        ->select('u, COUNT(c) AS total, MIN(c.created_at) AS first')
         ->join('u.checkins', 'c');
         if (!is_null($uid)) {
             $qb->andWhere('c.user = :id')->setParameter('id', $uid);
@@ -78,11 +78,14 @@ class UserRepository extends ServiceEntityRepository
         if (!is_null($maxDate)) {
             $qb->andWhere('c.created_at <= :maxDate')->setParameter('maxDate', $maxDate);
         };
-        return $qb->groupBy('u.id')
+        $qb->groupBy('u.id')
         ->orderBy('total', 'DESC')
-        ->setMaxResults(1)
-        ->getQuery()
-        ->getOneOrNullResult();
+        ->setMaxResults($limit);
+        if ($limit > 1) {
+            return $qb->getQuery()->getResult();
+        } else {
+            return $qb->getQuery()->getOneOrNullResult();
+        }
     }
     
     public function getNoRatingCheckinsCount($uid = null, $venues = null, $minDate = null, $maxDate = null)

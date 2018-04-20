@@ -4,6 +4,7 @@ var nextRefreshInfoQueued = false;
 var infoLoadDelay = infoLoadDelay || 5000;
 var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
 var eventPageInfoScrollAnimationDuration = eventPageInfoScrollAnimationDuration || 2000;
+var locale = locale || 'en';
 
 $(document).ready(function() {
 	if (locale !== undefined) {

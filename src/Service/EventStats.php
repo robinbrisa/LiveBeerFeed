@@ -131,6 +131,20 @@ class EventStats
                 'content' => $mostRatedStyles
             );
         }
+        if ($mostActiveUsers = $this->em->getRepository('\App\Entity\User\User')->getMostCheckinsCount(null, $venues, $event->getStartDate(), $event->getEndDate(), 5)) {
+            $stats['most_active_users'] = array(
+                'label' => 'stats.most_active_users.title',
+                'template' => 'most_active_users',
+                'content' => $mostActiveUsers
+            );
+        }
+        if ($mostActiveUsers4hrs = $this->em->getRepository('\App\Entity\User\User')->getMostCheckinsCount(null, $venues, new \DateTime('- 4 hour'), null, 5)) {
+            $stats['most_active_users_4_hr'] = array(
+                'label' => 'stats.most_active_users.last_four_hours',
+                'template' => 'most_active_users',
+                'content' => $mostActiveUsers4hrs
+            );
+        }
         
         if ($render) {
             foreach ($stats as $key => $stat) {

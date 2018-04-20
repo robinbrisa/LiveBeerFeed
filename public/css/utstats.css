@@ -107,6 +107,24 @@ a {
 	display: block;
 }
 
+
+.ranking-line .avatar-wrapper {
+	border-radius: 64px;
+	margin:4px;
+	width: 58px;
+	height: 58px;
+	border: 2px solid #f5f2e8;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.ranking-line .avatar-wrapper img{
+	width: 100%;
+	display: block;
+}
+
+
 #live-venue-title {
 	margin: 5px;
 	height: 40px;

@@ -1,0 +1,18 @@
+{% set i = 0 %}
+<ul class="ranking">
+{% for user in data %}
+	{% set i = i + 1 %}
+    <li class="ranking-line" data-user="{{ user[0].id }}">
+    	<div class="avatar-wrapper">
+    		<a href="https://www.untappd.com/user/{{ user[0].id }}" target="_blank">
+    			<img src="{{ user[0].useravatar }}" />
+    		</a>
+    	</div>
+    	<div class="beer-info">
+        	<div class="beer-info-line">{{ user[0].untappdLinkFull|raw }}</div>
+        	<div class="beer-info-line">{% transchoice user.total with {'%count%': user.total} %}stats.checkins{% endtranschoice %}</span></div>
+        	<div class="beer-info-line">{{ "stats.most_active_users.first"|trans }}: {{ user.first|date('d/m H:i') }}</div>
+        </div>
+    </li>
+{% endfor %}
+</ul>

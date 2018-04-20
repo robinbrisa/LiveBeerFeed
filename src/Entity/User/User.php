@@ -237,6 +237,14 @@ class User
         return '<a href="https://untappd.com/user/'.$this->user_name.'" target="_blank">'.$this->first_name.'</a>';
     }
     
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("untappd_link_full")
+     */
+    public function getUntappdLinkFull() {
+        return '<a href="https://untappd.com/user/'.$this->user_name.'" target="_blank">'.$this->first_name.' '.$this->last_name.'</a>';
+    }
+    
     public function addFriend(User $friend, $date)
     {
         $fs = new Friendship();

@@ -59,6 +59,11 @@ stats:
     unique_users:
         title: 'Utilisateurs <i>Untappd</i> aperçus'
         total: '%count% utilisateurs étaient actifs aujourd''hui'
+    most_active_users:
+        title: 'Utilisateurs les plus actifs'
+        last_four_hours: 'Les plus actifs (4 heures)'
+        first: 'Premier check-in'
+    checkins: '{0}%count% check-ins|{1}%count% check-in|]1, Inf[%count% check-ins'
 general:
     too_early: "Vous arrivez trop tôt !"
     not_started_yet: "%event% n'a pas encore commencé."

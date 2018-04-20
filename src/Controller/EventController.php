@@ -147,10 +147,6 @@ class EventController extends Controller
                 $endDate = clone $startDate;
                 $endDate = $endDate->modify('+ 10 minutes');
                 
-                if ($event->getModerated()) {
-                    $message->setValidationPending(1);
-                }
-                
                 if ($form->get('message_line_1_important')->getData()) {
                     $message->setMessageLine1('<span class="info-major">' . $message->getMessageLine1() . '</span>');
                 }
@@ -164,6 +160,21 @@ class EventController extends Controller
                 $message->setStartDate($startDate);
                 $message->setEndDate($endDate);
                 $message->setPublisher($publisher);
+                
+                if ($event->getModerated()) {
+                    $message->setValidationPending(1);
+                    
+                    $data['push_type'] = 'validation';
+                    $data['push_topic'] = 'validation';
+                    $data['message'] = $this->renderView('admin/templates/notification.template.html.twig', ['message' => $message]);
+                    
+                    $context = new \ZMQContext();
+                    $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+                    $socket->connect("tcp://localhost:5555");
+                    $socket->send(json_encode($data));
+                    $socket->disconnect("tcp://localhost:5555");
+                }
+                
                 $em->persist($message);
                 
                 $publisher->setLastPublicationDate(new \DateTime('now'));
