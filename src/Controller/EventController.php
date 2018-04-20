@@ -18,7 +18,7 @@ use App\Entity\Event\Publisher;
 class EventController extends Controller
 {
     /**
-     * @Route("/event/{eventID}", name="event")
+     * @Route("/event/{eventID}/", name="event")
      */
     public function index($eventID, EventStats $stats)
     {
@@ -44,7 +44,7 @@ class EventController extends Controller
     }
     
     /**
-     * @Route("/e/{eventID}", name="event_alias")
+     * @Route("/e/{eventID}/", name="event_alias")
      */
     public function event_alias($eventID)
     {
@@ -57,11 +57,15 @@ class EventController extends Controller
      */
     public function subdomainAlias($subdomain)
     {
-        return $this->redirect('https://www.livebeerfeed.com/event/'.$subdomain);
+        if ($subdomain = "www") {
+            return $this->redirectToRoute('homepage');
+        } else {
+            return $this->redirect('https://www.livebeerfeed.com/event/'.$subdomain);
+        }
     }
     
     /**
-     * @Route("/event/{eventID}/post", name="post_message")
+     * @Route("/event/{eventID}/post/", name="post_message")
      */
     public function post_event_message($eventID, Request $request)
     {
@@ -196,7 +200,7 @@ class EventController extends Controller
     }
     
     /**
-     * @Route("/event/{eventID}/logout", name="post_logout")
+     * @Route("/event/{eventID}/logout/", name="post_logout")
      */
     public function post_logout($eventID, Request $request)
     {
@@ -216,7 +220,7 @@ class EventController extends Controller
     }
     
     /**
-     * @Route("/event/{eventID}/publishers", name="post_mass_create_publishers")
+     * @Route("/event/{eventID}/publishers/", name="post_mass_create_publishers")
      */
     public function post_mass_create_publishers($eventID, Request $request)
     {
