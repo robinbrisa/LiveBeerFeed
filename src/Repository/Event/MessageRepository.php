@@ -61,7 +61,7 @@ class MessageRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.validation_pending = 1')
-            ->orderBy('m.start_time', 'ASC')
+            ->orderBy('m.start_date', 'ASC')
             ->getQuery()
             ->getResult();
     }

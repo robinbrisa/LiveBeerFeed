@@ -100,8 +100,8 @@ class LivePushInfoCommand extends Command
                         $title = $event->getName();
                     }
                     
-                    $message = strip_tags($broadcastMessage->getMessageLine1()) . ' ' . strip_tags($broadcastMessage->getMessageLine2()) . ' ' . strip_tags($broadcastMessage->getMessageLine3());
-                    if (!$message->getDoNotBroadcast()) {
+                    if (!$broadcastMessage->getDoNotBroadcast()) {
+                        $message = strip_tags($broadcastMessage->getMessageLine1() . ' ' . $broadcastMessage->getMessageLine2() . ' ' . $broadcastMessage->getMessageLine3());
                         $this->push_notification->pushNotification($subscribers, $title, $message, $event->getEventLogoNotification(), array('eventID' => $event->getId()));
                     }
                     

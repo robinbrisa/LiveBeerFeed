@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class AdminController extends Controller
@@ -39,7 +40,7 @@ class AdminController extends Controller
     }
     
     /**
-     * @Route("/admin/messages", name="validate_messages")
+     * @Route("/admin/validate", name="validate_messages")
      */
     public function validateMessagesAction(Request $request)
     {
@@ -51,6 +52,62 @@ class AdminController extends Controller
         return $this->render('admin/validate.html.twig', [
             'messages' => $messages,
         ]);
+    }
+    
+    /**
+     * @Route("/admin/validate/confirm", name="validate_messages_confirm")
+     */
+    public function confirmMessageAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $em = $this->getDoctrine()->getManager();
+        $request = Request::createFromGlobals();
+        $message = $em->getRepository('App\Entity\Event\Message')->find($request->query->get('id'));
+        if ($message) {
+            if ($message->getStartDate() < new \DateTime('now')) {
+                $message->setStartDate(new \DateTime('now'));
+                $endDate = new \DateTime('now');
+                $endDate->modify('+ 10 minutes');
+                $message->setEndDate($endDate);
+            }
+            $message->setValidationPending(0);
+            if ($request->query->get('no_broadcast')) {
+                $message->setDoNotBroadcast(1);
+            }
+            $em->persist($message);
+            $em->flush();
+        } 
+        
+        if ($request->query->get('referer')) {
+            return $this->redirect(urldecode($request->query->get('referer')));
+        } else {
+            return $this->redirectToRoute('validate_messages');
+        }
+    }
+    
+    /**
+     * @Route("/admin/validate/decline", name="validate_messages_decline")
+     */
+    public function declineMessageAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $em = $this->getDoctrine()->getManager();
+        $request = Request::createFromGlobals();
+        $message = $em->getRepository('App\Entity\Event\Message')->find($request->query->get('id'));
+        if ($message) {
+            $publisher = $message->getPublisher();
+            $publisher->setLastPublicationDate(null);
+            $publisher->setRemainingMessages($publisher->getRemainingMessages() + 1);
+            $em->persist($publisher);
+            $em->remove($message);
+            $em->flush();
+        }
+        
+        if ($request->query->get('referer')) {
+            return $this->redirect(urldecode($request->query->get('referer')));
+        } else {
+            return $this->redirectToRoute('validate_messages');
+        }
     }
     
     /**

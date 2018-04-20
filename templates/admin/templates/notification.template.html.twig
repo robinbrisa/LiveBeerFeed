@@ -1,0 +1,16 @@
+<div class="notification-history-element">
+    <div class="message-timestamp">
+        {% if message.publisher %} <i class="fa fa-user-o" aria-hidden="true"></i> {{ message.publisher.name }}{% endif %}
+   		<div>{{ message.event.name }}</div>
+   		<div style="{% if "now"|date('Y-m-d H:i:s') > message.startDate|date('Y-m-d H:i:s') %}color: red;{% endif %}">Starts: {{ message.startDate|date('d/m/Y H:i:s') }}</div>
+    </div>
+    <div id="info-content">
+    	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine1|raw }}</span></div>
+    	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine2|raw }}</span></div>
+    	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine3|raw }}</span></div>
+    </div>
+    <a class="btn btn-warning" href="/admin?entity=Message&action=edit&id={{ message.id }}&referer={{ app.request.pathinfo }}">Edit</a>
+    <a class="btn btn-danger" href="/admin/validate/decline?id={{ message.id }}&referer={{ app.request.pathinfo }}">Decline</a>
+    <a class="btn btn-primary" href="/admin/validate/confirm?id={{ message.id }}&no_broadcast=true&referer={{ app.request.pathinfo }}">No Bcast</a>
+    <a class="btn btn-success" href="/admin/validate/confirm?id={{ message.id }}&referer={{ app.request.pathinfo }}">Validate</a>
+</div>

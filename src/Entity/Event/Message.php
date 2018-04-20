@@ -21,21 +21,21 @@ class Message
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max = 90, maxMessage = "Line 1 is too long")
+     * @Assert\Length(max = 100, maxMessage = "Line 1 is too long")
      * @ORM\Column(type="string")
      */
     private $message_line_1;
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max = 90, maxMessage = "Line 2 is too long")
+     * @Assert\Length(max = 100, maxMessage = "Line 2 is too long")
      * @ORM\Column(type="string")
      */
     private $message_line_2;
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max = 90, maxMessage = "Line 3 is too long")
+     * @Assert\Length(max = 100, maxMessage = "Line 3 is too long")
      * @ORM\Column(type="string")
      */
     private $message_line_3;
@@ -64,7 +64,7 @@ class Message
     /**
      * @ORM\Column(type="boolean")
      */
-    private $validation_pending = 1;
+    private $validation_pending = 0;
     
     /**
      * @ORM\Column(type="boolean")

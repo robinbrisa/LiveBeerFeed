@@ -1,5 +1,6 @@
 <div class="notification-history-element">
-    <div class="message-timestamp">{% if message.publisher %} <i class="fa fa-user-o" aria-hidden="true"></i> {{ message.publisher.name }}{% endif %} <i class="fa fa-clock-o" aria-hidden="true"></i> {{ message.getBroadcastDate|date('H:i') }}</div>
+    <div class="message-timestamp">{% if message.publisher %} <i class="fa fa-user-o" aria-hidden="true"></i> {{ message.publisher.name }}{% endif %} <i class="fa fa-clock-o" aria-hidden="true"></i> {{ message.getBroadcastDate|date('H:i') }}
+    </div>
     <div id="info-content">
     	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine1|raw }}</span></div>
     	<div class="line visitor"><span class="info-line-text">{{ message.getMessageLine2|raw }}</span></div>
