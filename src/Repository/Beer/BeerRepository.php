@@ -133,5 +133,4 @@ class BeerRepository extends ServiceEntityRepository
             return $qb->getQuery()->getOneOrNullResult();
         }
     }
-    
 }

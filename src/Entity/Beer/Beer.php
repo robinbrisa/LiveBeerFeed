@@ -82,7 +82,7 @@ class Beer
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $monthly_count;
+    private $unique_count;
     
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Brewery\Brewery", inversedBy="beers", cascade={"persist"})
@@ -455,31 +455,31 @@ class Beer
     {
         return $this->total_count;
     }
-
+    
     /**
-     * Set monthlyCount
+     * Set uniqueCount
      *
-     * @param integer $monthlyCount
+     * @param integer $uniqueCount
      *
      * @return Beer
      */
-    public function setMonthlyCount($monthlyCount)
+    public function setUniqueCount($uniqueCount)
     {
-        $this->monthly_count = $monthlyCount;
-
+        $this->unique_count = $uniqueCount;
+        
         return $this;
     }
-
+    
     /**
-     * Get monthlyCount
+     * Get uniqueCount
      *
      * @return integer
      */
-    public function getMonthlyCount()
+    public function getUniqueCount()
     {
-        return $this->monthly_count;
+        return $this->unique_count;
     }
-
+    
     /**
      * Set brewery
      *
