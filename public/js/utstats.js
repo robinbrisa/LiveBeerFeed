@@ -6,6 +6,8 @@ var infoScrollAnimationDuration = infoScrollAnimationDuration || 500;
 var eventPageInfoScrollAnimationDuration = eventPageInfoScrollAnimationDuration || 2000;
 var locale = locale || 'en';
 
+var taplistFilters = {};
+
 $(document).ready(function() {
 	if (locale !== undefined) {
 		moment.locale(locale);
@@ -48,6 +50,35 @@ $(document).ready(function() {
 		$('#form_startTime').attr('min', minTime);
 	}
 
+	$('#filters-close').click(function() {
+		$('#filters-menu').fadeOut(100);
+		$('#filters-open').fadeIn(100);
+	});
+	
+	$('#filters-open').click(function() {
+		$('#filters-menu').fadeIn(100);
+		$('#filters-open').fadeOut(100);
+	})
+	
+	$('.tick').click(function() {
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active');
+		} else {
+			$(this).addClass('active');
+		}
+	})
+	
+	$('.favorite').click(function() {
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active');
+			$(this).children('i').addClass('fa-star-o');
+			$(this).children('i').removeClass('fa-star');
+		} else {
+			$(this).addClass('active');
+			$(this).children('i').removeClass('fa-star-o');
+			$(this).children('i').addClass('fa-star');
+		}
+	})
 });
 
 function pushServer(){

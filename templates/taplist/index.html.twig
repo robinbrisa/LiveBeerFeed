@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} Taplist{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+        
+{% block body %}
+{% if event.style %}
+    <style>
+    	#live-venue-title {
+            {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
+            {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
+        }
+        {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
+        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
+        .subscribe-button { background-color: {{ event.style.majorInfoColor }}; color: white; }
+    </style>
+{% endif %}
+
+
+<div class="main-wrapper">
+    <div id="event-taplist" class="container" data-event-id="{{ event.id }}">
+        <div id="live-venue-title">
+        	{% if event.style and event.style.untappdLogoStyle %}
+        		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
+        	{% else %}
+        		{% set untappdLogo = 'untappd_black' %}
+        	{% endif %}
+            <div class="description">
+            	{% if event.eventLogo %}
+            		<img src="{{ asset("images/events/") ~ event.eventLogo }}" />
+            	{% else %}
+    				{{ event.name }}
+            	{% endif %}
+            </div>
+        </div>
+        
+        {% for session in event.sessions %}
+            {% for beer in session.beers  %}
+	            {% include 'taplist/templates/beer.template.html.twig' with { 'beer': beer, 'session': session  } %}
+            {% endfor %}
+        {% endfor %}
+        
+        <div id="filters-menu">
+            <button id="filters-close" type="button" class="close" aria-label="Close">
+            	<span aria-hidden="true">&times;</span>
+            </button>
+			<h1 class="display-4">Filters</h1>
+        </div>
+        
+        <div id="filters-open">
+        	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+        	<span class="filter-open-desc">Filter/Sort</span>
+        </div>
+    </div>
+</div>
+<script>
+var locale = "{{ app.request.locale }}";
+var websocket = "{{ websocket }}";
+</script>
+{% endblock %}

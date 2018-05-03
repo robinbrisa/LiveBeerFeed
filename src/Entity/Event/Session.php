@@ -42,6 +42,11 @@ class Session
     private $event;
     
     /**
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private $color = '#000000';
+    
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer")
      * @ORM\JoinTable(name="event_session_taplist",
      *      joinColumns={@ORM\JoinColumn(name="session_id", referencedColumnName="id")},
@@ -50,6 +55,30 @@ class Session
      */
     private $beers;
     
+     /**
+     * Get $color
+     *
+     * @return string
+    */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+     /**
+     * Set $color
+     *
+     * @param string $color
+     *
+     * @return Session
+    */
+    public function setColor($color)
+    {
+        $this->color = $color;
+        
+        return $this;
+    }
+
     public function __toString() {
         return $this->name;
     }

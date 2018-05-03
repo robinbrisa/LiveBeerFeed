@@ -27,6 +27,7 @@ easy_admin:
                     - event
                     - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
                     - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
+                    - { property: 'color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
                     - { property: 'beers', type_options: { by_reference: false} }
         Message:
             class: App\Entity\Event\Message

@@ -22,8 +22,8 @@ class Tools
     
     public function getRatingImage($rating) {
         $rating = round(round($rating * 4) / 4, 2);
-        if ($rating < 0.25) {
-            $rating = 0.25;
+        if ($rating < 0) {
+            $rating = 0;
         }
         if ($rating > 5) {
             $rating = 5;

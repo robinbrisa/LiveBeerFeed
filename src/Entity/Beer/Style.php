@@ -29,11 +29,40 @@ class Style
     private $color;
     
     /**
+     * @ORM\Column(type="string")
+     */
+    private $category;
+    
+    /**
      * @ORM\OneToMany(targetEntity="Beer", mappedBy="style")
      * @JMS\Exclude()
      */
     private $beers;
     
+     /**
+     * Get $category
+     *
+     * @return mixed
+    */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+     /**
+     * Set $category
+     *
+     * @param mixed $category
+     *
+     * @return Style
+    */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+        
+        return $this;
+    }
+
     public function __construct() {
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
     }
