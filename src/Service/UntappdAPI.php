@@ -265,7 +265,9 @@ class UntappdAPI
         }
         
         $response = Unirest\Request::get($this->APIUrl . '/v4/beer/info/' . $beerID, $headers, $query);
-        if ($response->code != 200) {
+        if ($response->code == 404) {
+            return "DELETED";
+        } elseif ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
             $this->logAPIQuery('/v4/beer/info/' . $beerID, $response, $accessToken);

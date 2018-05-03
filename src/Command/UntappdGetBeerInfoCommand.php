@@ -47,10 +47,14 @@ class UntappdGetBeerInfoCommand extends Command
         }
                 
         if ($response = $this->untappdAPI->getBeerInfo($id, $apiKey)) {
-            $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
-            $beerData = $response->body->response->beer;
-            $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
-            $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
+            if ($response == "DELETED") {
+                $output->writeln(sprintf('[%s] This beer has been deleted from Untappd', date('H:i:s')));
+            } else {
+                $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
+                $beerData = $response->body->response->beer;
+                $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
+                $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
+            }
         } else {
             $output->writeln(sprintf('[%s] Couldn\'t get beer information', date('H:i:s')));
         }

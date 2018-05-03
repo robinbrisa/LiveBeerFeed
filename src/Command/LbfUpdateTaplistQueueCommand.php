@@ -58,22 +58,28 @@ class LbfUpdateTaplistQueueCommand extends Command
                 }
                 
                 if ($response = $this->untappdAPI->getBeerInfo($queue[0]->getUntappdId(), $apiKey)) {
-                    $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
-                    $beerData = $response->body->response->beer;
-                    $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
-                    $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
-                    if ($beer) {
-                        if (!$session->getBeers()->contains($beer)) {
-                            $session->addBeer($beer);
-                            $this->em->persist($session);
-                        } else {
-                            $output->writeln(sprintf('[%s] Beer was already in taplist', date('H:i:s')));
-                        }
+                    if ($response == "DELETED") {
                         $this->em->remove($queue[0]);
                         $this->em->flush();
-                        $output->writeln(sprintf('[%s] Beer has been moved from queue to taplist', date('H:i:s')));
+                        $output->writeln(sprintf('[%s] Beer has been deleted from Untappd, removing from queue', date('H:i:s')));
                     } else {
-                        $output->writeln(sprintf('[%s] Couldn\'t find the created beer', date('H:i:s')));
+                        $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
+                        $beerData = $response->body->response->beer;
+                        $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
+                        $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
+                        if ($beer) {
+                            if (!$session->getBeers()->contains($beer)) {
+                                $session->addBeer($beer);
+                                $this->em->persist($session);
+                            } else {
+                                $output->writeln(sprintf('[%s] Beer was already in taplist', date('H:i:s')));
+                            }
+                            $this->em->remove($queue[0]);
+                            $this->em->flush();
+                            $output->writeln(sprintf('[%s] Beer has been moved from queue to taplist', date('H:i:s')));
+                        } else {
+                            $output->writeln(sprintf('[%s] Couldn\'t find the created beer', date('H:i:s')));
+                        }
                     }
                 } else {
                     $output->writeln(sprintf('[%s] Couldn\'t get beer information', date('H:i:s')));
