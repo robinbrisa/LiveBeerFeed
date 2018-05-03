@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\UntappdAPI;
 use App\Service\UntappdAPISerializer;
+use App\Service\Tools;
 
 class UntappdGetBeerInfoCommand extends Command
 {
@@ -25,19 +26,27 @@ class UntappdGetBeerInfoCommand extends Command
         ;
     }
     
-    public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer) {
+    public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer, Tools $tools) {
         $this->untappdAPI = $untappdAPI;
         $this->untappdAPISerializer = $untappdAPISerializer;
+        $this->tools = $tools;
         
         parent::__construct();
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
         $id = $input->getArgument('id');
         
-        if ($response = $this->untappdAPI->getBeerInfo($id)) {
+        $apiKeyPool = $this->tools->getAPIKeysPool();
+        $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
+        
+        if ($apiKey === false) {
+            $output->writeln(sprintf('[%s] No more API keys available', date('H:i:s')));
+            return false;
+        }
+                
+        if ($response = $this->untappdAPI->getBeerInfo($id, $apiKey)) {
             $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
             $beerData = $response->body->response->beer;
             $beer = $this->untappdAPISerializer->handleBeerObject($beerData);

@@ -50,12 +50,18 @@ class LbfUpdateTaplistQueueCommand extends Command
                     '-e'  => 'prod',
                     '--no-debug'  => true,
                 );
+                
+                $session = $queue[0]->getSession();
+                
                 $beerInfoCommand->run(new ArrayInput($arguments), $output);
                 $beer = $this->em->getRepository('App\Entity\Beer\Beer')->find($queue[0]->getUntappdId());
                 if ($beer) {
-                    $session = $queue[0]->getSession();
-                    $session->addBeer($beer);
-                    $this->em->persist($session);
+                    if (!$session->getBeers()->contains($beer)) {
+                        $session->addBeer($beer);
+                        $this->em->persist($session);
+                    } else {
+                        $output->writeln(sprintf('[%s] Beer was already in taplist', date('H:i:s')));
+                    }
                     $this->em->remove($queue[0]);
                     $this->em->flush();
                     $output->writeln(sprintf('[%s] Beer has been moved from queue to taplist', date('H:i:s')));

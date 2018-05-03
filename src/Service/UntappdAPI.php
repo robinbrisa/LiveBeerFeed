@@ -246,24 +246,29 @@ class UntappdAPI
      * This method will allow you to see extended information about a beer.
      *
      * @param integer $beerID The Brewery ID that you want to display checkins
+     * @param string $accessToken The API token to use
      * @param string $compact You can pass "true" here only show the beer infomation, and remove the "checkins", "media", "variants", etc attributes
      *
      * @return string Returns a JSON object containing the beer info
      */
-    public function getBeerInfo($beerID, $compact = "false")
+    public function getBeerInfo($beerID, $accessToken = null, $compact = "false")
     {
         $headers = array('Accept' => 'application/json');
         $query = array(
-            'client_id' => $this->clientID,
-            'client_secret' => $this->clientSecret,
             'compact' => $compact
         );
+        if (is_null($accessToken)) {
+            $query['client_id'] = $this->clientID;
+            $query['client_secret'] = $this->clientSecret;
+        } else {
+            $query['access_token'] = $accessToken;
+        }
         
         $response = Unirest\Request::get($this->APIUrl . '/v4/beer/info/' . $beerID, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery('/v4/beer/info/' . $beerID, $response);
+            $this->logAPIQuery('/v4/beer/info/' . $beerID, $response, $accessToken);
         }
         return $response;
     }
@@ -297,6 +302,7 @@ class UntappdAPI
      * This method will allow you to see the history of checkins for a venue.
      *
      * @param integer $venueID The Venue ID that you want to display checkins
+     * @param string $accessToken The API token to use
      * @param integer $max_id The checkin ID that you want the results to start with
      * @param integer $min_id Returns only checkins that are newer than this value
      * @param integer $limit The number of results to return, max of 50, default is 25
