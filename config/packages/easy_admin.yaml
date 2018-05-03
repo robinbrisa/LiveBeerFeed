@@ -9,6 +9,7 @@ easy_admin:
                     - slug
                     - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, time_widget: single_text }  }
                     - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: true, date_widget: single_text, time_widget: single_text }  }
+                    - sessions
                     - venues
                     - { property: 'messages', type_options: { by_reference: false} }
                     - style
@@ -18,6 +19,15 @@ easy_admin:
             list:
                 actions:
                     - { name: 'reload_clients', icon: 'refresh', type: 'route' }
+        Session:
+            class: App\Entity\Event\Session
+            form:
+                fields:
+                    - name
+                    - event
+                    - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
+                    - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
+                    - { property: 'beers', type_options: { by_reference: false} }
         Message:
             class: App\Entity\Event\Message
             form:

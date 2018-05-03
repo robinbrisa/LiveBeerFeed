@@ -11,17 +11,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\UntappdAPI;
 use App\Service\UntappdAPISerializer;
 
-class UntappdGetBreweryInfoCommand extends Command
+class UntappdGetBeerInfoCommand extends Command
 {
-    protected static $defaultName = 'untappd:get:brewery:info';
+    protected static $defaultName = 'untappd:get:beer:info';
     private $untappdAPI;
     private $untappdAPISerializer;
     
     protected function configure()
     {
         $this
-        ->setDescription('Gets brewery information and stores it into the database')
-        ->addArgument('id', InputArgument::REQUIRED, 'The brewery ID');
+        ->setDescription('Gets beer information and stores it into the database')
+        ->addArgument('id', InputArgument::REQUIRED, 'The beer ID');
         ;
     }
     
@@ -37,13 +37,13 @@ class UntappdGetBreweryInfoCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $id = $input->getArgument('id');
         
-        if ($response = $this->untappdAPI->getBreweryInfo($id)) {
-            $output->writeln(sprintf('Successfully received brewery information.'));
-            $breweryData = $response->body->response->brewery;
-            $brewery = $this->untappdAPISerializer->handleBreweryObject($breweryData);
-            $io->success('Brewery ' . $brewery->getName() . ' has been created/updated.');
+        if ($response = $this->untappdAPI->getBeerInfo($id)) {
+            $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
+            $beerData = $response->body->response->beer;
+            $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
+            $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
         } else {
-            $output->writeln(sprintf('Couldn\'t get brewery information.'));
+            $output->writeln(sprintf('[%s] Couldn\'t get beer information', date('H:i:s')));
         }
     }
 }

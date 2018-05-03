@@ -49,6 +49,11 @@ class Event
     private $messages;
     
     /**
+     * @ORM\OneToMany(targetEntity="Session", mappedBy="event", cascade={"persist"})
+     */
+    private $sessions;
+    
+    /**
      * @ORM\ManyToMany(targetEntity="\App\Entity\Venue\Venue")
      * @ORM\JoinTable(name="event_venues",
      *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")},
@@ -335,6 +340,41 @@ class Event
     public function getMessages()
     {
         return $this->messages;
+    }
+    
+    /**
+     * Add session
+     *
+     * @param \App\Entity\Event\Message $message
+     *
+     * @return Event
+     */
+    public function addSession(\App\Entity\Event\Session $session)
+    {
+        $this->sessions[] = $session;
+        $session->setEvent($this);
+        
+        return $this;
+    }
+    
+    /**
+     * Remove session
+     *
+     * @param \App\Entity\Event\Session $session
+     */
+    public function removeSession(\App\Entity\Event\Session $session)
+    {
+        $this->messages->removeElement($session);
+    }
+    
+    /**
+     * Get session
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSessions()
+    {
+        return $this->sessions;
     }
     
     /**

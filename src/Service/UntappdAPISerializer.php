@@ -107,6 +107,13 @@ class UntappdAPISerializer
         return $beersCollection;
     }
     
+    public function handleBeerObject($beer) {
+        $beer = $this->buildBeerWithFullInformation($beer);
+        $this->em->persist($beer);
+        $this->em->flush();
+        return $beer;
+    }
+    
     public function handleVenueObject($venueData) {
         $venue = $this->buildVenueWithFullInformation($venueData);
         $this->em->persist($venue);
@@ -238,6 +245,39 @@ class UntappdAPISerializer
         return $output;
     }
     
+    private function buildBeerWithFullInformation($beer) {
+        $output = $this->em->getRepository('\App\Entity\Beer\Beer')->find($beer->bid);
+        if (!$output) {
+            $output = new Beer();
+            $output->setId($beer->bid);
+            $output->setInternalDataGathered(false);
+        }
+        $output->setName($beer->beer_name);
+        $output->setLabel($beer->beer_label);
+        $output->setSlug($beer->beer_slug);
+        $output->setAbv($beer->beer_abv);
+        $output->setIbu($beer->beer_ibu);
+        $output->setDescription($beer->beer_description);
+        $output->setActive($beer->is_in_production);        
+        $output->setCreatedAt(\DateTime::createFromFormat(DATE_RFC2822, $beer->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get())));
+        $output->setRatingScore($beer->rating_score);
+        $output->setRatingCount($beer->rating_count);
+        $output->setTotalCount($beer->stats->total_count);
+        $brewery = $this->em->getRepository('\App\Entity\Brewery\Brewery')->find($beer->brewery->brewery_id);
+        if (!$brewery) {
+            $brewery = $this->buildBreweryWithLowInformation($beer->brewery);
+        }
+        $output->setBrewery($brewery);
+        $style = $this->em->getRepository('\App\Entity\Beer\Style')->findOneBy(array('name' => $beer->beer_style));
+        if (!$style) {
+            $style = new Style();
+            $style->setName($beer->beer_style);
+            $this->em->persist($style);
+        }
+        $output->setStyle($style);
+        return $output;
+    }
+    
     private function buildBreweryWithLowInformation($brewery) {
         $output = $this->em->getRepository('\App\Entity\Brewery\Brewery')->find($brewery->brewery_id);
         if (!$output) {
@@ -260,6 +300,12 @@ class UntappdAPISerializer
         if ($brewery->location->brewery_state != "") { $output->setState($brewery->location->brewery_state); }
         if ($brewery->location->lat != "0") { $output->setLatitude($brewery->location->lat); }
         if ($brewery->location->lng != "0") { $output->setLongitude($brewery->location->lng); }
+        if (isset($brewery->brewery_type)) {
+            $type = $this->em->getRepository('\App\Entity\Brewery\Type')->findOneBy(array('name' => $brewery->brewery_type));   
+            if ($type) {
+                $output->setType($type);
+            }
+        }
         return $output;
     }
     

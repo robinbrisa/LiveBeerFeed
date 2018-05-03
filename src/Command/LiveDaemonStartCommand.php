@@ -41,6 +41,12 @@ class LiveDaemonStartCommand extends EndlessContainerAwareCommand
             '--no-debug'  => true,
         );
         
+        $this->taplist_update_command_args = array(
+            'command' => 'lbf:update:taplist:queue',
+            '-e'  => 'prod',
+            '--no-debug'  => true,
+        );
+        
         parent::__construct();
     }
     
@@ -49,9 +55,11 @@ class LiveDaemonStartCommand extends EndlessContainerAwareCommand
         $output->writeln(sprintf('[%s] ---- Iteration start ----', date('H:i:s')));
         
         $push_info_command = $this->getApplication()->find('live:push:info');
-        $refresh_events_command = $this->getApplication()->find('untappd:refresh:events');
+        $refresh_events_command = $this->getApplication()->find('lbf:refresh:events');
+        $taplist_update_command = $this->getApplication()->find('lbf:update:taplist:queue');
         
         $push_info_command->run(new ArrayInput($this->push_info_command_args), $output);
+        $taplist_update_command->run(new ArrayInput($this->taplist_update_command_args), $output);
       
         if ($this->last_checkins_push->diff(New \DateTime())->i >= 1) {
             $refresh_events_command->run(new ArrayInput($this->refresh_events_command_args), $output);

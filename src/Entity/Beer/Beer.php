@@ -131,6 +131,11 @@ class Beer
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+    public function __toString()
+    {
+        return $this->name . ' (' . $this->brewery->getName() . ')';
+    }
+    
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("untappd_link")

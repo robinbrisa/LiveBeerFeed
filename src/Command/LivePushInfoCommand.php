@@ -43,7 +43,7 @@ class LivePushInfoCommand extends Command
         
         $events = $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
         if (!$events) {
-            $io->error('No events are currently running.');
+            $output->writeln(sprintf('[%s] No events are currently running', date('H:i:s')));
         } else {
             foreach ($events as $event) {
                 $output->writeln(sprintf('[%s] Pushing new info for %s', date('H:i:s'), $event->getName()));

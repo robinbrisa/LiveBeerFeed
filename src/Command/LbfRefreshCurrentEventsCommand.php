@@ -13,9 +13,9 @@ use App\Service\UntappdAPISerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 
-class UntappdRefreshCurrentEventsCommand extends Command
+class LbfRefreshCurrentEventsCommand extends Command
 {
-    protected static $defaultName = 'untappd:refresh:events';
+    protected static $defaultName = 'lbf:refresh:events';
     private $untappdAPI;
     private $untappdAPISerializer;
     private $em;
@@ -38,12 +38,10 @@ class UntappdRefreshCurrentEventsCommand extends Command
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $io = new SymfonyStyle($input, $output);
-        
+    {        
         $events = $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
         if (!$events) {
-            $io->error("No events are currently running");
+            $output->writeln(sprintf('[%s] No events are currently running', date('H:i:s')));
         } else {
             $checkinCommand = $this->getApplication()->find('untappd:get:venue:history');
             $pushCommand = $this->getApplication()->find('live:push:checkins');

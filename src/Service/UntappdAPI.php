@@ -258,6 +258,7 @@ class UntappdAPI
             'client_secret' => $this->clientSecret,
             'compact' => $compact
         );
+        
         $response = Unirest\Request::get($this->APIUrl . '/v4/beer/info/' . $beerID, $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
