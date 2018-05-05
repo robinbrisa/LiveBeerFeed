@@ -894,26 +894,8 @@ rating.small.r200{
 	left: 2px;
 }
 
-#filters-menu {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: calc(100vh - 80px);
-	width: calc(100vw - 20px);
-	margin: 10px;
-	border: 4px solid #000;
-	border-radius: 5px;
-	background:rgba(255,255,255,0.8);
-	text-align: center;
-}
-
-#filters-close {
-	float: right;
-    font-size: 36px;
-    position: absolute;
-    right: 8px;
-    top: 2px;
+.transparent-modal {
+	background:rgba(255,255,255,0.9);
 }
 
 #filters-open {
@@ -924,17 +906,64 @@ rating.small.r200{
 	font-size: 24px;
 	width: 65px;
 	height: 65px;
-	border: 3px solid;
+	border: 2px solid;
 	border-radius: 35px;
-	background:rgba(255,255,255,0.8);
+	background:rgba(255,255,255,0.9);
 	line-height: 10px;
+	cursor: pointer;
 }
 
 #filters-open i {
-	margin-top: 8px;
+	margin-top: 13px;
 	font-size: 20px;
 }
 
 .filter-open-desc {
 	font-size:11px;
+}
+
+.input-group-chk {
+	margin-left: 20px;
+}
+
+.filtered {
+	background-color: red;
+	display: none;
+}
+
+.half-size {
+    width: 48%;
+    display: inline-block;
+    text-align: center;
+    display: table-cell;
+}
+
+.filter-group-table {
+    display: table;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.filter-group {
+	margin-bottom: 8px;
+}
+
+.filters-title {
+	font-weight: bold;
+}
+
+div.filters-title {
+	margin-bottom: 3px;
+}
+
+.center-checkboxes {
+	text-align: center;
+}
+
+.style-color-square {
+	display: inline-block;
+	width: 9px;
+	height: 9px;
+	margin-left: 3px;
+	margin-right: 4px;
 }

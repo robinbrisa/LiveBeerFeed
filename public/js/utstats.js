@@ -7,6 +7,9 @@ var eventPageInfoScrollAnimationDuration = eventPageInfoScrollAnimationDuration 
 var locale = locale || 'en';
 
 var taplistFilters = {};
+var taplistSort = {key: 'brewery', order: -1}
+var favorites = [];
+var ticks = [];
 
 $(document).ready(function() {
 	if (locale !== undefined) {
@@ -49,37 +52,236 @@ $(document).ready(function() {
 	if ($('#post-message').length !== 0) {
 		$('#form_startTime').attr('min', minTime);
 	}
+	
+	if ($('#taplist-content').length > 0) {
+		$('#filters-open').click(function() {
+			$('#filters-modal').modal('show')
+		})
+		
+		$('.tick').click(function() {
+			var beerID = $(this).parents('.taplist-beer').data('id');
+			if ($(this).hasClass('active')) {
+				$(this).removeClass('active');
+				var idx = ticks.indexOf(beerID);
+				if (idx > -1) {
+					ticks.splice(idx, 1);
+				}
+			} else {
+				ticks.push(beerID);
+				$(this).addClass('active');
+			}
+			localStorage.setItem("ticks", JSON.stringify(ticks));
+		})
+		
+		$('.favorite').click(function() {
+			var beerID = $(this).parents('.taplist-beer').data('id');
+			if ($(this).hasClass('active')) {
+				$(this).removeClass('active');
+				$(this).children('i').addClass('fa-star-o');
+				$(this).children('i').removeClass('fa-star');
+				var idx = favorites.indexOf(beerID);
+				if (idx > -1) {
+					favorites.splice(idx, 1);
+				}
+			} else {
+				favorites.push(beerID);
+				$(this).addClass('active');
+				$(this).children('i').removeClass('fa-star-o');
+				$(this).children('i').addClass('fa-star');
+			}
+			localStorage.setItem("favorites", JSON.stringify(favorites));
+		})
+		
+		$('#search-beer').keyup(function () {
+			if ($(this).val() != "") {
+				taplistFilters['search'] = $(this).val();
+			} else {
+				delete taplistFilters['search'];
+			}
+			filterTapList();
+		});
+		
+		$('.filter-enabler').change(function() {
+			var newState = $(this).prop('checked');
+			setFilterStates();
+			if (newState) {
+				taplistFilters[$(this).attr('id')] = $('.filter-value[data-filter="'+$(this).data('filter')+'"]').val();
+			} else {
+				delete taplistFilters[$(this).attr('id')];
+			}
+			filterTapList();
+		});
+		
+		$('.filter-value').change(function() {
+			if ($('.filter-enabler[data-filter="'+$(this).data('filter')+'"]').prop('checked')) {
+				taplistFilters[$(this).data('filter')] = $(this).val();
+				filterTapList();
+			}
+		});
+		
+		$('.filter-modifier').change(function() {
+			$('.filter-value[data-filter="'+$(this).data('filter')+'"]').trigger('change');
+		});
+		
+		$('.session-filter').change(function() {
+			taplistFilters['filteredSessions'] = [];
+			$('.session-filter').each(function() {
+				if (!$(this).prop('checked')) {
+					taplistFilters['filteredSessions'].push($(this).data('session'));
+				}
+			});
+			if (taplistFilters['filteredSessions'].length == 0) {
+				delete taplistFilters['filteredSessions'];
+			}
+			filterTapList();
+		});
+	
+		$('.style-filter').change(function() {
+			taplistFilters['filteredStyles'] = [];
+			$('.style-filter').each(function() {
+				if (!$(this).prop('checked')) {
+					taplistFilters['filteredStyles'].push($(this).data('style'));
+				}
+			});
+			if (taplistFilters['filteredStyles'].length == 0) {
+				delete taplistFilters['filteredStyles'];
+			}
+			filterTapList();
+		});
+		
+		$('.filters-sort-select').change(function() {
+			var optionSelected = $("option:selected", this);
+			var keyVal = $(optionSelected).data('key');
+			var orderVal = $(optionSelected).data('order');
+			taplistSort = { key: keyVal, order: orderVal };
+			localStorage.setItem("taplistSort", JSON.stringify(taplistSort));
+			sortTaplist();
+		})
+		
+		if (localStorage.getItem("taplistSort") == null) {
+			localStorage.setItem("taplistSort", JSON.stringify(taplistSort));
+		} else {
+			taplistSort = JSON.parse(localStorage.getItem("taplistSort"));
+		}
+		
+		if (localStorage.getItem("favorites") != null) {
+			favorites = JSON.parse(localStorage.getItem("favorites"));
+			initFavorites();
+		}
 
-	$('#filters-close').click(function() {
-		$('#filters-menu').fadeOut(100);
-		$('#filters-open').fadeIn(100);
-	});
-	
-	$('#filters-open').click(function() {
-		$('#filters-menu').fadeIn(100);
-		$('#filters-open').fadeOut(100);
-	})
-	
-	$('.tick').click(function() {
-		if ($(this).hasClass('active')) {
-			$(this).removeClass('active');
-		} else {
-			$(this).addClass('active');
+		if (localStorage.getItem("ticks") != null) {
+			ticks = JSON.parse(localStorage.getItem("ticks"));
+			initTicks();
 		}
-	})
-	
-	$('.favorite').click(function() {
-		if ($(this).hasClass('active')) {
-			$(this).removeClass('active');
-			$(this).children('i').addClass('fa-star-o');
-			$(this).children('i').removeClass('fa-star');
-		} else {
-			$(this).addClass('active');
-			$(this).children('i').removeClass('fa-star-o');
-			$(this).children('i').addClass('fa-star');
-		}
-	})
+		
+		initTaplistSort();
+		setFilterStates();
+	}
 });
+
+function filterTapList() {
+	$('.taplist-beer').removeClass("filtered");
+	$.each(taplistFilters, function(key, val) {
+		if (key == "minScore") {
+			$('.taplist-beer').filter(function() { 
+				  return $(this).data("rating") < val 
+			}).addClass("filtered");
+		}
+		if (key == "maxScore") {
+			$('.taplist-beer').filter(function() { 
+				  return $(this).data("rating") > val 
+			}).addClass("filtered");
+		}
+		if (key == "minABV") {
+			$('.taplist-beer').filter(function() { 
+				  return parseFloat($(this).data("abv")) < parseFloat(val)
+			}).addClass("filtered");
+		}
+		if (key == "maxABV") {
+			$('.taplist-beer').filter(function() { 
+				  return parseFloat($(this).data("abv")) > parseFloat(val)
+			}).addClass("filtered");
+		}
+		if (key == "filteredSessions") {
+			$.each(val, function(idx, session) {
+				$('.taplist-beer').filter(function() { 
+					  return $(this).data("session") == session
+				}).addClass("filtered");
+			});
+		}
+		if (key == "filteredStyles") {
+			$.each(val, function(idx, category) {
+				$('.taplist-beer').filter(function() { 
+					  return $(this).data("style-category") == category
+				}).addClass("filtered");
+			});
+		}
+		if (key == "search") {
+			$('.taplist-beer:not(:Contains(' + val + '))').addClass("filtered"); 
+		}
+	});
+}
+
+function sortTaplist() {
+	var beers = $('#taplist-content'),
+	beerDiv = beers.children('.taplist-beer');
+	
+	beerDiv.sort(function(a,b){
+		var an = a.getAttribute("data-"+taplistSort.key),
+			bn = b.getAttribute("data-"+taplistSort.key);
+		if ($.isNumeric(an)) {
+			an = parseFloat(an);
+			bn = parseFloat(bn);
+		} else {
+			an = an.toUpperCase();
+			bn = bn.toUpperCase();
+		}
+		if(an < bn) {
+			return 1 * taplistSort.order;
+		}
+		if(an > bn) {
+			return -1 * taplistSort.order;
+		}
+		return 0;
+	});
+	beerDiv.detach().appendTo(beers);
+}
+
+function initTaplistSort() {
+	var option = $('option[data-key="'+taplistSort.key+'"][data-order="'+taplistSort.order+'"]');
+	$('#taplist-sort-select').val($(option).val());
+	sortTaplist();
+}
+
+function initFavorites() {
+	$.each(favorites, function(idx, val) {
+		var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.favorite');
+		$(favoriteElement).addClass('active');
+		$(favoriteElement).children('i').removeClass('fa-star-o');
+		$(favoriteElement).children('i').addClass('fa-star');
+	});
+}
+
+function initTicks() {
+	$.each(ticks, function(idx, val) {
+		var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.tick');
+		$(favoriteElement).addClass('active');
+	});
+}
+
+function setFilterStates() {
+	$('.filter-enabler').each(function() {
+		var newState = $(this).prop('checked');
+		$(this).parent().parent().find('.input-group-remote').find('input').each(function() {
+			$(this).prop('disabled', !newState);
+			if (newState) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	});
+}
 
 function pushServer(){
 	var conn = new ab.Session(websocket, function() {
@@ -248,3 +450,9 @@ function scrollLatestNotifications() {
 		});
     }
 }
+
+jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function(arg) {
+    return function( elem ) {
+        return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+    };
+});

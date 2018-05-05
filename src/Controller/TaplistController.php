@@ -32,11 +32,18 @@ class TaplistController extends Controller
             }
             $event = $event[0];
         }
-        
-        $sessions = $event->getSessions();
+                
+        $styles = $em->getRepository('\App\Entity\Beer\Style')->findAll();
+        $styleCategories = array();
+        foreach ($styles as $style) {
+            if (!in_array($style->getCategory(), $styleCategories)) {
+                $styleCategories[] = $style->getCategory();
+            }
+        }
                 
         return $this->render('taplist/index.html.twig', [
-            'event' => $event
+            'event' => $event,
+            'styleCategories' => $styleCategories
         ]);
     }
 }

@@ -15,4 +15,9 @@ class AppRuntime
     {
         return $this->tools->getRatingImage($number);
     }
+    
+    public function countryFilter($country)
+    {
+        return $this->tools->countryCode($country);
+    }
 }

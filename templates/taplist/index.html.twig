@@ -36,23 +36,129 @@
             </div>
         </div>
         
-        {% for session in event.sessions %}
-            {% for beer in session.beers  %}
-	            {% include 'taplist/templates/beer.template.html.twig' with { 'beer': beer, 'session': session  } %}
+        {% set highestABV = 0 %}
+        
+        <div id="taplist-content">
+            {% for session in event.sessions %}
+                {% for beer in session.beers  %}
+    	            {% include 'taplist/templates/beer.template.html.twig' with { 'beer': beer, 'session': session  } %}
+    	            {% if beer.abv > highestABV %}
+    	            	{% set highestABV = beer.abv %}
+    	            {% endif %}
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-        
-        <div id="filters-menu">
-            <button id="filters-close" type="button" class="close" aria-label="Close">
-            	<span aria-hidden="true">&times;</span>
-            </button>
-			<h1 class="display-4">Filters</h1>
         </div>
+    </div>
+    
+    <div class="modal fade" id="filters-modal" tabindex="-1" role="dialog" aria-labelledby="filters-modal" aria-hidden="true">
+    	<div class="modal-dialog" role="document">
+    		<div class="modal-content transparent-modal">
+    			<div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <form>
+                        <div class="form-group filter-group">
+                            <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> Search</label>
+                            <input type="text" class="form-control form-control-sm" id="search-beer" placeholder="Search for styles, beers, breweries...">
+                        </div>
+            			<hr class="my-1">
+                        <div class="form-group filter-group">
+                            <div class="filters-title"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sessions</div>
+                            <div class="center-checkboxes">
+                                {% for session in event.sessions %}
+                                    <div class="form-check form-check-inline">
+                                    	<input class="form-check-input session-filter" type="checkbox" id="chk-session-{{ session.name }}" data-session="{{ session.name }}" checked>
+                                    	<label class="form-check-label" for="chk-session-{{ session.name }}" style="color:{{ session.color }}">{{ session.name }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+            			<hr class="my-1">
+                        <div class="filters-title"><i class="fa fa-sort" aria-hidden="true"></i> Sort</div>
+                        <div class="form-group filter-group-table">
+                        	<select id="taplist-sort-select" class="form-control form-control-sm filters-sort-select">
+                            	<option value="1" data-key="abv" data-order="-1">ABV (Low to High)</option>
+                            	<option value="2" data-key="abv" data-order="1">ABV (High to Low)</option>
+                            	<option value="3" data-key="name" data-order="-1">Beer Name (A to Z)</option>
+                            	<option value="4" data-key="name" data-order="1">Beer Name (Z to A)</option>
+                            	<option value="5" data-key="brewery" data-order="-1">Brewery Name (A to Z)</option>
+                            	<option value="6" data-key="brewery" data-order="1">Brewery Name (Z to A)</option>
+                            	<option value="7" data-key="checkins" data-order="-1">Checkins (Low to High)</option>
+                            	<option value="8" data-key="checkins" data-order="1">Checkins (High to Low)</option>
+                            	<option value="9" data-key="ibu" data-order="-1">IBU (Low to High)</option>
+                            	<option value="10" data-key="ibu" data-order="1">IBU (High to Low)</option>
+                            	<option value="11" data-key="ratings" data-order="-1">Ratings (Low to High)</option>
+                            	<option value="12" data-key="ratings" data-order="1">Ratings (High to Low)</option>
+                            	<option value="13" data-key="score" data-order="-1">Score (Low to High)</option>
+                            	<option value="14" data-key="score" data-order="1">Score (High to Low)</option>
+                            </select>
+                        </div>
+            			<hr class="my-1">
+                        <div class="filters-title"><i class="fa fa-filter" aria-hidden="true"></i> Filters</div>
+                        <div class="form-group filter-group-table">
+                            <div class="half-size">
+                				<div class="input-group-chk">
+                                    <input class="form-check-input filter-enabler" type="checkbox" value="" id="minScore"  data-filter="minScore">
+                                    <label class="form-check-label" for="minScore">Minimum Rating</label>
+                                </div>
+                				<div class="input-group-remote">
+                    				<input class="filter-modifier" data-filter="minScore" type="range" name="minRatingRange" min="0" max="5" step="0.25" value="0" oninput=this.form.minRatingInput.value=this.value />
+                    				<input class="filter-value" data-filter="minScore" type="number" name="minRatingInput" min="0" max="5" step="0.25" value="0" oninput="this.form.minRatingRange.value=this.value" />
+                    			</div>
+                            </div>
+                            <div class="half-size">
+                				<div class="input-group-chk">
+                                    <input class="form-check-input filter-enabler" type="checkbox" value="" id="maxScore" data-filter="maxScore">
+                                    <label class="form-check-label" for="maxScore">Maximum Rating</label>
+                                </div>
+                				<div class="input-group-remote">
+                    				<input class="filter-modifier" data-filter="maxScore" type="range" name="maxRatingRange" min="0" max="5" step="0.25" value="5" oninput=this.form.maxRatingInput.value=this.value />
+                    				<input class="filter-value" data-filter="maxScore" type="number" name="maxRatingInput" min="0" max="5" step="0.25" value="5" oninput="this.form.maxRatingRange.value=this.value" />
+                    			</div>
+                            </div>
+                        </div>
+                        <div class="form-group filter-group-table">
+                            <div class="half-size">
+                				<div class="input-group-chk">
+                                    <input class="form-check-input filter-enabler" type="checkbox" value="" id="minABV"  data-filter="minABV">
+                                    <label class="form-check-label" for="minABV">Minimum ABV</label>
+                                </div>
+                				<div class="input-group-remote">
+                    				<input class="filter-modifier" data-filter="minABV" type="range" name="minABVRange" min="0" max="{{ highestABV|round(0, 'ceil') }}" value="0" oninput=this.form.minABVInput.value=this.value />
+                    				<input class="filter-value" data-filter="minABV" type="number" name="minABVInput" min="0" max="{{ highestABV|round(0, 'ceil') }}" value="0" oninput="this.form.minABVRange.value=this.value" />
+                    			</div>
+                            </div>
+                            <div class="half-size">
+                				<div class="input-group-chk">
+                                    <input class="form-check-input filter-enabler" type="checkbox" value="" id="maxABV" data-filter="maxABV">
+                                    <label class="form-check-label" for="maxABV">Maximum ABV</label>
+                                </div>
+                				<div class="input-group-remote">
+                    				<input class="filter-modifier" data-filter="maxABV" type="range" name="maxABVRange" min="0" max="{{ highestABV|round(0, 'ceil') }}" value="{{ highestABV|round(0, 'ceil') }}" oninput=this.form.maxABVInput.value=this.value />
+                    				<input class="filter-value" data-filter="maxABV" type="number" name="maxABVInput" min="0" max="{{ highestABV|round(0, 'ceil') }}" value="{{ highestABV|round(0, 'ceil') }}" oninput="this.form.maxABVRange.value=this.value" />
+                    			</div>
+                            </div>
+                        </div>
+            			<hr class="my-1">
+                        <div class="filters-title"><i class="fa fa-beer" aria-hidden="true"></i> Style Categories</div>
+                            <div class="center-checkboxes">
+                                {% for category in styleCategories %}
+                                    <div class="form-check form-check-inline">
+                                    	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category }}" data-style="{{ category }}" checked>
+                                    	<label class="form-check-label" for="chk-style-{{ category }}">{{ category }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                    </form>
+    			</div>
+    		</div>
+    	</div>
+    </div>
         
-        <div id="filters-open">
-        	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-        	<span class="filter-open-desc">Filter/Sort</span>
-        </div>
+    <div id="filters-open">
+    	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+    	<span class="filter-open-desc">Filter/Sort</span>
     </div>
 </div>
 <script>
