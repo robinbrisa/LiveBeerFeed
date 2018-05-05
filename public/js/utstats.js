@@ -184,22 +184,22 @@ function filterTapList() {
 	$.each(taplistFilters, function(key, val) {
 		if (key == "minScore") {
 			$('.taplist-beer').filter(function() { 
-				  return $(this).data("rating") < val 
+				  return $(this).data("score") <= val 
 			}).addClass("filtered");
 		}
 		if (key == "maxScore") {
 			$('.taplist-beer').filter(function() { 
-				  return $(this).data("rating") > val 
+				  return $(this).data("score") >= val 
 			}).addClass("filtered");
 		}
 		if (key == "minABV") {
 			$('.taplist-beer').filter(function() { 
-				  return parseFloat($(this).data("abv")) < parseFloat(val)
+				  return parseFloat($(this).data("abv")) <= parseFloat(val)
 			}).addClass("filtered");
 		}
 		if (key == "maxABV") {
 			$('.taplist-beer').filter(function() { 
-				  return parseFloat($(this).data("abv")) > parseFloat(val)
+				  return parseFloat($(this).data("abv")) >= parseFloat(val)
 			}).addClass("filtered");
 		}
 		if (key == "filteredSessions") {
