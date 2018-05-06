@@ -148,6 +148,7 @@ class EventStats
         
         if ($render) {
             foreach ($stats as $key => $stat) {
+                $stats[$key]['label'] = $this->translator->trans($stats[$key]['label']);
                 $stats[$key]['render'] = $this->templating->render('event/templates/' . $stat['template'] . '.html.twig', ['data' => $stat['content']]);
             }
         }

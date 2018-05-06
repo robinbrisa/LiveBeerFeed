@@ -428,7 +428,8 @@ function handleUpToDateEventStats(data) {
 	}
 	$.each(data.stats, function(key, stat) {
 		if ($('.card[data-stat="'+key+'"]').length !== 0) {
-			$('.card[data-stat="'+key+'"]').html('<span class="page-title stat-title info-major">' + stat.label + '</span>' + stat.render);
+			currentTitle = $('.card[data-stat="'+key+'"]').children('.stat-title').html();
+			$('.card[data-stat="'+key+'"]').html('<span class="page-title stat-title info-major">' + currentTitle + '</span>' + stat.render);
 		} else {
 			$('.carousel-inner').append('<div class="carousel-item col-md-4"><div class="card" data-stat="' + key + '"><span class="page-title stat-title info-major">' + stat.label + '</span>' + stat.render + '</div></div>');
 		}
