@@ -16,6 +16,7 @@ easy_admin:
                     - { property: 'screen_size', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Normal': 'normal', 'Small': 'small' } } }
                     - { property: 'locale', type: 'Symfony\Component\Form\Extension\Core\Type\LanguageType', type_options: { required: true, choices: { 'English': 'en', 'Français': 'fr' }, choice_loader: null } }
                     - moderated
+                    - has_taplist
             list:
                 actions:
                     - { name: 'reload_clients', icon: 'refresh', type: 'route' }

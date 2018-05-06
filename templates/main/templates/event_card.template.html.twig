@@ -6,5 +6,6 @@
 	</div>
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item"><a href="/event/{% if event.getSlug %}{{ event.getSlug }}{% else %}{{ event.getId }}{% endif %}">Access live information page</a></li>
+		{% if event.hasTaplist %}<li class="list-group-item"><a href="/taplist/{% if event.slug %}{{ event.slug }}{% else %}{{ event.id }}{% endif %}">Access event taplist</a></li>{% endif %}
 	</ul>
 </div>

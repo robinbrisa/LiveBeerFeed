@@ -98,6 +98,11 @@ class Event
     private $moderated = false;
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $has_taplist = false;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -109,7 +114,31 @@ class Event
      */
     private $updated_at;
     
+      /**
+     * Get $has_taplist
+     *
+     * @return boolean
+    */
+    public function getHasTaplist()
+    {
+        return $this->has_taplist;
+    }
+
      /**
+     * Set $has_taplist
+     *
+     * @param boolean $has_taplist
+     *
+     * @return Event
+    */
+    public function setHasTaplist($has_taplist)
+    {
+        $this->has_taplist = $has_taplist;
+        
+        return $this;
+    }
+
+    /**
      * Get $moderated
      *
      * @return boolean
