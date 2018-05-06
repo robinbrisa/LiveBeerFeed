@@ -174,6 +174,16 @@ $(document).ready(function() {
 			initTicks();
 		}
 		
+		$('.open-untappd').click(function(e) {
+			e.preventDefault();
+			var beerID = $(this).parents('.taplist-beer').data('id');
+			if (platform.os.family == "Android" || platform.os.family == "iOS") {
+				window.location = 'untappd://beer/'+beerID
+			} else {
+				window.open($(this).prop('href'));
+			}
+		});
+		
 		initTaplistSort();
 		setFilterStates();
 	}
