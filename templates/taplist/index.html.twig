@@ -59,7 +59,7 @@
                     </button>
                     <form>
                         <div class="form-group filter-group">
-                            <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> Search</label>
+                            <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> Search</label> <div id="clear-search"><i class="fa fa-ban" aria-hidden="true"></i> Clear</div>
                             <input type="text" class="form-control form-control-sm" id="search-beer" placeholder="Search for styles, beers, breweries...">
                         </div>
             			<hr class="my-1">
@@ -94,6 +94,20 @@
                         </div>
             			<hr class="my-1">
                         <div class="filters-title"><i class="fa fa-filter" aria-hidden="true"></i> Filters</div>
+                        <div class="form-group filter-group-table">
+                            <div class="half-size">
+                				<div class="input-group-chk">
+                                    <input class="form-check-input filter-enabler" type="checkbox" value="" id="showFavorites"  data-filter="showFavorites">
+                                    <label class="form-check-label" for="showFavorites">Only show <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                </div>
+                            </div>
+                            <div class="half-size">
+                				<div class="input-group-chk">
+                                    <input class="form-check-input filter-enabler" type="checkbox" value="" id="hideTicked" data-filter="hideTicked">
+                                    <label class="form-check-label" for="hideTicked">Hide <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div> beers</label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group filter-group-table">
                             <div class="half-size">
                 				<div class="input-group-chk">

@@ -833,6 +833,7 @@ rating.small.r200{
 	height:30px;
 	width:26px;
 	color: #bbb;
+	cursor: pointer;
 }
 
 .tick i {
@@ -842,6 +843,7 @@ rating.small.r200{
 .tick.active {
 	color: green;
 	text-shadow: 0px 0px 1px rgba(150, 150, 150, 1);
+	display: inline-block;
 }
 
 .beer-info .content {
@@ -868,15 +870,20 @@ rating.small.r200{
 	height: 100%;
 }
 
-.favorite {
+.title .favorite {
 	font-size:18px;
 	margin-right: 4px;
 	display: inline-block;
 	color: #bbb;
+	cursor: pointer;
 }
 
 .favorite.active {
+	display: inline-block;	
 	color: gold;
+	-webkit-text-fill-color: gold; 
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: #333;
 	text-shadow: 0px 0px 1px rgba(150, 150, 150, 1);
 }
 
@@ -934,7 +941,6 @@ rating.small.r200{
 .half-size {
     width: 48%;
     display: inline-block;
-    text-align: center;
     display: table-cell;
 }
 
@@ -966,4 +972,15 @@ div.filters-title {
 	height: 9px;
 	margin-left: 3px;
 	margin-right: 4px;
+}
+
+#clear-search {
+	margin-left: 6px;
+	color: red;
+	cursor: pointer;
+	display: none;
+}
+
+#taplist-sort-select {
+	margin-bottom: 3px;
 }

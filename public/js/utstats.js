@@ -48,7 +48,6 @@ $(document).ready(function() {
 		}, 8000)
 	}
 	
-	
 	if ($('#post-message').length !== 0) {
 		$('#form_startTime').attr('min', minTime);
 	}
@@ -58,54 +57,68 @@ $(document).ready(function() {
 			$('#filters-modal').modal('show')
 		})
 		
+		$('#clear-search').click(function() {
+			$('#search-beer').val("").trigger("keyup");
+		})
+		
 		$('.tick').click(function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
-			if ($(this).hasClass('active')) {
-				$(this).removeClass('active');
-				var idx = ticks.indexOf(beerID);
-				if (idx > -1) {
-					ticks.splice(idx, 1);
+			if (beerID) {
+				if ($(this).hasClass('active')) {
+					$(this).removeClass('active');
+					var idx = ticks.indexOf(beerID);
+					if (idx > -1) {
+						ticks.splice(idx, 1);
+					}
+				} else {
+					ticks.push(beerID);
+					$(this).addClass('active');
 				}
-			} else {
-				ticks.push(beerID);
-				$(this).addClass('active');
+				localStorage.setItem("ticks", JSON.stringify(ticks));
 			}
-			localStorage.setItem("ticks", JSON.stringify(ticks));
 		})
 		
 		$('.favorite').click(function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
-			if ($(this).hasClass('active')) {
-				$(this).removeClass('active');
-				$(this).children('i').addClass('fa-star-o');
-				$(this).children('i').removeClass('fa-star');
-				var idx = favorites.indexOf(beerID);
-				if (idx > -1) {
-					favorites.splice(idx, 1);
+			if (beerID) {
+				if ($(this).hasClass('active')) {
+					$(this).removeClass('active');
+					$(this).children('i').addClass('fa-star-o');
+					$(this).children('i').removeClass('fa-star');
+					var idx = favorites.indexOf(beerID);
+					if (idx > -1) {
+						favorites.splice(idx, 1);
+					}
+				} else {
+					favorites.push(beerID);
+					$(this).addClass('active');
+					$(this).children('i').removeClass('fa-star-o');
+					$(this).children('i').addClass('fa-star');
 				}
-			} else {
-				favorites.push(beerID);
-				$(this).addClass('active');
-				$(this).children('i').removeClass('fa-star-o');
-				$(this).children('i').addClass('fa-star');
+				localStorage.setItem("favorites", JSON.stringify(favorites));
 			}
-			localStorage.setItem("favorites", JSON.stringify(favorites));
 		})
 		
 		$('#search-beer').keyup(function () {
 			if ($(this).val() != "") {
 				taplistFilters['search'] = $(this).val();
+				$('#clear-search').css('display', 'inline-block');
 			} else {
 				delete taplistFilters['search'];
+				$('#clear-search').css('display', 'none');
 			}
 			filterTapList();
 		});
 		
 		$('.filter-enabler').change(function() {
+			var value = true;
 			var newState = $(this).prop('checked');
 			setFilterStates();
+			if ($('.filter-value[data-filter="'+$(this).data('filter')+'"]').length != 0) {
+				value = $('.filter-value[data-filter="'+$(this).data('filter')+'"]').val();
+			}
 			if (newState) {
-				taplistFilters[$(this).attr('id')] = $('.filter-value[data-filter="'+$(this).data('filter')+'"]').val();
+				taplistFilters[$(this).attr('id')] = value;
 			} else {
 				delete taplistFilters[$(this).attr('id')];
 			}
@@ -192,42 +205,54 @@ $(document).ready(function() {
 function filterTapList() {
 	$('.taplist-beer').removeClass("filtered");
 	$.each(taplistFilters, function(key, val) {
-		if (key == "minScore") {
-			$('.taplist-beer').filter(function() { 
-				  return $(this).data("score") <= val 
-			}).addClass("filtered");
-		}
-		if (key == "maxScore") {
-			$('.taplist-beer').filter(function() { 
-				  return $(this).data("score") >= val 
-			}).addClass("filtered");
-		}
-		if (key == "minABV") {
-			$('.taplist-beer').filter(function() { 
-				  return parseFloat($(this).data("abv")) <= parseFloat(val)
-			}).addClass("filtered");
-		}
-		if (key == "maxABV") {
-			$('.taplist-beer').filter(function() { 
-				  return parseFloat($(this).data("abv")) >= parseFloat(val)
-			}).addClass("filtered");
-		}
-		if (key == "filteredSessions") {
-			$.each(val, function(idx, session) {
+		switch (key) {
+			case "minScore":
 				$('.taplist-beer').filter(function() { 
-					  return $(this).data("session") == session
+					  return $(this).data("score") <= val 
 				}).addClass("filtered");
-			});
-		}
-		if (key == "filteredStyles") {
-			$.each(val, function(idx, category) {
+				break;
+			case "maxScore":
 				$('.taplist-beer').filter(function() { 
-					  return $(this).data("style-category") == category
+					  return $(this).data("score") >= val 
 				}).addClass("filtered");
-			});
-		}
-		if (key == "search") {
-			$('.taplist-beer:not(:Contains(' + val + '))').addClass("filtered"); 
+				break;
+			case "minABV":
+				$('.taplist-beer').filter(function() { 
+					  return parseFloat($(this).data("abv")) <= parseFloat(val)
+				}).addClass("filtered");
+				break;
+			case "maxABV":
+				$('.taplist-beer').filter(function() { 
+					  return parseFloat($(this).data("abv")) >= parseFloat(val)
+				}).addClass("filtered");
+				break
+			case "filteredSessions":
+				$.each(val, function(idx, session) {
+					$('.taplist-beer').filter(function() { 
+						  return $(this).data("session") == session
+					}).addClass("filtered");
+				});
+				break;
+			case "filteredStyles":
+				$.each(val, function(idx, category) {
+					$('.taplist-beer').filter(function() { 
+						  return $(this).data("style-category") == category
+					}).addClass("filtered");
+				});
+				break;
+			case "search":
+				$('.taplist-beer:not(:Contains(' + val + '))').addClass("filtered"); 
+				break;
+			case "showFavorites":
+				$('.taplist-beer').filter(function() { 
+					  return !$(this).find(".favorite").hasClass('active')
+				}).addClass("filtered");
+				break;
+			case "hideTicked":
+				$('.taplist-beer').filter(function() { 
+					  return $(this).find(".tick").hasClass('active')
+				}).addClass("filtered");
+				break;
 		}
 	});
 }
@@ -296,7 +321,6 @@ function setFilterStates() {
 function pushServer(){
 	var conn = new ab.Session(websocket, function() {
         conn.subscribe("checkins-" + $("#live-content").data('live-type') + "-" + $("#live-content").data('live-id'), function(topic, data) {
-            console.log('Received ' + data.count + ' new checkins');
         	handleNewCheckinData(data);
         });
         conn.subscribe("info-" + $("#live-content").data('live-type') + "-" + $("#live-content").data('live-id'), function(topic, data) {
