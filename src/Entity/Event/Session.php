@@ -36,7 +36,7 @@ class Session
     private $end_date;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Event", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="Event", inversedBy="sessions")
      * @ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $event;

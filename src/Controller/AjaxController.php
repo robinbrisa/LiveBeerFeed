@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\EventStats;
 use App\Entity\PushSubscription;
+use App\Entity\User\SavedData;
 
 class AjaxController extends Controller
 {
@@ -114,7 +115,7 @@ class AjaxController extends Controller
     }
     
     /**
-     * @Route("/ajax/pushSubscription", name="push_subscription")
+     * @Route("/ajax/pushSubscription", name="ajax_push_subscription")
      */
     public function pushSubscriptionAction()
     {
@@ -159,6 +160,44 @@ class AjaxController extends Controller
         }
         $em->flush();
         $output = array('success' => true);
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+    
+    /**
+     * @Route("/ajax/saveTaplistData", name="ajax_save_taplist_data")
+     */
+    public function saveTaplistDataAction(Request $request)
+    {
+        $output = array('success' => true);
+        $em = $this->getDoctrine()->getManager();
+        $ticks = $request->request->get('ticks');
+        $favorites = $request->request->get('favorites');
+        $event = $request->request->get('event');
+        $session = $request->getSession();
+        if (!$userUntappdID = $session->get('userUntappdID')) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_USER';
+        } else {
+            $user = $em->getRepository('\App\Entity\User\User')->find($userUntappdID);
+        }
+        if (!$event = $em->getRepository('\App\Entity\Event\Event')->find($event)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_EVENT';
+        }
+        if ($output['success']) {
+            if (!$userData = $em->getRepository('\App\Entity\User\SavedData')->findOneBy(array('user' => $user, 'event' => $event))) {
+                $userData = new SavedData();
+                $userData->setUser($user);
+                $userData->setEvent($event);
+            }
+            $userData->setTicks($ticks);
+            $userData->setFavorites($favorites);
+        }
+        $em->persist($userData);
+        $em->flush();
+        
         $response = new Response(json_encode($output));
         $response->headers->set('Content-Type', 'application/json');
         return $response;

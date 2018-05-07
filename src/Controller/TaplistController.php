@@ -20,7 +20,7 @@ class TaplistController extends Controller
     /**
      * @Route("/taplist/{eventID}/", name="taplist")
      */
-    public function index($eventID)
+    public function index($eventID, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
@@ -40,10 +40,22 @@ class TaplistController extends Controller
                 $styleCategories[] = $style->getCategory();
             }
         }
-                
+        
+        $user = null;
+        $userData = null;
+        
+        $session = $request->getSession();
+        if ($userUntappdID = $session->get('userUntappdID')) {
+            $user = $em->getRepository('\App\Entity\User\User')->find($userUntappdID);
+            $event = $em->getRepository('\App\Entity\Event\Event')->find($event);
+            $userData = $em->getRepository('\App\Entity\User\SavedData')->findOneBy(array('user' => $user, 'event' => $event));
+        }
+        
         return $this->render('taplist/index.html.twig', [
             'event' => $event,
-            'styleCategories' => $styleCategories
+            'styleCategories' => $styleCategories,
+            'user' => $user,
+            'userData' => $userData
         ]);
     }
 }

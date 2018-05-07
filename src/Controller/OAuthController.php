@@ -19,7 +19,7 @@ class OAuthController extends Controller
     private $tokenStorage;
     
     /**
-     * @Route("/oauth/", name="OAuth Handler")
+     * @Route("/oauth/", name="oauth_handler")
      */
     public function index(UntappdAPI $untappdAPI)
     {
@@ -28,14 +28,26 @@ class OAuthController extends Controller
     }
     
     /**
-     * @Route("/oauth/authorize", name="OAuth Authorize")
+     * @Route("/oauth/authorize", name="oauth_authorize")
      */
     public function authorize(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
     {
         $access_token = $untappdAPI->authorize($_GET['code']);
         $response = $untappdAPI->getUserInfo(null, $access_token);
-        $untappdAPISerializer->handleUserObject($response->body->response->user, $access_token);
+        $user = $untappdAPISerializer->handleUserObject($response->body->response->user, $access_token);
         
-        return $this->redirectToRoute('homepage');
+        $session = $this->get('session');
+        $session->set('userUntappdID', $user->getId());
+        return $this->redirect($session->getFlashBag()->get('lastURI')[0]);
+    }
+    
+    /**
+     * @Route("/oauth/logout", name="oauth_logout")
+     */
+    public function logout()
+    {
+        $session = $this->get('session');
+        $session->remove('userUntappdID');
+        return $this->redirect($session->getFlashBag()->get('lastURI')[0]);
     }
 }

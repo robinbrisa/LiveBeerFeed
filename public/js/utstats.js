@@ -74,7 +74,8 @@ $(document).ready(function() {
 					ticks.push(beerID);
 					$(this).addClass('active');
 				}
-				localStorage.setItem("ticks", JSON.stringify(ticks));
+				saveData();
+				filterTapList();
 			}
 		})
 		
@@ -95,7 +96,8 @@ $(document).ready(function() {
 					$(this).children('i').removeClass('fa-star-o');
 					$(this).children('i').addClass('fa-star');
 				}
-				localStorage.setItem("favorites", JSON.stringify(favorites));
+				saveData();
+				filterTapList();
 			}
 		})
 		
@@ -176,17 +178,43 @@ $(document).ready(function() {
 		} else {
 			taplistSort = JSON.parse(localStorage.getItem("taplistSort"));
 		}
-		
+
 		if (localStorage.getItem("favorites") != null) {
 			favorites = JSON.parse(localStorage.getItem("favorites"));
-			initFavorites();
+			if (typeof savedFavorites !== "undefined") {
+				if (!favorites.equals(JSON.parse(savedFavorites))) {
+					$('#data-conflict-modal').modal({backdrop: 'static'});
+				}
+			}
+		} else {
+			if (typeof savedFavorites !== "undefined") {
+				favorites = JSON.parse(savedFavorites);
+			}
 		}
-
+		initFavorites();
+		
 		if (localStorage.getItem("ticks") != null) {
 			ticks = JSON.parse(localStorage.getItem("ticks"));
-			initTicks();
+			if (typeof savedTicks !== "undefined") {
+				if (!ticks.equals(JSON.parse(savedTicks))) {
+					$('#data-conflict-modal').modal({backdrop: 'static'});
+				}
+			}
+		} else {
+			if (typeof savedTicks !== "undefined") {
+				ticks = JSON.parse(savedTicks);
+			}
 		}
-		
+		initTicks();
+
+		$('#data-keep-remote').click(function() {
+			favorites = JSON.parse(savedFavorites);
+			ticks = JSON.parse(savedTicks);
+			initFavorites();
+			initTicks();
+			saveData();
+		});
+
 		$('.open-untappd').click(function(e) {
 			e.preventDefault();
 			var beerID = $(this).parents('.taplist-beer').data('id');
@@ -289,6 +317,7 @@ function initTaplistSort() {
 }
 
 function initFavorites() {
+	$('.taplist-beer').find('.favorite').removeClass('active');
 	$.each(favorites, function(idx, val) {
 		var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.favorite');
 		$(favoriteElement).addClass('active');
@@ -297,7 +326,16 @@ function initFavorites() {
 	});
 }
 
+function saveData() {
+	localStorage.setItem("favorites", JSON.stringify(favorites));
+	localStorage.setItem("ticks", JSON.stringify(ticks));
+	if ($("#logged-in").length > 0) {
+		$.post('/ajax/saveTaplistData', { event: $('#event-taplist').data('event-id'), favorites: JSON.stringify(favorites), ticks: JSON.stringify(ticks)})
+	}
+}
+
 function initTicks() {
+	$('.taplist-beer').find('.tick').removeClass('active');
 	$.each(ticks, function(idx, val) {
 		var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.tick');
 		$(favoriteElement).addClass('active');
@@ -491,3 +529,32 @@ jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function(arg) {
         return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
     };
 });
+
+if(Array.prototype.equals)
+    console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+// attach the .equals method to Array's prototype to call it on any array
+Array.prototype.equals = function (array) {
+    // if the other array is a falsy value, return
+    if (!array)
+        return false;
+
+    // compare lengths - can save a lot of time 
+    if (this.length != array.length)
+        return false;
+
+    for (var i = 0, l=this.length; i < l; i++) {
+        // Check if we have nested arrays
+        if (this[i] instanceof Array && array[i] instanceof Array) {
+            // recurse into the nested arrays
+            if (!this[i].equals(array[i]))
+                return false;       
+        }           
+        else if (this[i] != array[i]) { 
+            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+            return false;   
+        }           
+    }       
+    return true;
+}
+// Hide method from for-in loops
+Object.defineProperty(Array.prototype, "equals", {enumerable: false});

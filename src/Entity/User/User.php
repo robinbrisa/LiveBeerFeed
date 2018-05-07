@@ -218,6 +218,11 @@ class User
     private $internal_friendlist_last_offset;
     
     /**
+     * @ORM\OneToMany(targetEntity="SavedData", mappedBy="user")
+     */
+    private $saved_data;
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -227,6 +232,7 @@ class User
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->toasts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->saved_data = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -1259,6 +1265,40 @@ class User
     public function getBadgeRelations()
     {
         return $this->badge_relation;
+    }
+    
+    /**
+     * Add saved_data
+     *
+     * @param \App\Entity\User\SavedData $savedData
+     *
+     * @return User
+     */
+    public function addSavedData(\App\Entity\User\SavedData $savedData)
+    {
+        $this->saved_data[] = $savedData;
+        
+        return $this;
+    }
+    
+    /**
+     * Remove saved_data
+     *
+     * @param \App\Entity\User\SavedData $savedData
+     */
+    public function removeSavedData(\App\Entity\User\SavedData $savedData)
+    {
+        $this->saved_data->removeElement($savedData);
+    }
+    
+    /**
+     * Get saved_data
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSavedData()
+    {
+        return $this->saved_data;
     }
     
 }

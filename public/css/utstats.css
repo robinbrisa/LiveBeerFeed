@@ -7,16 +7,16 @@ a {
     color: #c60;
 }
 
-.container {
-	background-color: #FDFDFB;
-	padding: 12px;
-}
-
  a:hover {
 	color: #ff9933;
 	text-decoration: none;
 }
  
+.container {
+	background-color: #FDFDFB;
+	padding: 12px;
+}
+
 .navbar-push {
     margin-bottom: 56px;
 }
@@ -905,11 +905,9 @@ rating.small.r200{
 	background:rgba(255,255,255,0.9);
 }
 
-#filters-open {
+.fixed-button {
 	text-align: center;
 	position: fixed;
-	bottom: 10px;
-	left: 10px;
 	font-size: 24px;
 	width: 65px;
 	height: 65px;
@@ -917,17 +915,41 @@ rating.small.r200{
 	border-radius: 35px;
 	background:rgba(255,255,255,0.9);
 	line-height: 10px;
+	color: #000;
+}
+
+.fixed-button:hover {
+	color: #000;
+	text-decoration: none;
+}
+ 
+#filters-open {
+	bottom: 10px;
+	left: 10px;
 	cursor: pointer;
 }
 
-#filters-open i {
+.fixed-button i {
 	margin-top: 13px;
 	font-size: 20px;
+	margin-bottom: 5px;
 }
 
-.filter-open-desc {
-	font-size:11px;
+.fixed-button .desc {
+	font-size:10px;
 }
+
+.fixed-button img {
+	margin-top: 13px;
+	width: 20px;
+	margin-bottom: 5px;
+}
+
+#taplist-untappd-login {
+	bottom: 10px;
+	left: 85px;
+}
+
 
 .input-group-chk {
 	margin-left: 20px;

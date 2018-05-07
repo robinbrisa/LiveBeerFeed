@@ -167,13 +167,50 @@
     		</div>
     	</div>
     </div>
-        
-    <div id="filters-open">
-    	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-    	<span class="filter-open-desc">Filter/Sort</span>
+    
+    <div class="modal fade" id="data-conflict-modal" tabindex="-1" role="dialog" aria-labelledby="data-conflict-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                	<h5 class="modal-title" id="data-conflict-modal">Data conflict</h5>
+                </div>
+                <div class="modal-body">
+                	The locally saved data for your ticked and favorites beers is different from the data that is remotely saved for your Untappd account.<br>
+                	Which data source do you want to use?<br/>
+                	<strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> The dismissed data source will be erased.</strong>
+                </div>
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-secondary" data-dismiss="modal">Keep local data</button>
+                	<button id="data-keep-remote" type="button" class="btn btn-secondary" data-dismiss="modal">Keep remote data</button>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <div id="filters-open" class="fixed-button">
+    	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+    	<div class="desc">Filter/Sort</div>
+    </div>
+    
+
+    {% if user is null %}
+    	<a id="taplist-untappd-login" class="fixed-button" href="https://untappd.com/oauth/authenticate/?client_id={{ untappd_api_client_id }}&response_type=code&redirect_url={{ untappd_api_oauth_redirect_url }}">
+        	<img src="{{ asset('images/untappd_bottles.png') }}">
+        	<div class="desc">Login with Untappd</div>
+    	</a>
+    {% else %}
+    	<a id="taplist-untappd-login" class="fixed-button" href="{{ path('oauth_logout') }}">
+        	<img id="logged-in" src="{{ user.useravatar }}">
+        	<div class="desc">Logout</div>
+    	</a>
+    {% endif %}
+            
 </div>
 <script>
+{% if userData is not null %}
+	var savedTicks = "{{ userData.ticks }}";
+	var savedFavorites = "{{ userData.favorites }}";
+{% endif %}
 var locale = "{{ app.request.locale }}";
 var websocket = "{{ websocket }}";
 </script>

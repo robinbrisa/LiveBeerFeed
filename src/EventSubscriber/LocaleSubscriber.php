@@ -33,6 +33,10 @@ class LocaleSubscriber implements EventSubscriberInterface
             // if no explicit locale has been set on this request, use one from the session
             $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
         }
+        
+        if ($request->get('_route') && $request->get('_route') != "oauth_authorize" && $request->get('_route') != "_wdt" && $request->get('_route') != "oauth_logout" && substr($request->get('_route'), 0, 5) != "ajax_") {
+            $request->getSession()->getFlashBag()->set('lastURI', $request->getUri());
+        }
     }
 
     public static function getSubscribedEvents()
