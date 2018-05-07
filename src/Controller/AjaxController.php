@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Service\EventStats;
 use App\Entity\PushSubscription;
 use App\Entity\User\SavedData;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Service\UntappdAPI;
 
 class AjaxController extends Controller
 {
@@ -174,6 +176,7 @@ class AjaxController extends Controller
         $em = $this->getDoctrine()->getManager();
         $ticks = $request->request->get('ticks');
         $favorites = $request->request->get('favorites');
+        $buttonAction = $request->request->get('buttonAction');
         $event = $request->request->get('event');
         $session = $request->getSession();
         if (!$userUntappdID = $session->get('userUntappdID')) {
@@ -192,11 +195,86 @@ class AjaxController extends Controller
                 $userData->setUser($user);
                 $userData->setEvent($event);
             }
+            $userData->setButtonAction($buttonAction);
             $userData->setTicks($ticks);
             $userData->setFavorites($favorites);
         }
         $em->persist($userData);
         $em->flush();
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+    
+    /**
+     * @Route("/ajax/quickCheckInModal/{event_id}/{beer_id}", name="ajax_quick_checkin_modal")
+     */
+    public function quickCheckInModalAction($event_id, $beer_id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if (!$event = $em->getRepository('\App\Entity\Event\Event')->find($event_id)) {
+            throw new NotFoundHttpException("Invalid Event ID");
+        } else {
+            $venue = $event->getVenues()[0];
+        }
+        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beer_id)) {
+            throw new NotFoundHttpException("Invalid Beer ID");
+        }        
+        
+        return $this->render('taplist/templates/quick-checkin.template.html.twig', [
+            'beer' => $beer,
+            'venue' => $venue
+        ]);
+    }
+    
+    /**
+     * @Route("/ajax/addCheckin", name="ajax_quick_checkin_post")
+     */
+    public function addCheckinAction(Request $request, UntappdAPI $untappdAPI)
+    {
+        $session = $request->getSession();
+        $output = array('success' => true);
+        if (!$userUntappdID = $session->get('userUntappdID')) {
+            $output['success'] = false;
+            $output['error'] = 'NOT_LOGGED_IN';
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $user = $em->getRepository('\App\Entity\User\User')->find($userUntappdID);
+            if (!$user->getInternalUntappdAccessToken()) {
+                $output['success'] = false;
+                $output['error'] = 'MISSING_AUTH_TOKEN';
+            }
+            if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($request->request->get('beerId'))) {
+                $output['success'] = false;
+                $output['error'] = 'INVALID_BEER';
+            }
+            if (!$venue = $em->getRepository('\App\Entity\Venue\Venue')->find($request->request->get('venueId'))) {
+                $output['success'] = false;
+                $output['error'] = 'INVALID_VENUE';
+            }
+            $comment = null;
+            if ($request->request->get('checkinComment') != "") {
+                $comment = $request->request->get('checkinComment');
+            }
+            $rating = null;
+            if ($request->request->get('ratingScoreRange') > 0) {
+                $rating = $request->request->get('ratingScoreRange');
+            }
+            
+            $checkin = $untappdAPI->addCheckin($user->getInternalUntappdAccessToken(), $beer->getId(), $comment, $rating, $venue->getFoursquareId(), $venue->getLatitude(), $venue->getLongitude());
+            
+            if (!isset($checkin->body->response->result) || $checkin->body->response->result != "success") {
+                $output['success'] = false;
+                $output['error'] = 'CHECKIN_ERROR';
+            } else {
+                $output['response'] = $checkin->body->response;
+                $output['display'] = $this->render('taplist/templates/quick-checkin-success.template.html.twig', [
+                    'response' => $checkin->body->response
+                ])->getContent();
+            }
+        
+        }
         
         $response = new Response(json_encode($output));
         $response->headers->set('Content-Type', 'application/json');

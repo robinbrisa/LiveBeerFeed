@@ -984,6 +984,10 @@ div.filters-title {
 	margin-bottom: 3px;
 }
 
+.filters-title img {
+	width: 16px;
+}
+
 .center-checkboxes {
 	text-align: center;
 }
@@ -1005,4 +1009,76 @@ div.filters-title {
 
 #taplist-sort-select {
 	margin-bottom: 3px;
+}
+
+#ratingScoreInput {
+	width: 80px;
+	text-align: center;
+}
+
+#ratingScoreRange {
+	width:100%;
+}
+
+.filter-value {
+	width: 55px;
+	text-align: center;
+}
+
+.quick-checkin-label img {
+	width:50px;
+	height:50px;
+	margin-right: 10px;
+	float: left;
+}
+
+#quick-checkin-form {
+	border: 1px solid #e2e2e2;
+	border-radius: 10px;
+    padding: 8px 15px;
+}
+
+.quick-checkin-beer-info {
+    margin-bottom: 12px;
+}
+
+#ratingScoreInput {
+	float: right;
+}
+
+.quick-checkin-loading {
+	font-size: 32px;
+	text-align:center;
+}
+
+#submit-quick-checkin {
+	width: 75px;
+}
+
+.badges-unlocked-list {
+	margin-top: 8px;
+}
+
+.unlocked-badge {
+	margin: 6px;
+	padding: 6px;
+	border: 1px solid #e2e2e2;
+}
+
+.unlocked-badge img {
+	float: left;
+	margin-right: 10px;
+}
+
+.unlocked-badge .badge-title {
+	font-weight:bold; 
+}
+
+.unlocked-badge .badge-description {
+	font-size: 12px;
+	padding-left: 100px; 
+}
+
+#quick-checkin-error {
+	display: none;
 }

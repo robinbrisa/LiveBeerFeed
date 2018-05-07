@@ -10,11 +10,21 @@ var taplistFilters = {};
 var taplistSort = {key: 'brewery', order: -1}
 var favorites = [];
 var ticks = [];
+var untappdButtonAction = 'quick-checkin';
 
 $(document).ready(function() {
 	if (locale !== undefined) {
 		moment.locale(locale);
 	}
+
+	$(".modal").on("shown.bs.modal", function()  {
+	    var urlReplace = "#" + $(this).attr('id'); 
+	    history.pushState(null, null, urlReplace); 
+	});
+
+	$(window).on('popstate', function() { 
+		$(".modal").modal('hide');
+	});
 	
 	if ($('#live-feed').length !== 0) {
 		refreshTimes();
@@ -64,40 +74,14 @@ $(document).ready(function() {
 		$('.tick').click(function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
 			if (beerID) {
-				if ($(this).hasClass('active')) {
-					$(this).removeClass('active');
-					var idx = ticks.indexOf(beerID);
-					if (idx > -1) {
-						ticks.splice(idx, 1);
-					}
-				} else {
-					ticks.push(beerID);
-					$(this).addClass('active');
-				}
-				saveData();
-				filterTapList();
+				tickBeer(beerID, !$(this).hasClass('active'));
 			}
 		})
 		
 		$('.favorite').click(function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
 			if (beerID) {
-				if ($(this).hasClass('active')) {
-					$(this).removeClass('active');
-					$(this).children('i').addClass('fa-star-o');
-					$(this).children('i').removeClass('fa-star');
-					var idx = favorites.indexOf(beerID);
-					if (idx > -1) {
-						favorites.splice(idx, 1);
-					}
-				} else {
-					favorites.push(beerID);
-					$(this).addClass('active');
-					$(this).children('i').removeClass('fa-star-o');
-					$(this).children('i').addClass('fa-star');
-				}
-				saveData();
-				filterTapList();
+				favoriteBeer(beerID, !$(this).hasClass('active'));
 			}
 		})
 		
@@ -164,7 +148,7 @@ $(document).ready(function() {
 			filterTapList();
 		});
 		
-		$('.filters-sort-select').change(function() {
+		$('#taplist-sort-select').change(function() {
 			var optionSelected = $("option:selected", this);
 			var keyVal = $(optionSelected).data('key');
 			var orderVal = $(optionSelected).data('order');
@@ -173,40 +157,64 @@ $(document).ready(function() {
 			sortTaplist();
 		})
 		
+		$('#taplist-buttonAction-select').change(function() {
+			untappdButtonAction = $(this).val();
+			saveData();
+		})
+				
 		if (localStorage.getItem("taplistSort") == null) {
 			localStorage.setItem("taplistSort", JSON.stringify(taplistSort));
 		} else {
 			taplistSort = JSON.parse(localStorage.getItem("taplistSort"));
 		}
 
-		if (localStorage.getItem("favorites") != null) {
-			favorites = JSON.parse(localStorage.getItem("favorites"));
-			if (typeof savedFavorites !== "undefined") {
-				if (!favorites.equals(JSON.parse(savedFavorites))) {
-					$('#data-conflict-modal').modal({backdrop: 'static'});
-				}
-			}
-		} else {
-			if (typeof savedFavorites !== "undefined") {
-				favorites = JSON.parse(savedFavorites);
-			}
-		}
-		initFavorites();
+		$('#quick-checkin-modal').on("keyup", '#checkin-comment', function() {
+			var remainingChars = 140 - $(this).val().length;
+			$('#comment-chars-left').html(remainingChars);
+		});
 		
-		if (localStorage.getItem("ticks") != null) {
-			ticks = JSON.parse(localStorage.getItem("ticks"));
-			if (typeof savedTicks !== "undefined") {
-				if (!ticks.equals(JSON.parse(savedTicks))) {
-					$('#data-conflict-modal').modal({backdrop: 'static'});
-				}
+		$('#quick-checkin-modal').on("change", '#ratingScoreRange', function() {
+			if ($(this).val() == 0) {
+				$('#ratingScoreInput').val('No Rating');
 			}
-		} else {
-			if (typeof savedTicks !== "undefined") {
-				ticks = JSON.parse(savedTicks);
-			}
-		}
-		initTicks();
+		});
 
+		$(document).on("click", '.open-checkin', function(e) {
+			e.preventDefault();
+			if (platform.os.family == "Android" || platform.os.family == "iOS") {
+				window.location = 'untappd://checkin/'+$(this).data('checkin');
+			} else {
+				window.open($(this).prop('href'));
+			}
+		});
+		
+		$("#quick-checkin-modal").on("hidden.bs.modal", function(){
+		    $(".modal-body").html('<div class="quick-checkin-loading"><i class="fa fa-spinner fa-pulse"></i></div>');
+		});
+		
+		$(document).on("submit", '#quick-checkin-form', function(e) {
+			e.preventDefault();
+			$('#submit-quick-checkin').prop('disabled', true);
+			$('#submit-quick-checkin').html('<i class="fa fa-spinner fa-pulse"></i>')
+			$.post('/ajax/addCheckin', $('#quick-checkin-form').serialize(), function(data) {
+				if (data.success) {
+					$('#quick-checkin-modal').find('.modal-body').html(data.display);
+					tickBeer(data.response.beer.bid, true);
+				} else {
+					$('#submit-quick-checkin').prop('disabled', false);
+					$('#quick-checkin-error').show();
+					$('#submit-quick-checkin').html("Retry");
+				}
+			})
+			.fail(function(data) {
+				$('#submit-quick-checkin').prop('disabled', false);
+				$('#quick-checkin-error').show();
+				$('#submit-quick-checkin').html("Retry");
+			});
+		});
+
+		initSavedData();
+		
 		$('#data-keep-remote').click(function() {
 			favorites = JSON.parse(savedFavorites);
 			ticks = JSON.parse(savedTicks);
@@ -215,16 +223,35 @@ $(document).ready(function() {
 			saveData();
 		});
 
+		
 		$('.open-untappd').click(function(e) {
 			e.preventDefault();
 			var beerID = $(this).parents('.taplist-beer').data('id');
-			if (platform.os.family == "Android" || platform.os.family == "iOS") {
-				window.location = 'untappd://beer/'+beerID
-			} else {
-				window.open($(this).prop('href'));
+			switch (untappdButtonAction) {
+				case "open-app":
+					if (platform.os.family == "Android" || platform.os.family == "iOS") {
+						window.location = 'untappd://beer/'+beerID
+					} else {
+						window.open($(this).prop('href'));
+					}
+					break;
+				case "open-web":
+					window.open($(this).prop('href'));
+					break;
+				case "quick-checkin":
+					if ($("#logged-in").length > 0) {
+						$('#quick-checkin-modal').modal('show');
+						$('#quick-checkin-modal').find('.modal-body').load( "/ajax/quickCheckInModal/" + $('#event-taplist').data('event-id') + "/" + beerID);
+					} else {
+						if (platform.os.family == "Android" || platform.os.family == "iOS") {
+							window.location = 'untappd://beer/'+beerID
+						} else {
+							window.open($(this).prop('href'));
+						}
+					}
+					break;
 			}
 		});
-		
 		initTaplistSort();
 		setFilterStates();
 	}
@@ -310,6 +337,45 @@ function sortTaplist() {
 	beerDiv.detach().appendTo(beers);
 }
 
+function initSavedData() {
+	if (localStorage.getItem("favorites") != null) {
+		favorites = JSON.parse(localStorage.getItem("favorites"));
+		if (typeof savedFavorites !== "undefined") {
+			if (!favorites.equals(JSON.parse(savedFavorites))) {
+				$('#data-conflict-modal').modal({backdrop: 'static'});
+			}
+		}
+	} else {
+		if (typeof savedFavorites !== "undefined") {
+			favorites = JSON.parse(savedFavorites);
+		}
+	}
+	initFavorites();
+	
+	if (localStorage.getItem("ticks") != null) {
+		ticks = JSON.parse(localStorage.getItem("ticks"));
+		if (typeof savedTicks !== "undefined") {
+			if (!ticks.equals(JSON.parse(savedTicks))) {
+				$('#data-conflict-modal').modal({backdrop: 'static'});
+			}
+		}
+	} else {
+		if (typeof savedTicks !== "undefined") {
+			ticks = JSON.parse(savedTicks);
+		}
+	}
+	initTicks();
+
+	if (typeof savedUntappdButtonAction !== "undefined" && savedUntappdButtonAction != "") {
+		untappdButtonAction = savedUntappdButtonAction;
+	} else {
+		if (localStorage.getItem("untappdButtonAction") != null) {
+			untappdButtonAction = localStorage.getItem("untappdButtonAction");
+		}
+	}
+	$('#taplist-buttonAction-select').val(untappdButtonAction);
+}
+
 function initTaplistSort() {
 	var option = $('option[data-key="'+taplistSort.key+'"][data-order="'+taplistSort.order+'"]');
 	$('#taplist-sort-select').val($(option).val());
@@ -329,8 +395,9 @@ function initFavorites() {
 function saveData() {
 	localStorage.setItem("favorites", JSON.stringify(favorites));
 	localStorage.setItem("ticks", JSON.stringify(ticks));
+	localStorage.setItem("untappdButtonAction", untappdButtonAction);
 	if ($("#logged-in").length > 0) {
-		$.post('/ajax/saveTaplistData', { event: $('#event-taplist').data('event-id'), favorites: JSON.stringify(favorites), ticks: JSON.stringify(ticks)})
+		$.post('/ajax/saveTaplistData', { event: $('#event-taplist').data('event-id'), favorites: JSON.stringify(favorites), ticks: JSON.stringify(ticks), buttonAction: untappdButtonAction })
 	}
 }
 
@@ -340,6 +407,48 @@ function initTicks() {
 		var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.tick');
 		$(favoriteElement).addClass('active');
 	});
+}
+
+function tickBeer(beerID, enable) {
+	var tickElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.tick'); 
+	var idx = ticks.indexOf(beerID);
+	if (enable) {
+		// Avoid dupes
+		if (idx == -1) {
+			ticks.push(beerID);
+		}
+		tickElement.addClass('active');
+	} else {
+		if (idx > -1) {
+			ticks.splice(idx, 1);
+		}
+		tickElement.removeClass('active');
+	}
+	saveData();
+	filterTapList();
+}
+
+function favoriteBeer(beerID, enable) {
+	var favoriteElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.favorite'); 
+	var idx = favorites.indexOf(beerID);
+	if (enable) {
+		// Avoid dupes
+		if (idx == -1) {
+			favorites.push(beerID);
+		}
+		favoriteElement.addClass('active');
+		favoriteElement.children('i').removeClass('fa-star-o');
+		favoriteElement.children('i').addClass('fa-star');
+	} else {
+		if (idx > -1) {
+			favorites.splice(idx, 1);
+		}
+		favoriteElement.removeClass('active');
+		favoriteElement.children('i').addClass('fa-star-o');
+		favoriteElement.children('i').removeClass('fa-star');
+	}
+	saveData();
+	filterTapList();
 }
 
 function setFilterStates() {

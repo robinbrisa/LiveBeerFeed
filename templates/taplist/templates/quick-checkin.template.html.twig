@@ -1,0 +1,24 @@
+<div class="quick-checkin-beer-info clearfix">
+    <div class="quick-checkin-label"><img src="{{ beer.label }}"/></div>
+    <div class="quick-checkin-info"><strong>{{ beer.name }}</strong></div>
+    <div class="quick-checkin-info">{{ beer.brewery.name }}</div>
+</div>
+<form class="clearfix" id="quick-checkin-form">
+	<input type="hidden" name="beerId" value="{{ beer.id }}">
+	<input type="hidden" name="venueId" value="{{ venue.id }}">
+    <div class="form-group">
+        <input id="ratingScoreInput" class="" type="text" name="ratingScoreInput" value="No Rating" readonly disabled oninput="this.form.ratingScoreRange.value=this.value" />
+        <label for="ratingScoreRange"><strong>Rating</strong></label>
+        <div class="form-range">
+            <input id="ratingScoreRange"  type="range" name="ratingScoreRange" min="0" max="5" value="0" step="0.25" oninput=this.form.ratingScoreInput.value=this.value />
+         </div>
+    </div>
+    <div class="form-group">
+        <label for="checkin-comment"><strong>Comment</strong> (<span id="comment-chars-left">140</span> characters left)</label>
+        <textarea name="checkinComment" class="form-control" id="checkin-comment" maxlength="140" rows="2"></textarea>
+    </div>
+    <div id="quick-checkin-error" class="alert alert-danger" role="alert">
+    	<strong>There was an error when trying to create your check-in.</strong><br />You can click on <a href="untappd://beer/{{ beer.id }}">this link</a> to open this beer on Untappd.
+    </div>
+    <button id="submit-quick-checkin" type="submit" class="btn btn-secondary pull-right">Submit</button>
+</form>

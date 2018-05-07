@@ -40,6 +40,12 @@ class SavedData
      */
     private $favorites;
     
+    
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $button_action;
+    
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
@@ -52,7 +58,31 @@ class SavedData
      */
     private $updated_at;
     
-       /**
+    /**
+     * Get $button_action
+     *
+     * @return mixed
+    */
+    public function getButtonAction()
+    {
+        return $this->button_action;
+    }
+
+     /**
+     * Set $button_action
+     *
+     * @param mixed $button_action
+     *
+     * @return SavedData
+    */
+    public function setButtonAction($button_action)
+    {
+        $this->button_action = $button_action;
+        
+        return $this;
+    }
+
+    /**
      * Get $created_at
      *
      * @return mixed

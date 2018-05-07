@@ -409,6 +409,54 @@ class UntappdAPI
     }
     
     /**
+     * This will allow you to check-in to a beer as the authenticated user.
+     *
+     * @param string $accessToken The access token for the acting user
+     * @param integer $bid The numeric Beer ID you want to check into
+     * @param string $shout The text you would like to include as a comment of the checkin.
+     * @param integer $rating The rating score you would like to add for the beer. This can only be 1 to 5 (half ratings are included).
+     * @param string $foursquareId The MD5 hash ID of the Venue you want to attach the beer checkin. This HAS TO BE the MD5 non-numeric hash from the foursquare v2
+     * @param integer $geolat The numeric Latitude of the user. This is required if you add a location.
+     * @param integer $geolng The numeric Longitude of the user. This is required if you add a location.
+     * @param integer $gmtOffset The numeric value of hours the user is away from the GMT (Greenwich Mean Time)
+     * @param string $facebook If you want to push this check-in to the users' Facebook account, pass this value as "on", default is "off"
+     * @param string $twitter If you want to push this check-in to the users' Twitter account, pass this value as "on", default is "off"
+     * @param string $foursquare If you want to push this check-in to the users' Foursquare account, pass this value as "on", default is "off". You must include a location for this to enabled.
+     * @return string Returns a JSON object containing the posted checkin
+     */
+    public function addCheckin($accessToken, $bid, $shout = null, $rating = null, $foursquareId = null, $geolat = null, $geolng = null, $gmtOffset = 0, $timezone = 'GMT', $facebook = 'off', $twitter = 'off', $foursquare = 'off')
+    {
+        $headers = array('Accept' => 'application/json');
+        $query = array(
+            'access_token' => $accessToken,
+            'gmt_offset' => $gmtOffset,
+            'timezone' => $timezone,
+            'bid' => $bid,
+            'facebook' => $facebook,
+            'twitter' => $twitter,
+            'foursquare' => $foursquare
+        );
+        if ($foursquareId && $geolat && $geolng) {
+            $query['foursquare_id'] = $foursquareId;
+            $query['geolat'] = $geolat;
+            $query['geolng'] = $geolng;
+        }
+        if ($shout) {
+            $query['shout'] = $shout;
+        };
+        if ($rating) {
+            $query['rating'] = $rating;
+        }
+        $response = Unirest\Request::post($this->APIUrl . '/v4/checkin/add?access_token=' . $accessToken, $headers, $query);
+        if ($response->code != 200) {
+            throw new \Exception("API Error. HTTP code: " . $response->code);
+        } else {
+            $this->logAPIQuery('/v4/checkin/add/', $response, $accessToken);
+        }
+        return $response;
+    }
+    
+    /**
      * This method allows you the obtain all the check-in feed of the selected user. 
      *
      * @param string $username The username that you wish to call the request upon.

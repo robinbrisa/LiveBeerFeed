@@ -162,10 +162,36 @@
                                     </div>
                                 {% endfor %}
                             </div>
+                			<hr class="my-1">
+                            <div class="filters-title"><img src="{{ asset('images/untappd_bottles.png') }}"> Untappd Button Action</div>
+                            <div class="form-group filter-group-table">
+                            	<select id="taplist-buttonAction-select" class="form-control form-control-sm">
+                                	<option value="quick-checkin">Quick Check-in (Logged-in Only)</option>
+                                	<option value="open-app">Open App (Mobile Only)</option>
+                                	<option value="open-web">Open Website</option>
+                                </select>
+                            </div>
+                        </div>
                     </form>
     			</div>
     		</div>
     	</div>
+    </div>
+    
+    <div class="modal fade" id="quick-checkin-modal" tabindex="-1" role="dialog" aria-labelledby="quick-checkin-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                	<h5 class="modal-title" id="quick-checkin-modal">Quick Check-in</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                	<div class="quick-checkin-loading"><i class="fa fa-spinner fa-pulse"></i></div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="modal fade" id="data-conflict-modal" tabindex="-1" role="dialog" aria-labelledby="data-conflict-modal" aria-hidden="true">
@@ -210,6 +236,7 @@
 {% if userData is not null %}
 	var savedTicks = "{{ userData.ticks }}";
 	var savedFavorites = "{{ userData.favorites }}";
+	var savedUntappdButtonAction = "{{ userData.buttonAction }}";
 {% endif %}
 var locale = "{{ app.request.locale }}";
 var websocket = "{{ websocket }}";
