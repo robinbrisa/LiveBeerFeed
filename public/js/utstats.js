@@ -189,7 +189,7 @@ $(document).ready(function() {
 		});
 		
 		$("#quick-checkin-modal").on("hidden.bs.modal", function(){
-		    $(".modal-body").html('<div class="quick-checkin-loading"><i class="fa fa-spinner fa-pulse"></i></div>');
+			$("#quick-checkin-modal").find(".modal-body").html('<div class="quick-checkin-loading"><i class="fa fa-spinner fa-pulse"></i></div>');
 		});
 		
 		$(document).on("submit", '#quick-checkin-form', function(e) {
