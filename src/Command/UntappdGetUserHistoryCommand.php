@@ -91,9 +91,9 @@ class UntappdGetUserHistoryCommand extends Command
                 $this->untappdAPISerializer->handleCheckinsArray($checkinsData);
                 if ($input->getOption('update')) {
                     foreach ($checkinsData as $checkin) {
-                        if ($highestUserCheckin && $checkin->checkin_id == $highestUserCheckin->getId()) {
+                        if ($highestUserCheckin && $checkin->checkin_id < $highestUserCheckin->getId() && !$found) {
                             $found = true;
-                            $output->writeln(sprintf('[%s] Checkin %d has been found.', date('H:i:s'), $highestUserCheckin->getId()));
+                            $output->writeln(sprintf('[%s] Checkin %d or lower has been found.', date('H:i:s'), $highestUserCheckin->getId()));
                         } else {
                             if (!$found) { $j++; }
                         }
@@ -135,7 +135,7 @@ class UntappdGetUserHistoryCommand extends Command
         } else {
             $output->writeln(sprintf('Couldn\'t get user information.'));
         }
-        $io->success('Task done');
+        $output->writeln(sprintf('[%s] User %s checkins have been updated', date('H:i:s'), $user->getUsername()));
         gc_collect_cycles();
     }
 }
