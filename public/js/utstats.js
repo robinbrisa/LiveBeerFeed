@@ -214,7 +214,7 @@ $(document).ready(function() {
 			$.post('/ajax/addCheckin', $('#quick-checkin-form').serialize(), function(data) {
 				if (data.success) {
 					$('#quick-checkin-modal').find('.modal-body').html(data.display);
-					tickBeer(data.response.beer.bid, true);
+					addCheckedInBeer(data.response.beer.bid);
 				} else {
 					$('#submit-quick-checkin').prop('disabled', false);
 					$('#quick-checkin-error').show();
@@ -512,6 +512,17 @@ function favoriteBeer(beerID, enable) {
 		favoriteElement.children('i').removeClass('fa-star');
 	}
 	saveData();
+	filterTapList();
+}
+
+function addCheckedInBeer(beerID) {
+	var tickElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.open-untappd');
+	var idx = checkedInBeers.indexOf(beerID);
+	if (idx == -1) {
+		checkedInBeers.push(beerID);
+	}
+	tickElement.addClass('active');
+	initTicks();
 	filterTapList();
 }
 
