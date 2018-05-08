@@ -495,7 +495,7 @@ class UntappdAPISerializer
     }
     
     private function buildCheckinMedia($media) {
-        $output = $this->em->getRepository('\App\Entity\Checkin\Comment')->find($media->photo_id);
+        $output = $this->em->getRepository('\App\Entity\Checkin\Media')->find($media->photo_id);
         if (!$output) {
             $output = new Media();
             $output->setId($media->photo_id);
