@@ -55,6 +55,9 @@ class UntappdAPISerializer
             if (!$checkinData->beer->beer_slug) {
                 continue;
             }
+            if (!$checkinData->brewery->brewery_slug) {
+                continue;
+            }
             $parseCheckins[] = $checkinData->checkin_id;
             $checkin = $this->buildCheckin($checkinData);
             $user = $this->buildUserWithLowInformation($checkinData->user);
