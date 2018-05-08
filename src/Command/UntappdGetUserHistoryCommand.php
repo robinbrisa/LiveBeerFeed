@@ -122,6 +122,12 @@ class UntappdGetUserHistoryCommand extends Command
                     $this->em->flush();
                 }
             }
+            // Empty account
+            if ($response->body->response->checkins->count == 0) {
+                $user->setInternalFullHistoryGathered(true);
+                $this->em->persist($user);
+                $this->em->flush();
+            }
             if ($rateLimitRemaining == 0) {
                 $output->writeln(sprintf('[%s] API query limit has been reached, please continue later.', date('H:i:s')));
             }
