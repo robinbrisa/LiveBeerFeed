@@ -89,8 +89,10 @@ class UntappdGetUserHistoryCommand extends Command
                 $output->writeln(sprintf('[%s] (%d) Handling %d checkins. Remaining queries: %d.', date('H:i:s'), $i, $response->body->response->checkins->count, $rateLimitRemaining));
                 $checkinsData = $response->body->response->checkins->items;
                 $this->untappdAPISerializer->handleCheckinsArray($checkinsData);
-                if ($input->getOption('update')) {
-                    foreach ($checkinsData as $checkin) {
+                $checkinIDs = array();
+                foreach ($checkinsData as $checkin) {
+                    $checkinIDs[] = $checkin->checkin_id;
+                    if ($input->getOption('update')) {
                         if ($highestUserCheckin && $checkin->checkin_id < $highestUserCheckin->getId() && !$found) {
                             $found = true;
                             $output->writeln(sprintf('[%s] Checkin %d or lower has been found.', date('H:i:s'), $highestUserCheckin->getId()));
@@ -98,6 +100,20 @@ class UntappdGetUserHistoryCommand extends Command
                             if (!$found) { $j++; }
                         }
                     }
+                }
+                // Look for deleted checkins
+                $firstCheckinCreationDate = \DateTime::createFromFormat(DATE_RFC2822, $checkinsData[0]->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
+                $lastCheckinCreationDate = \DateTime::createFromFormat(DATE_RFC2822, $checkinsData[count($checkinsData)-1]->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
+                $currentCheckins = $this->em->getRepository('App\Entity\Checkin\Checkin')->getUserCheckins($user, null, null, $lastCheckinCreationDate, $firstCheckinCreationDate);
+                $currentCheckinsArray = array();
+                foreach ($currentCheckins as $currentCheckin) {
+                    $currentCheckinsArray[] = $currentCheckin->getId();
+                }
+                foreach (array_diff($currentCheckinsArray, $checkinIDs) as $checkinToDelete) {
+                    $output->writeln(sprintf('[%s] Removing deleted check-in %d.', date('H:i:s'), $checkinToDelete));
+                    $checkinToDelete = $this->em->getRepository('App\Entity\Checkin\Checkin')->find($checkinToDelete);
+                    $this->em->remove($checkinToDelete);
+                    $this->em->flush();
                 }
                 $user->setInternalFullHistoryLastMaxId($maxID);
                 $user->setInternalLatestCheckinRefresh(new \DateTime());
