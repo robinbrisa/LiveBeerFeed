@@ -223,6 +223,12 @@ class User
     private $internal_friendlist_last_offset;
     
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Event\Event", inversedBy="users_attending")
+     * @ORM\JoinTable(name="user_event_attendance")
+     */
+    private $attending;
+    
+    /**
      * @ORM\OneToMany(targetEntity="SavedData", mappedBy="user")
      */
     private $saved_data;
@@ -239,6 +245,7 @@ class User
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->toasts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->saved_data = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->attending = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -1330,4 +1337,41 @@ class User
         
         return $this;
     }
+    
+    /**
+     * Add attending
+     *
+     * @param \App\Entity\Event\Event $event
+     *
+     * @return User
+     */
+    public function addAttending(\App\Entity\Event\Event $event)
+    {
+        $event->addUserAttending($this);
+        $this->attending[] = $event;
+        
+        return $this;
+    }
+    
+    /**
+     * Remove attending
+     *
+     * @param \App\Entity\Event\Event $event
+     */
+    public function removeAttending(\App\Entity\Event\Event $event)
+    {
+        $event->removeUserAttending($this);
+        $this->attending->removeElement($event);
+    }
+    
+    /**
+     * Get attending
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAttending()
+    {
+        return $this->attending;
+    }
+    
 }

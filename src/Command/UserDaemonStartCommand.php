@@ -77,6 +77,20 @@ class UserDaemonStartCommand extends EndlessContainerAwareCommand
                         $output->writeln(sprintf('[%s] Refreshing user %s.', date('H:i:s'), $user->getUsername()));
                         $this->get_update_user_command_args['username'] = $user->getUsername();
                         $get_user_history_command->run(new ArrayInput($this->get_update_user_command_args), $output);
+                        
+                        $attending = $this->em->getRepository('\App\Entity\Event\Event')->getFutureOrCurrentEventsUserIsAttending($user);
+                        foreach ($attending as $event) {
+                            $pushData = array(
+                                'push_type' => 'checked_in_beers', 
+                                'push_topic' => 'taplist-'.$event->getId().'-'.$user->getId(),
+                                'list' => $this->tools->getEventBeersUserHasCheckedIn($user, $event)
+                            );
+                            $context = new \ZMQContext();
+                            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+                            $socket->connect("tcp://localhost:5555");
+                            $socket->send(json_encode($pushData));
+                            $socket->disconnect("tcp://localhost:5555");
+                        }
                     }
                 }
             }

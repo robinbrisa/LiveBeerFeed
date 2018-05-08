@@ -76,7 +76,7 @@ $(document).ready(function() {
 		
 		$('.tick').click(function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
-			if (!$(this).hasClass('active') || !tickCheckIn) {
+			if (!$(this).hasClass('active') || !(tickCheckIn && $(this).parents('.taplist-beer').find('.open-untappd').hasClass('active'))) {
 				if (beerID) {
 					tickBeer(beerID, !$(this).hasClass('active'));
 				}
@@ -579,7 +579,8 @@ function pushServerEventInfo(){
     }, function() {
         console.warn('WebSocket connection closed');
         setTimeout(function(){
-            location = '/event/' + $("#event-info").data('event-id')
+        	console.log('Retrying to connect...')
+        	pushServerEventInfo();
         }, 20000)
     }, {
         'skipSubprotocolCheck': true
@@ -593,11 +594,15 @@ function pushServerTaplist(){
         });
 		if ($("#logged-in").length > 0) {
 	        conn.subscribe("taplist-" + $('#event-taplist').data('event-id') + "-" + $("#logged-in").data('uid'), function(topic, data) {
-	        	//handleTaplistUserData();
+	        	handleTaplistUserData(data);
 	        });
 		}
     }, function() {
         console.warn('WebSocket connection closed');
+        setTimeout(function(){
+        	console.log('Retrying to connect...')
+        	pushServerTaplist();
+        }, 20000)
     }, {
         'skipSubprotocolCheck': true
     });	
@@ -609,6 +614,15 @@ function updateLivePage() {
 	.done(function(data) {
 		handleNewCheckinData(data);
 	});
+}
+
+function handleTaplistUserData(data) {
+	if (data.push_type == "checked_in_beers") {
+		checkedInBeers = data.list;
+		initCheckedIn();
+		initTicks();
+		filterTapList();
+	}
 }
 
 function handleNewCheckinData(data) {

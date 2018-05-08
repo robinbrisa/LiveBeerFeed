@@ -49,4 +49,13 @@ class EventRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
+    
+    public function getFutureOrCurrentEventsUserIsAttending($user) {
+        return $this->createQueryBuilder('e')
+        ->join('e.users_attending', 'u')
+        ->where('e.end_date > :now')->setParameter('now', new \DateTime())
+        ->andWhere('u.id = :user')->setParameter('user', $user)
+        ->getQuery()
+        ->getResult();
+    }
 }

@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use App\Service\Tools;
+use Doctrine\Common\Collections\Criteria;
 
 class TaplistController extends Controller
 {
@@ -49,11 +50,12 @@ class TaplistController extends Controller
             $user = $em->getRepository('\App\Entity\User\User')->find($userUntappdID);
             $event = $em->getRepository('\App\Entity\Event\Event')->find($event);
             $userData = $em->getRepository('\App\Entity\User\SavedData')->findOneBy(array('user' => $user, 'event' => $event));
-            $historyBeers = $tools->getEventBeersUserHasCheckedIn($user, $event);
-            if ($historyBeers) {
-                foreach($historyBeers as $historyBeer) {
-                    $checkedInBeers[] = (int)$historyBeer['id'];
-                }
+            $checkedInBeers = $tools->getEventBeersUserHasCheckedIn($user, $event);
+            $criteria = Criteria::create()->where(Criteria::expr()->eq("id", $event->getId()));
+            if (count($user->getAttending()->matching($criteria)) == 0) {
+                $user->addAttending($event);
+                $em->persist($user);
+                $em->flush();
             }
         }
                 

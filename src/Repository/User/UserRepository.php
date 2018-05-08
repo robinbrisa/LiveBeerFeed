@@ -135,7 +135,7 @@ class UserRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
     }
-    
+        
     public function getAPIKeys() {
         
         $keysArray = array('default' => 100);

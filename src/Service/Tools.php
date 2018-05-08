@@ -59,7 +59,9 @@ class Tools
         return $APIToken;
     }
     
-    public function getEventBeersUserHasCheckedIn($user, $event) {        
+    public function getEventBeersUserHasCheckedIn($user, $event) {
+        $beerIDs = array();
+        
         $sql = 'SELECT DISTINCT b.id ' .
         'FROM beer b ' .
         'JOIN checkin c ON c.beer_id = b.id ' .
@@ -75,7 +77,10 @@ class Tools
         $query->bindValue('eventID', $event->getId());
         
         $query->execute();
-        return $query->fetchAll();
+        foreach($query->fetchAll() as $beer) {
+            $beerIDs[] = (int)$beer['id'];
+        }
+        return $beerIDs;
     }
     
     public function countryCode($country) {

@@ -103,6 +103,11 @@ class Event
     private $has_taplist = false;
     
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User\User", mappedBy="attending")
+     */
+    private $users_attending;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -169,6 +174,7 @@ class Event
     
     public function __construct() {
         $this->last_info_polling = new \DateTime();
+        $this->users_attending = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -538,4 +544,37 @@ class Event
         $this->screen_size = $screenSize;
     }
     
+    /**
+     * Add user_attending
+     *
+     * @param \App\Entity\User\User $event
+     *
+     * @return Event
+     */
+    public function addUserAttending(\App\Entity\User\User $user)
+    {
+        $this->users_attending[] = $user;
+        
+        return $this;
+    }
+    
+    /**
+     * Remove user_attending
+     *
+     * @param \App\Entity\Event\Event $event
+     */
+    public function removeUserAttending(\App\Entity\User\User $user)
+    {
+        $this->users_attending->removeElement($user);
+    }
+    
+    /**
+     * Get users_attending
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsersAttending()
+    {
+        return $this->users_attending;
+    }
 }
