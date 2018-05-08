@@ -124,6 +124,7 @@ class UntappdGetUserHistoryCommand extends Command
             }
             // Empty account
             if ($response->body->response->checkins->count == 0) {
+                $user->setInternalLatestCheckinRefresh(new \DateTime());
                 $user->setInternalFullHistoryGathered(true);
                 $this->em->persist($user);
                 $this->em->flush();
