@@ -32,6 +32,7 @@ class UntappdGetUserHistoryCommand extends Command
     public function __construct(UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer, EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->untappdAPI = $untappdAPI;
         $this->untappdAPISerializer = $untappdAPISerializer;
         
@@ -47,6 +48,8 @@ class UntappdGetUserHistoryCommand extends Command
         if (!$user) {
             throw New \Exception("Couldn't find this user in database");
         }
+        $userID = $user->getId();
+        
         if (is_null($user->getInternalUntappdAccessToken())) {
             throw New \Exception("Access token for this user is unknown");
         }
@@ -83,6 +86,8 @@ class UntappdGetUserHistoryCommand extends Command
             $maxID = $response->body->response->pagination->max_id;
             $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
             while ($maxID != "" && $rateLimitRemaining > 0 && !$found) {
+                echo " - Peak: ".memory_get_peak_usage();
+                echo " - Mem: ".memory_get_usage();
                 $output->writeln(sprintf('[%s] (%d) Handling %d checkins. Remaining queries: %d.', date('H:i:s'), $i, $response->body->response->checkins->count, $rateLimitRemaining));
                 $checkinsData = $response->body->response->checkins->items;
                 $this->untappdAPISerializer->handleCheckinsArray($checkinsData);
@@ -101,6 +106,11 @@ class UntappdGetUserHistoryCommand extends Command
                 $this->em->persist($user);
                 $this->em->flush();
                 $i++;
+                unset($response);
+                unset($checkinsData);
+                unset($user);
+                $this->em->clear();
+                $user = $this->em->getRepository('\App\Entity\User\User')->find($userID);
                 if ($maxID != "" && $rateLimitRemaining > 0 && !$found) {
                     $output->writeln(sprintf('[%s] (%d) Next page starting at %d.', date('H:i:s'), $i, $maxID));
                     $response = $this->untappdAPI->getUserActivityFeed(null, $user->getInternalUntappdAccessToken(), $maxID, null, 50);
@@ -121,5 +131,6 @@ class UntappdGetUserHistoryCommand extends Command
             $output->writeln(sprintf('Couldn\'t get user information.'));
         }
         $io->success('Task done');
+        gc_collect_cycles();
     }
 }

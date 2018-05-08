@@ -46,7 +46,6 @@ class UntappdAPISerializer
     }
     
     public function handleCheckinsArray($checkins) {
-        $checkinCollection = new \Doctrine\Common\Collections\ArrayCollection();
         foreach ($checkins as $checkinData) {
             $checkin = $this->buildCheckin($checkinData);
             $user = $this->buildUserWithLowInformation($checkinData->user);
@@ -83,7 +82,6 @@ class UntappdAPISerializer
                 $this->createBadgeRelation($badge, $user, $checkin, $badgeData->user_badge_id, $badgeData->created_at);
             }
             $this->em->persist($checkin);
-            $checkinCollection->add($checkin);
         }
         $this->em->flush();
         return true;
