@@ -283,6 +283,14 @@
     	</a>
     {% endif %}
             
+    <div id="taplist-info">
+    	<div><span id="taplist-info-count">0</span> beers (<span id="taplist-info-filtered">0</span> filtered)</div>
+    	<div class="taplist-info-icons">
+    		<span id="taplist-info-favorites">0</span> <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div>
+    		<span id="taplist-info-ticks">0</span> <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div>
+    		<span id="taplist-info-checkins">0</span> <div class="taplist-info-untappd-icon"><img src="{{ asset('images/untappd_bottles.png') }}"></div>
+    	</div>
+    </div>
 </div>
 <script>
 {% if userData is not null %}

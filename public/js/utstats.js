@@ -275,6 +275,7 @@ $(document).ready(function() {
 		});
 		initTaplistSort();
 		setFilterStates();
+		refreshTaplistCounts();
 	}
 });
 
@@ -348,6 +349,16 @@ function filterTapList() {
 				break;
 		}
 	});
+	refreshTaplistCounts();
+}
+
+function refreshTaplistCounts() {
+	var filteredCount = $('.taplist-beer.filtered').length;
+	$('#taplist-info-count').html($('.taplist-beer').length - filteredCount);
+	$('#taplist-info-filtered').html(filteredCount);
+	$('#taplist-info-favorites').html($('.taplist-beer').find('.favorite.active').length);
+	$('#taplist-info-ticks').html($('.taplist-beer').find('.tick.active').length);
+	$('#taplist-info-checkins').html($('.taplist-beer').find('.open-untappd.active').length);
 }
 
 function sortTaplist() {
