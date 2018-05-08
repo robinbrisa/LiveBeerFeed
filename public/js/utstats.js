@@ -236,6 +236,7 @@ $(document).ready(function() {
 			initFavorites();
 			initTicks();
 			saveData();
+			refreshTaplistCounts();
 		});
 
 		$('#tickCheckedIn').click(function() {
