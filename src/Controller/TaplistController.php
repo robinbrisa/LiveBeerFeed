@@ -12,15 +12,14 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use App\Entity\Event\Message;
-use App\Entity\Event\Publisher;
+use App\Service\Tools;
 
 class TaplistController extends Controller
 {
     /**
      * @Route("/taplist/{eventID}/", name="taplist")
      */
-    public function index($eventID, Request $request)
+    public function index($eventID, Request $request, Tools $tools)
     {
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
@@ -43,19 +42,27 @@ class TaplistController extends Controller
         
         $user = null;
         $userData = null;
+        $checkedInBeers = array();
         
         $session = $request->getSession();
         if ($userUntappdID = $session->get('userUntappdID')) {
             $user = $em->getRepository('\App\Entity\User\User')->find($userUntappdID);
             $event = $em->getRepository('\App\Entity\Event\Event')->find($event);
             $userData = $em->getRepository('\App\Entity\User\SavedData')->findOneBy(array('user' => $user, 'event' => $event));
+            $historyBeers = $tools->getEventBeersUserHasCheckedIn($user, $event);
+            if ($historyBeers) {
+                foreach($historyBeers as $historyBeer) {
+                    $checkedInBeers[] = (int)$historyBeer['id'];
+                }
+            }
         }
-        
+                
         return $this->render('taplist/index.html.twig', [
             'event' => $event,
             'styleCategories' => $styleCategories,
             'user' => $user,
-            'userData' => $userData
+            'userData' => $userData,
+            'checkedInBeers' => json_encode($checkedInBeers)
         ]);
     }
 }

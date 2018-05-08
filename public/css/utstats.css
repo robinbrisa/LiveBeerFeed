@@ -856,6 +856,7 @@ rating.small.r200{
 }
 
 .open-untappd {
+	position: relative;
 	width: 30px;
 	height: 30px;
 	display: block;
@@ -864,6 +865,23 @@ rating.small.r200{
 .open-untappd img {
 	height: 100%;
 	width: 100%;
+}
+
+.open-untappd .checked-in {
+	display: none;
+}
+	
+.open-untappd.active .checked-in {
+	display: block;
+	position: absolute;
+	top: 1px;
+	right: 4px;;
+	font-size: 20px;
+	color: #fff;
+	-webkit-text-fill-color: #fff; 
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: #000;
+	text-shadow: 0px 0px 1px rgba(150, 150, 150, 1);
 }
 
 .session-color {
@@ -972,6 +990,12 @@ rating.small.r200{
     display: table-cell;
 }
 
+.third-size {
+    width: 32%;
+    display: inline-block;
+    display: table-cell;
+}
+
 .filter-group-table {
     display: table;
     width: 100%;
@@ -1071,6 +1095,13 @@ div.filters-title {
 	border: 1px solid #e2e2e2;
 }
 
+.bordered-group {
+	border: 1px solid #e2e2e2;
+	border-radius: 8px;
+	padding: 0 4px;
+	text-align: center;
+}
+
 .unlocked-badge img {
 	float: left;
 	margin-right: 10px;
@@ -1087,4 +1118,8 @@ div.filters-title {
 
 #quick-checkin-error {
 	display: none;
+}
+
+.form-check-label img {
+	width: 14px;
 }

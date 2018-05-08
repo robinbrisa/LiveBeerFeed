@@ -125,7 +125,7 @@ class UserRepository extends ServiceEntityRepository
     
     public function getUsersToRefresh() {
         $date = new \DateTime();
-        $date->modify("-30 minutes");
+        $date->modify("-5 minutes");
                 
         return $this->createQueryBuilder('u')
         ->where('u.internal_untappd_access_token IS NOT NULL')

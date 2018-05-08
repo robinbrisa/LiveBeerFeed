@@ -298,7 +298,7 @@ class CheckinRepository extends ServiceEntityRepository
         return $qb->getQuery()
         ->getResult();
     }
-    
+        
     public function getMostCheckedInUniqueBrewery($uid = null)
     {
         /*

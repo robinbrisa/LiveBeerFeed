@@ -10,6 +10,7 @@ var taplistFilters = {};
 var taplistSort = {key: 'brewery', order: -1}
 var favorites = [];
 var ticks = [];
+var tickCheckIn = true;
 var untappdButtonAction = 'quick-checkin';
 
 $(document).ready(function() {
@@ -18,7 +19,7 @@ $(document).ready(function() {
 	}
 
 	$(".modal").on("shown.bs.modal", function()  {
-	    var urlReplace = "#" + $(this).attr('id'); 
+	    var urlReplace = "#" + $(this).prop('id'); 
 	    history.pushState(null, null, urlReplace); 
 	});
 
@@ -59,10 +60,12 @@ $(document).ready(function() {
 	}
 	
 	if ($('#post-message').length !== 0) {
-		$('#form_startTime').attr('min', minTime);
+		$('#form_startTime').prop('min', minTime);
 	}
 	
 	if ($('#taplist-content').length > 0) {
+		pushServerTaplist();
+		
 		$('#filters-open').click(function() {
 			$('#filters-modal').modal('show')
 		})
@@ -73,8 +76,10 @@ $(document).ready(function() {
 		
 		$('.tick').click(function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
-			if (beerID) {
-				tickBeer(beerID, !$(this).hasClass('active'));
+			if (!$(this).hasClass('active') || !tickCheckIn) {
+				if (beerID) {
+					tickBeer(beerID, !$(this).hasClass('active'));
+				}
 			}
 		})
 		
@@ -98,15 +103,25 @@ $(document).ready(function() {
 		
 		$('.filter-enabler').change(function() {
 			var value = true;
-			var newState = $(this).prop('checked');
+			if ($(this).attr('type') == "checkbox") {
+				var newState = $(this).prop('checked');
+			} else {
+				if ($(this).val() == "") {
+					var newState = false;
+				} else {
+					var newState = true;
+				}
+			}
 			setFilterStates();
 			if ($('.filter-value[data-filter="'+$(this).data('filter')+'"]').length != 0) {
 				value = $('.filter-value[data-filter="'+$(this).data('filter')+'"]').val();
+			} else {
+				value = $(this).val();
 			}
 			if (newState) {
-				taplistFilters[$(this).attr('id')] = value;
+				taplistFilters[$(this).data('filter')] = value;
 			} else {
-				delete taplistFilters[$(this).attr('id')];
+				delete taplistFilters[$(this).data('filter')];
 			}
 			filterTapList();
 		});
@@ -223,6 +238,12 @@ $(document).ready(function() {
 			saveData();
 		});
 
+		$('#tickCheckedIn').click(function() {
+			tickCheckIn = $(this).prop('checked');
+			initTicks();
+			filterTapList();
+			saveData();
+		})
 		
 		$('.open-untappd').click(function(e) {
 			e.preventDefault();
@@ -298,14 +319,31 @@ function filterTapList() {
 			case "search":
 				$('.taplist-beer:not(:Contains(' + val + '))').addClass("filtered"); 
 				break;
-			case "showFavorites":
+			case "favorites":
 				$('.taplist-beer').filter(function() { 
-					  return !$(this).find(".favorite").hasClass('active')
+					if (val == "show") {
+						return !$(this).find(".favorite").hasClass('active')
+					} else if (val == "hide") {
+						return $(this).find(".favorite").hasClass('active')
+					}
 				}).addClass("filtered");
 				break;
-			case "hideTicked":
+			case "ticked":
 				$('.taplist-beer').filter(function() { 
-					  return $(this).find(".tick").hasClass('active')
+					if (val == "show") {
+						return !$(this).find(".tick").hasClass('active')
+					} else if (val == "hide") {
+						return $(this).find(".tick").hasClass('active')
+					}
+				}).addClass("filtered");
+				break;
+			case "checkedIn":
+				$('.taplist-beer').filter(function() { 
+					if (val == "show") {
+						return !$(this).find(".open-untappd").hasClass('active')
+					} else if (val == "hide") {
+						return $(this).find(".open-untappd").hasClass('active')
+					}
 				}).addClass("filtered");
 				break;
 		}
@@ -338,6 +376,15 @@ function sortTaplist() {
 }
 
 function initSavedData() {
+	if (typeof savedTickCheckIn !== "undefined") {
+		tickCheckIn = savedTickCheckIn;
+	} else {
+		if (localStorage.getItem("tickCheckIn") != null) {
+			tickCheckIn = localStorage.getItem("tickCheckIn");
+		}
+	}
+	$('#tickCheckedIn').prop('checked', tickCheckIn);
+	
 	if (localStorage.getItem("favorites") != null) {
 		favorites = JSON.parse(localStorage.getItem("favorites"));
 		if (typeof savedFavorites !== "undefined") {
@@ -374,6 +421,8 @@ function initSavedData() {
 		}
 	}
 	$('#taplist-buttonAction-select').val(untappdButtonAction);
+	
+	initCheckedIn();
 }
 
 function initTaplistSort() {
@@ -392,12 +441,21 @@ function initFavorites() {
 	});
 }
 
+function initCheckedIn() {
+	$('.taplist-beer').find('.open-untappd').removeClass('active');
+	$.each(checkedInBeers, function(idx, val) {
+		var untappdElement = $('.taplist-beer[data-id="'+val+'"]').find('.open-untappd');
+		$(untappdElement).addClass('active');
+	});
+}
+
 function saveData() {
 	localStorage.setItem("favorites", JSON.stringify(favorites));
 	localStorage.setItem("ticks", JSON.stringify(ticks));
 	localStorage.setItem("untappdButtonAction", untappdButtonAction);
+	localStorage.setItem("tickCheckIn", $('#tickCheckedIn').prop('checked'));
 	if ($("#logged-in").length > 0) {
-		$.post('/ajax/saveTaplistData', { event: $('#event-taplist').data('event-id'), favorites: JSON.stringify(favorites), ticks: JSON.stringify(ticks), buttonAction: untappdButtonAction })
+		$.post('/ajax/saveTaplistData', { event: $('#event-taplist').data('event-id'), favorites: JSON.stringify(favorites), ticks: JSON.stringify(ticks), buttonAction: untappdButtonAction, tickCheckIn: $('#tickCheckedIn').prop('checked') })
 	}
 }
 
@@ -407,6 +465,12 @@ function initTicks() {
 		var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.tick');
 		$(favoriteElement).addClass('active');
 	});
+	if (tickCheckIn) {
+		$.each(checkedInBeers, function(idx, val) {
+			var favoriteElement = $('.taplist-beer[data-id="'+val+'"]').find('.tick');
+			$(favoriteElement).addClass('active');
+		});
+	}
 }
 
 function tickBeer(beerID, enable) {
@@ -506,6 +570,23 @@ function pushServerEventInfo(){
         setTimeout(function(){
             location = '/event/' + $("#event-info").data('event-id')
         }, 20000)
+    }, {
+        'skipSubprotocolCheck': true
+    });	
+}
+
+function pushServerTaplist(){
+	var conn = new ab.Session(websocket, function() {
+        conn.subscribe("taplist-" + $('#event-taplist').data('event-id') + "-all", function(topic, data) {
+        	//handleUpToDateTaplistBeer();
+        });
+		if ($("#logged-in").length > 0) {
+	        conn.subscribe("taplist-" + $('#event-taplist').data('event-id') + "-" + $("#logged-in").data('uid'), function(topic, data) {
+	        	//handleTaplistUserData();
+	        });
+		}
+    }, function() {
+        console.warn('WebSocket connection closed');
     }, {
         'skipSubprotocolCheck': true
     });	

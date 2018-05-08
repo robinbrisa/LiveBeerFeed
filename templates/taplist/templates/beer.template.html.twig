@@ -9,7 +9,10 @@
 			<div class="pull-right right-side">
 		    	<div class="beer-details">{% if beer.abv > 0 %}{{ beer.abv|round(2) }}%{% else %}N/A{% endif %} ABV</div>
 		   		<div class="beer-details" {% if beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ beer.ibu|round(2) }} IBU</div>
-		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ beer.slug }}/{{ beer.id }}"><img src="{{ asset('/images/square_untappd_logo.jpg') }}"/></a>
+		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ beer.slug }}/{{ beer.id }}">
+		    		<div class="checked-in"><i class="fa fa-check" aria-hidden="true"></i></div>
+		    		<img src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
+		    	</a>
 			</div>
 		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}</div>
 		    <div class="beer-details"><div class="style-color-square" style="background-color:{{ beer.style.color }}"></div> {{ beer.style.name }}</div>

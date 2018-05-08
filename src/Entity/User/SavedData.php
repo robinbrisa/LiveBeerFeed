@@ -47,6 +47,11 @@ class SavedData
     private $button_action;
     
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $ticked_checked_in = false;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at", nullable=true)
      */
@@ -58,6 +63,30 @@ class SavedData
      */
     private $updated_at;
     
+     /**
+     * Get $ticked_checked_in
+     *
+     * @return boolean
+    */
+    public function getTickedCheckedIn()
+    {
+        return $this->ticked_checked_in;
+    }
+
+     /**
+     * Set $ticked_checked_in
+     *
+     * @param boolean $ticked_checked_in
+     *
+     * @return SavedData
+    */
+    public function setTickedCheckedIn($ticked_checked_in)
+    {
+        $this->ticked_checked_in = $ticked_checked_in;
+        
+        return $this;
+    }
+
     /**
      * Get $button_action
      *

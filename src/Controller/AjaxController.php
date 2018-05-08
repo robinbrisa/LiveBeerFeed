@@ -178,6 +178,10 @@ class AjaxController extends Controller
         $favorites = $request->request->get('favorites');
         $buttonAction = $request->request->get('buttonAction');
         $event = $request->request->get('event');
+        $tickCheckIn = $request->request->get('tickCheckIn');
+        if ($tickCheckIn == "false") {
+            $tickCheckIn = false;
+        }
         $session = $request->getSession();
         if (!$userUntappdID = $session->get('userUntappdID')) {
             $output['success'] = false;
@@ -198,6 +202,7 @@ class AjaxController extends Controller
             $userData->setButtonAction($buttonAction);
             $userData->setTicks($ticks);
             $userData->setFavorites($favorites);
+            $userData->setTickedCheckedIn($tickCheckIn);
         }
         $em->persist($userData);
         $em->flush();

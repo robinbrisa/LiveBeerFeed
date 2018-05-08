@@ -9,6 +9,7 @@ use App\Entity\Brewery\Brewery as Brewery;
 use App\Entity\Venue\Venue as Venue;
 use App\Entity\Beer\Beer as Beer;
 use App\Entity\Beer\Style as Style;
+use Doctrine\ORM\EntityManager;
 
 class Tools
 {
@@ -57,6 +58,26 @@ class Tools
         }
         return $APIToken;
     }
+    
+    public function getEventBeersUserHasCheckedIn($user, $event) {        
+        $sql = 'SELECT DISTINCT b.id ' .
+        'FROM beer b ' .
+        'JOIN checkin c ON c.beer_id = b.id ' .
+        'JOIN user u ON c.user_id = u.id ' .
+        'JOIN event_session_taplist tl ON c.beer_id = tl.beer_id ' .
+        'JOIN event_session s ON tl.session_id = s.id ' .
+        'JOIN event e ON s.event_id = e.id ' .
+        'WHERE u.id = :userID ' .
+        'AND e.id = :eventID';
+        
+        $query = $this->em->getConnection()->prepare($sql);
+        $query->bindValue('userID', $user->getId());
+        $query->bindValue('eventID', $event->getId());
+        
+        $query->execute();
+        return $query->fetchAll();
+    }
+    
     public function countryCode($country) {
         $countrycodes = array (
             'Afghanistan' => 'AF',

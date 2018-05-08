@@ -95,18 +95,11 @@ class MainController extends Controller
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
+        $me = $em->getRepository('\App\Entity\User\User')->find(2278575);
         
-        $usersToUpdate = $em->getRepository('\App\Entity\User\User')->getUsersToRefresh();
-        $apiKeys = $tools->getAPIKeysPool();
-        dump($usersToUpdate); 
-        if ($usersToUpdate) {
-            foreach ($usersToUpdate as $user) {
-                foreach ($apiKeys as $apiKey => $keyQueries) {
-                    if ($user->getInternalUntappdAccessToken() == $apiKey && $keyQueries > 40) {
-                        dump($user);
-                    }
-                }
-            }
+        $beers = $tools->getEventBeersUserHasCheckedIn($me, $event);
+        foreach ($beers as $beer) {
+            dump($beer['id']);
         }
         //dump($apiKeys);
         
