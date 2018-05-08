@@ -86,8 +86,6 @@ class UntappdGetUserHistoryCommand extends Command
             $maxID = $response->body->response->pagination->max_id;
             $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
             while ($maxID != "" && $rateLimitRemaining > 0 && !$found) {
-                echo " - Peak: ".memory_get_peak_usage();
-                echo " - Mem: ".memory_get_usage();
                 $output->writeln(sprintf('[%s] (%d) Handling %d checkins. Remaining queries: %d.', date('H:i:s'), $i, $response->body->response->checkins->count, $rateLimitRemaining));
                 $checkinsData = $response->body->response->checkins->items;
                 $this->untappdAPISerializer->handleCheckinsArray($checkinsData);

@@ -46,7 +46,14 @@ class UntappdAPISerializer
     }
     
     public function handleCheckinsArray($checkins) {
+        // Store checkin IDs to prevent a key duplication crash when Untappd API sends duplicate checkins for some reason 
+        $parseCheckins = array();
         foreach ($checkins as $checkinData) {
+            if (in_array($checkinData->checkin_id, $parseCheckins)) {
+                echo "Skipping duplicate ".$checkinData->checkin_id;
+                continue;
+            }
+            $parseCheckins[] = $checkinData->checkin_id;
             $checkin = $this->buildCheckin($checkinData);
             $user = $this->buildUserWithLowInformation($checkinData->user);
             $checkin->setUser($user);
