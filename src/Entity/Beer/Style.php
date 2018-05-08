@@ -29,7 +29,7 @@ class Style
     private $color;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $category;
     
