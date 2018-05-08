@@ -50,7 +50,9 @@ class UntappdAPISerializer
         $parseCheckins = array();
         foreach ($checkins as $checkinData) {
             if (in_array($checkinData->checkin_id, $parseCheckins)) {
-                echo "Skipping duplicate ".$checkinData->checkin_id;
+                continue;
+            }
+            if (!$checkinData->beer->beer_slug) {
                 continue;
             }
             $parseCheckins[] = $checkinData->checkin_id;
@@ -207,6 +209,9 @@ class UntappdAPISerializer
         }
         $output->setName($beer->beer_name);
         $output->setLabel($beer->beer_label);
+        if (!$beer->beer_slug) {
+            dump($beer);
+        }
         $output->setSlug($beer->beer_slug);
         $output->setAbv($beer->beer_abv);
         $output->setActive($beer->beer_active);
