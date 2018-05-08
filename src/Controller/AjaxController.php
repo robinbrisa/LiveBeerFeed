@@ -270,7 +270,8 @@ class AjaxController extends Controller
             } else {
                 $output['response'] = $checkin->body->response;
                 $output['display'] = $this->render('taplist/templates/quick-checkin-success.template.html.twig', [
-                    'response' => $checkin->body->response
+                    'response' => $checkin->body->response,
+                    'beer' => $beer
                 ])->getContent();
             }
         

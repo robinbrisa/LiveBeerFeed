@@ -1,6 +1,6 @@
 <div class="quick-checkin-beer-info clearfix">
     <div class="quick-checkin-label"><img src="{{ beer.label }}"/></div>
-    <div class="quick-checkin-info"><strong>{{ beer.name }}</strong></div>
+    <div class="quick-checkin-info"><strong>{{ beer.untappdLink|raw }}</strong></div>
     <div class="quick-checkin-info">{{ beer.brewery.name }}</div>
 </div>
 <form class="clearfix" id="quick-checkin-form">

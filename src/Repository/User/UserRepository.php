@@ -113,6 +113,29 @@ class UserRepository extends ServiceEntityRepository
         ->getOneOrNullResult();
     }
     
+    public function getUsersWaitingForFullHistory() 
+    {
+        return $this->createQueryBuilder('u')
+        ->where('u.internal_untappd_access_token IS NOT NULL')
+        ->andWhere('u.internal_full_history_gathered = 0')
+        ->orderBy('u.internal_created_at', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+    
+    public function getUsersToRefresh() {
+        $date = new \DateTime();
+        $date->modify("-30 minutes");
+                
+        return $this->createQueryBuilder('u')
+        ->where('u.internal_untappd_access_token IS NOT NULL')
+        ->andWhere('u.internal_full_history_gathered = 1')
+        ->andWhere('(u.internal_latest_checkin_refresh IS NULL OR u.internal_latest_checkin_refresh < :delay)')->setParameter('delay', $date)
+        ->orderBy('u.internal_latest_checkin_refresh', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+    
     public function getAPIKeys() {
         
         $keysArray = array('default' => 100);

@@ -96,6 +96,20 @@ class MainController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
         
+        $usersToUpdate = $em->getRepository('\App\Entity\User\User')->getUsersToRefresh();
+        $apiKeys = $tools->getAPIKeysPool();
+        dump($usersToUpdate); 
+        if ($usersToUpdate) {
+            foreach ($usersToUpdate as $user) {
+                foreach ($apiKeys as $apiKey => $keyQueries) {
+                    if ($user->getInternalUntappdAccessToken() == $apiKey && $keyQueries > 40) {
+                        dump($user);
+                    }
+                }
+            }
+        }
+        //dump($apiKeys);
+        
         $messages = $em->getRepository('\App\Entity\Event\Message')->findBy(array('event' => $event), array('start_date' => 'ASC'));
         echo '<div class="container">';
         

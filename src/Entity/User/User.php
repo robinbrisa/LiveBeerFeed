@@ -213,6 +213,11 @@ class User
     private $internal_full_history_last_max_id;
     
     /**
+     * @ORM\Column(type="datetime", name="internal_latest_checkin_refresh", nullable=true)
+     */
+    private $internal_latest_checkin_refresh;
+    
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $internal_friendlist_last_offset;
@@ -222,6 +227,7 @@ class User
      */
     private $saved_data;
     
+
     /**
      * Constructor
      */
@@ -1301,4 +1307,27 @@ class User
         return $this->saved_data;
     }
     
+    /**
+     * Get $internal_latest_checkin_refresh
+     *
+     * @return mixed
+     */
+    public function getInternalLatestCheckinRefresh()
+    {
+        return $this->internal_latest_checkin_refresh;
+    }
+    
+    /**
+     * Set $internal_latest_checkin_refresh
+     *
+     * @param mixed $internal_latest_checkin_refresh
+     *
+     * @return User
+     */
+    public function setInternalLatestCheckinRefresh($internal_latest_checkin_refresh)
+    {
+        $this->internal_latest_checkin_refresh = $internal_latest_checkin_refresh;
+        
+        return $this;
+    }
 }
