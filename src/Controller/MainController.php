@@ -62,7 +62,7 @@ class MainController extends Controller
             if ($element->_type == "beer") {
                 $beers[$element->_id] = $element;
                 if (isset($element->untappdId)) {
-                    $beerIDs[] = $element->untappdId;
+                    $beerIDs[$element->untappdId] = $element->name;
                 }
             }
             if ($element->_type == "brewery") {
@@ -93,16 +93,18 @@ class MainController extends Controller
             $currentBeers = array();
             foreach ($event->getSessions() as $eventSession) {
                 foreach ($eventSession->getBeers() as $sessionBeer) {
-                    $currentBeers[] = $sessionBeer->getId();
+                    $currentBeers[$sessionBeer->getId()] = $sessionBeer->getName();
                 }
             }
-            $currentBeers = array_unique($currentBeers);
-            $beerIDs = array_unique($beerIDs);
             
-            dump('Currently missing:');
-            dump(array_diff($beerIDs, $currentBeers));
-            dump('To be deleted:');
-            dump(array_diff($currentBeers, $beerIDs));
+            echo '<h3><strong>Currently missing</strong></h3>';
+            foreach (array_diff_key($beerIDs, $currentBeers) as $diffKey => $diffValue) {
+                echo $diffKey . " (" . $diffValue . ")<br>";
+            }
+            echo '<h3><strong>To be deleted</strong></h3>';
+            foreach (array_diff_key($currentBeers, $beerIDs) as $diffKey => $diffValue) {
+                echo $diffKey . " (" . $diffValue . ")<br>";
+            }
         }
         return $this->render('main/debug.html.twig', []);
     }
