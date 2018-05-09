@@ -58,7 +58,16 @@ class LivePushCheckinsCommand extends Command
                 $checkinsArray['medias'][] = $this->templating->render('live/content/media.template.html.twig', ['checkin' => $checkin, 'i' => $mediaCount]);
             }
             $checkinsArray['checkins'][] = $this->templating->render('live/content/checkin.template.html.twig', ['checkin' => $checkin, 'i' => $mediaCount]);
+            if ($event->getHasTaplist()) {
+                $beer = $checkin->getBeer();
+                $beer->setNeedsRefresh(1);
+                $output->writeln(sprintf('[%s] Beer %s needs a refresh!', date('H:i:s'), $beer->getName()));
+                $this->em->persist($beer);
+            }
+            unset($checkin);
         }
+        $this->em->flush();
+        unset($beer);
         $checkinsArray['mediaCount'] = count($checkinsArray['medias']);
         $checkinsArray['count'] = count($checkinsArray['checkins']);
         

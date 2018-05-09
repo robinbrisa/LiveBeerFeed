@@ -47,7 +47,6 @@ class LbfUpdateTaplistQueueCommand extends Command
             } elseif (array_sum($apiKeyPool) < 5) {
                 $output->writeln(sprintf('[%s] API Key pool is too low (%d)', date('H:i:s'), array_sum($apiKeyPool)));
             } else {
-                $session = $queue[0]->getSession();
                 
                 $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
                 
@@ -59,6 +58,7 @@ class LbfUpdateTaplistQueueCommand extends Command
                 $i = 0;
                 
                 foreach ($queue as $queueElement) {
+                    $session = $queueElement->getSession();
                     $i++;
                     $output->writeln(sprintf('[%s] Adding beer %d', date('H:i:s'), $queueElement->getUntappdId()));
                     if ($response = $this->untappdAPI->getBeerInfo($queueElement->getUntappdId(), $apiKey)) {

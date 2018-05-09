@@ -157,9 +157,11 @@ class MainController extends Controller
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
         $venues = $event->getVenues();
         $me = $em->getRepository('\App\Entity\User\User')->find(2278575);
-        $attending = $em->getRepository('\App\Entity\Event\Event')->getFutureOrCurrentEventsUserIsAttending($me);
+        $beer = $em->getRepository('\App\Entity\Beer\Beer')->find(1793);
+        $attending = $em->getRepository('\App\Entity\Event\Session')->getEventSessionsWhereBeerIsAvailable($event, $beer);
+        dump($attending);
         foreach ($attending as $anEvent) {
-            dump($tools->getEventBeersUserHasCheckedIn($me, $anEvent));
+            dump($anEvent->getName());
         }
         //dump($apiKeys);
         

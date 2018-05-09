@@ -18,7 +18,7 @@ class TapListQueueRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TapListQueue::class);
     }
-
+    
 //    /**
 //     * @return TapListQueue[] Returns an array of TapListQueue objects
 //     */

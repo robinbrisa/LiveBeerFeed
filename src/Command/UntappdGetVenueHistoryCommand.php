@@ -111,9 +111,9 @@ class UntappdGetVenueHistoryCommand extends Command
                 $this->untappdAPISerializer->handleCheckinsArray($checkinsData);
                 if ($input->getOption('update')) {
                     foreach ($checkinsData as $checkin) {
-                        if ($highestVenueCheckin && $checkin->checkin_id == $highestVenueCheckin->getId()) {
+                        if ($highestVenueCheckin && $checkin->checkin_id < $highestVenueCheckin->getId() && !$found) {
                             $found = true;
-                            $output->writeln(sprintf('[%s] Checkin %d has been found.', date('H:i:s'), $highestVenueCheckin->getId()));
+                            $output->writeln(sprintf('[%s] Checkin %d or lower has been found.', date('H:i:s'), $highestVenueCheckin->getId()));
                         } else {
                             if (!$found) { $j++; }
                         }

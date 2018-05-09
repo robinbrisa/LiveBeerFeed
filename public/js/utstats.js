@@ -74,7 +74,7 @@ $(document).ready(function() {
 			$('#search-beer').val("").trigger("keyup");
 		})
 		
-		$('.tick').click(function() {
+		$('#taplist-content').on('click', '.tick', function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
 			if (!$(this).hasClass('active') || !(tickCheckIn && $(this).parents('.taplist-beer').find('.open-untappd').hasClass('active'))) {
 				if (beerID) {
@@ -83,12 +83,41 @@ $(document).ready(function() {
 			}
 		})
 		
-		$('.favorite').click(function() {
+		$('#taplist-content').on('click', '.favorite', function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
 			if (beerID) {
 				favoriteBeer(beerID, !$(this).hasClass('active'));
 			}
 		})
+		
+		$('#taplist-content').on('click', '.open-untappd', function(e) {
+			e.preventDefault();
+			var beerID = $(this).parents('.taplist-beer').data('id');
+			switch (untappdButtonAction) {
+				case "open-app":
+					if (platform.os.family == "Android" || platform.os.family == "iOS") {
+						window.location = 'untappd://beer/'+beerID
+					} else {
+						window.open($(this).prop('href'));
+					}
+					break;
+				case "open-web":
+					window.open($(this).prop('href'));
+					break;
+				case "quick-checkin":
+					if ($("#logged-in").length > 0) {
+						$('#quick-checkin-modal').modal('show');
+						$('#quick-checkin-modal').find('.modal-body').load( "/ajax/quickCheckInModal/" + $('#event-taplist').data('event-id') + "/" + beerID);
+					} else {
+						if (platform.os.family == "Android" || platform.os.family == "iOS") {
+							window.location = 'untappd://beer/'+beerID
+						} else {
+							window.open($(this).prop('href'));
+						}
+					}
+					break;
+			}
+		});
 		
 		$('#search-beer').keyup(function () {
 			if ($(this).val() != "") {
@@ -244,34 +273,6 @@ $(document).ready(function() {
 			saveData();
 		})
 		
-		$('.open-untappd').click(function(e) {
-			e.preventDefault();
-			var beerID = $(this).parents('.taplist-beer').data('id');
-			switch (untappdButtonAction) {
-				case "open-app":
-					if (platform.os.family == "Android" || platform.os.family == "iOS") {
-						window.location = 'untappd://beer/'+beerID
-					} else {
-						window.open($(this).prop('href'));
-					}
-					break;
-				case "open-web":
-					window.open($(this).prop('href'));
-					break;
-				case "quick-checkin":
-					if ($("#logged-in").length > 0) {
-						$('#quick-checkin-modal').modal('show');
-						$('#quick-checkin-modal').find('.modal-body').load( "/ajax/quickCheckInModal/" + $('#event-taplist').data('event-id') + "/" + beerID);
-					} else {
-						if (platform.os.family == "Android" || platform.os.family == "iOS") {
-							window.location = 'untappd://beer/'+beerID
-						} else {
-							window.open($(this).prop('href'));
-						}
-					}
-					break;
-			}
-		});
 		initTaplistSort();
 		setFilterStates();
 		refreshTaplistCounts();
@@ -526,6 +527,7 @@ function tickBeer(beerID, enable) {
 		tickElement.removeClass('active');
 	}
 	saveData();
+	refreshTaplistCounts();
 	if (taplistFilters['ticked']) {
 		filterTapList();
 	}
@@ -551,6 +553,7 @@ function favoriteBeer(beerID, enable) {
 		favoriteElement.children('i').removeClass('fa-star');
 	}
 	saveData();
+	refreshTaplistCounts();
 	if (taplistFilters['favorites']) {
 		filterTapList();
 	}
@@ -564,6 +567,7 @@ function addCheckedInBeer(beerID) {
 	}
 	tickElement.addClass('active');
 	initTicks();
+	refreshTaplistCounts();
 	filterTapList();
 }
 
@@ -631,7 +635,7 @@ function pushServerEventInfo(){
 function pushServerTaplist(){
 	var conn = new ab.Session(websocket, function() {
         conn.subscribe("taplist-" + $('#event-taplist').data('event-id') + "-all", function(topic, data) {
-        	//handleUpToDateTaplistBeer();
+        	handleUpToDateTaplistBeer(data);
         });
 		if ($("#logged-in").length > 0) {
 	        conn.subscribe("taplist-" + $('#event-taplist').data('event-id') + "-" + $("#logged-in").data('uid'), function(topic, data) {
@@ -664,6 +668,25 @@ function handleTaplistUserData(data) {
 		initTicks();
 		filterTapList();
 	}
+}
+
+function handleUpToDateTaplistBeer(data) {
+	$.each(data.beers, function(sessionID, session) {
+		$.each(session, function(beerID, beerElement) {
+			var targetElement = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]');
+			if (targetElement.length !== 0) {
+				targetElement.replaceWith(beerElement);
+			} else {
+				$('#taplist-content').append(beerElement);
+			}
+		});
+	});
+	initFavorites();
+	initCheckedIn();
+	initTicks();
+	filterTapList();
+	sortTaplist();
+	
 }
 
 function handleNewCheckinData(data) {

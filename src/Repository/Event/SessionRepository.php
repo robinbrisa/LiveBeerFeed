@@ -18,7 +18,16 @@ class SessionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Session::class);
     }
-
+    
+    public function getEventSessionsWhereBeerIsAvailable($event, $beer) {
+        return $this->createQueryBuilder('s')
+        ->join('s.event', 'e')
+        ->join('s.beers', 'b')
+        ->where('e.id = :event')->setParameter('event', $event)
+        ->andWhere('b.id = :beer')->setParameter('beer', $beer)
+        ->getQuery()
+        ->getResult();
+    }
 //    /**
 //     * @return Session[] Returns an array of Session objects
 //     */

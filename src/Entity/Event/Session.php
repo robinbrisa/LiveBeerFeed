@@ -55,6 +55,10 @@ class Session
      */
     private $beers;
     
+    public function __construct() {
+        $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
     /**
      * Get $color
      *
