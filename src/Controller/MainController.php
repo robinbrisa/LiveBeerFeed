@@ -33,8 +33,10 @@ class MainController extends Controller
      */
     public function load_mbcc()
     {
-        $date = $_GET['date'];
         // date example : 2018-05-03T12:13:24Z
+        $date = $_GET['date'];
+        $diff = $_GET['diff'];
+        $beerIDs = array();
         
         $headers = array('Accept' => 'application/json');
         $query = array(
@@ -47,7 +49,7 @@ class MainController extends Controller
         $sessions = array();
         $breweries = array();
         $em = $this->getDoctrine()->getManager();
-        $event = $em->getRepository('\App\Entity\Event\Event')->findBy(array('name' => "Mikkeller Beer Celebration Copenhagen 2018"));
+        $event = $em->getRepository('\App\Entity\Event\Event')->findOneBy(array('name' => "Mikkeller Beer Celebration Copenhagen 2018"));
         foreach($response->body->result->updated as $element) {
             if ($element->_type == "session") {
                 if(!array_key_exists($element->name, $sessions)) {
@@ -59,31 +61,49 @@ class MainController extends Controller
             }
             if ($element->_type == "beer") {
                 $beers[$element->_id] = $element;
+                if (isset($element->untappdId)) {
+                    $beerIDs[] = $element->untappdId;
+                }
             }
             if ($element->_type == "brewery") {
                 $breweries[$element->_id] = $element;
             }
         }
-        foreach ($sessions as $name => $session) {
-            echo '<b>'.$name.'</b><br>';
-            $sessionEntity = $em->getRepository('\App\Entity\Event\Session')->findOneBy(array('name' => $name, 'event' => $event));
-            foreach ($session as $beer) {
-                if (isset($beers[$beer])) {
-                    if (isset($beers[$beer]->untappdId)) {
-                        echo $beers[$beer]->name.'<br>';
-                        $queueElement = new TapListQueue();
-                        $queueElement->setSession($sessionEntity);
-                        $queueElement->setUntappdID($beers[$beer]->untappdId);
-                        $em->merge($queueElement);
-                    } else {
-                        //echo $beers[$beer]->name.' ('.$breweries[$beers[$beer]->brewery->_ref]->name.')<br>';
-                        echo "NO UNTAPPD ID: ".$beers[$beer]->name.'<br>';
+        if (!$diff) {
+            foreach ($sessions as $name => $session) {
+                echo '<b>'.$name.'</b><br>';
+                $sessionEntity = $em->getRepository('\App\Entity\Event\Session')->findOneBy(array('name' => $name, 'event' => $event));
+                foreach ($session as $beer) {
+                    if (isset($beers[$beer])) {
+                        if (isset($beers[$beer]->untappdId)) {
+                            echo $beers[$beer]->name.'<br>';
+                            $queueElement = new TapListQueue();
+                            $queueElement->setSession($sessionEntity);
+                            $queueElement->setUntappdID($beers[$beer]->untappdId);
+                            $em->merge($queueElement);
+                        } else {
+                            //echo $beers[$beer]->name.' ('.$breweries[$beers[$beer]->brewery->_ref]->name.')<br>';
+                            echo "NO UNTAPPD ID: ".$beers[$beer]->name.'<br>';
+                        }
                     }
                 }
             }
+            $em->flush();
+        } else {
+            $currentBeers = array();
+            foreach ($event->getSessions() as $eventSession) {
+                foreach ($eventSession->getBeers() as $sessionBeer) {
+                    $currentBeers[] = $sessionBeer->getId();
+                }
+            }
+            $currentBeers = array_unique($currentBeers);
+            $beerIDs = array_unique($beerIDs);
+            
+            dump('Currently missing:');
+            dump(array_diff($beerIDs, $currentBeers));
+            dump('To be deleted:');
+            dump(array_diff($currentBeers, $beerIDs));
         }
-        $em->flush();
-        
         return $this->render('main/debug.html.twig', []);
     }
     

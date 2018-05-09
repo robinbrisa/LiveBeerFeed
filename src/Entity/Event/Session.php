@@ -45,7 +45,7 @@ class Session
      * @ORM\Column(type="string", nullable=false)
      */
     private $color = '#000000';
-    
+        
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer")
      * @ORM\JoinTable(name="event_session_taplist",
@@ -55,7 +55,7 @@ class Session
      */
     private $beers;
     
-     /**
+    /**
      * Get $color
      *
      * @return string

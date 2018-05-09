@@ -1,4 +1,4 @@
-<div class="taplist-beer" id="beer-{{ beer.id }}" data-id="{{ beer.id }}" data-abv="{{ beer.abv }}" data-ibu="{{ beer.ibu }}" data-score="{{ beer.ratingScore }}" data-brewery="{{ beer.brewery.name|trim }}" data-name="{{ beer.name|trim }}" data-session="{{ session.name }}" data-style-category="{{ beer.style.category }}" data-ratings="{{ beer.ratingCount }}" data-checkins="{{ beer.totalCount }}" data-unique-checkins="{{ beer.uniqueCount }}" data-label="{{ beer.label }}">
+<div class="taplist-beer" id="beer-{{ beer.id }}" data-id="{{ beer.id }}" data-abv="{{ beer.abv }}" data-ibu="{{ beer.ibu }}" data-score="{{ beer.ratingScore }}" data-brewery="{{ beer.brewery.name|trim }}" data-name="{{ beer.name|trim }}" data-session="{{ session.name }}" data-session-date="{{ session.startDate|date('U') }}" data-style-category="{{ beer.style.category }}" data-ratings="{{ beer.ratingCount }}" data-checkins="{{ beer.totalCount }}" data-unique-checkins="{{ beer.uniqueCount }}" data-label="{{ beer.label }}">
 	<div class="beer-info">
 	    <div class="title">
 	    	<div class="tick"><i class="fa fa-check" aria-hidden="true"></i></div>

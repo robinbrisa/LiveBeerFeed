@@ -7,7 +7,7 @@ var eventPageInfoScrollAnimationDuration = eventPageInfoScrollAnimationDuration 
 var locale = locale || 'en';
 
 var taplistFilters = {};
-var taplistSort = {key: 'brewery', order: -1}
+var taplistSort = {key: 'brewery', order: 'asc'}
 var favorites = [];
 var ticks = [];
 var tickCheckIn = true;
@@ -151,16 +151,14 @@ $(document).ready(function() {
 		});
 	
 		$('.style-filter').change(function() {
-			taplistFilters['filteredStyles'] = [];
-			$('.style-filter').each(function() {
-				if (!$(this).prop('checked')) {
-					taplistFilters['filteredStyles'].push($(this).data('style'));
-				}
-			});
-			if (taplistFilters['filteredStyles'].length == 0) {
-				delete taplistFilters['filteredStyles'];
+			refreshStyleFilters();
+		});
+
+		$('.mass-check').click(function() {
+			$($(this).data('target')).prop('checked', $(this).data('state'));
+			if ($(this).data('target') == ".style-filter") {
+				refreshStyleFilters();
 			}
-			filterTapList();
 		});
 		
 		$('#taplist-sort-select').change(function() {
@@ -362,29 +360,41 @@ function refreshTaplistCounts() {
 	$('#taplist-info-checkins').html($('.taplist-beer').find('.open-untappd.active').length);
 }
 
-function sortTaplist() {
+function refreshStyleFilters() {
+	taplistFilters['filteredStyles'] = [];
+	$('.style-filter').each(function() {
+		if (!$(this).prop('checked')) {
+			taplistFilters['filteredStyles'].push($(this).data('style'));
+		}
+	});
+	if (taplistFilters['filteredStyles'].length == 0) {
+		delete taplistFilters['filteredStyles'];
+	}
+	filterTapList();
+}
+
+function sortTaplist(key, order) {
+	key = key || taplistSort.key;
+	order = order || taplistSort.order;
+	
 	var beers = $('#taplist-content'),
 	beerDiv = beers.children('.taplist-beer');
-	
+		
 	beerDiv.sort(function(a,b){
-		var an = a.getAttribute("data-"+taplistSort.key),
-			bn = b.getAttribute("data-"+taplistSort.key);
-		if ($.isNumeric(an)) {
-			an = parseFloat(an);
-			bn = parseFloat(bn);
-		} else {
-			an = an.toUpperCase();
-			bn = bn.toUpperCase();
-		}
-		if(an < bn) {
-			return 1 * taplistSort.order;
-		}
-		if(an > bn) {
-			return -1 * taplistSort.order;
-		}
-		return 0;
+		var an = formatDataForSorting(a.getAttribute("data-"+key)),
+			bn = formatDataForSorting(b.getAttribute("data-"+key));
+		var result = (an < bn ? -1 : (an > bn ? +1 : 0));
+		return result * (order == 'asc' ? +1 : -1);
 	});
 	beerDiv.detach().appendTo(beers);
+}
+
+function formatDataForSorting(data) {
+	if ($.isNumeric(data)) { 
+		return parseFloat(data);
+	} else {
+		return data.toUpperCase();
+	}
 }
 
 function initSavedData() {
@@ -501,7 +511,9 @@ function tickBeer(beerID, enable) {
 		tickElement.removeClass('active');
 	}
 	saveData();
-	filterTapList();
+	if (taplistFilters['ticked']) {
+		filterTapList();
+	}
 }
 
 function favoriteBeer(beerID, enable) {
@@ -524,7 +536,9 @@ function favoriteBeer(beerID, enable) {
 		favoriteElement.children('i').removeClass('fa-star');
 	}
 	saveData();
-	filterTapList();
+	if (taplistFilters['favorites']) {
+		filterTapList();
+	}
 }
 
 function addCheckedInBeer(beerID) {

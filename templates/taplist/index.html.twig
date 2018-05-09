@@ -54,9 +54,7 @@
     	<div class="modal-dialog" role="document">
     		<div class="modal-content transparent-modal">
     			<div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <form>
                         <div class="form-group filter-group">
                             <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> Search</label> <div id="clear-search"><i class="fa fa-ban" aria-hidden="true"></i> Clear</div>
@@ -78,18 +76,18 @@
                         <div class="filters-title"><i class="fa fa-sort" aria-hidden="true"></i> Sort</div>
                         <div class="form-group filter-group-table">
                         	<select id="taplist-sort-select" class="form-control form-control-sm filters-sort-select">
-                            	<option value="1" data-key="abv" data-order="-1">ABV (Low to High)</option>
-                            	<option value="2" data-key="abv" data-order="1">ABV (High to Low)</option>
-                            	<option value="3" data-key="name" data-order="-1">Beer Name (A to Z)</option>
-                            	<option value="4" data-key="name" data-order="1">Beer Name (Z to A)</option>
-                            	<option value="5" data-key="brewery" data-order="-1">Brewery Name (A to Z)</option>
-                            	<option value="6" data-key="brewery" data-order="1">Brewery Name (Z to A)</option>
-                            	<option value="7" data-key="checkins" data-order="-1">Checkins (Low to High)</option>
-                            	<option value="8" data-key="checkins" data-order="1">Checkins (High to Low)</option>
-                            	<option value="9" data-key="ibu" data-order="-1">IBU (Low to High)</option>
-                            	<option value="10" data-key="ibu" data-order="1">IBU (High to Low)</option>
-                            	<option value="13" data-key="score" data-order="-1">Score (Low to High)</option>
-                            	<option value="14" data-key="score" data-order="1">Score (High to Low)</option>
+                            	<option value="1" data-key="abv" data-order="asc">ABV (Low to High)</option>
+                            	<option value="2" data-key="abv" data-order="desc">ABV (High to Low)</option>
+                            	<option value="3" data-key="name" data-order="asc">Beer Name (A to Z)</option>
+                            	<option value="4" data-key="name" data-order="desc">Beer Name (Z to A)</option>
+                            	<option value="5" data-key="brewery" data-order="asc">Brewery Name (A to Z)</option>
+                            	<option value="6" data-key="brewery" data-order="desc">Brewery Name (Z to A)</option>
+                            	<option value="7" data-key="checkins" data-order="asc">Checkins (Low to High)</option>
+                            	<option value="8" data-key="checkins" data-order="desc">Checkins (High to Low)</option>
+                            	<option value="9" data-key="ibu" data-order="asc">IBU (Low to High)</option>
+                            	<option value="10" data-key="ibu" data-order="desc">IBU (High to Low)</option>
+                            	<option value="13" data-key="score" data-order="asc">Score (Low to High)</option>
+                            	<option value="14" data-key="score" data-order="desc">Score (High to Low)</option>
                             </select>
                         </div>
             			<hr class="my-1">
@@ -199,30 +197,33 @@
                             </div>
                         </div>
             			<hr class="my-1">
+            			<div class="pull-right">
+            				<span class="mass-check" data-target=".style-filter" data-state="false"><i class="fa fa-square-o" aria-hidden="true"></i> None</span> |
+            				<span class="mass-check" data-target=".style-filter" data-state="true"><i class="fa fa-check-square-o" aria-hidden="true"></i> All</span>
+            			</div>
                         <div class="filters-title"><i class="fa fa-beer" aria-hidden="true"></i> Style Categories</div>
-                            <div class="center-checkboxes">
-                                {% for category in styleCategories %}
-                                    <div class="form-check form-check-inline">
-                                    	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category }}" data-style="{{ category }}" checked>
-                                    	<label class="form-check-label" for="chk-style-{{ category }}">{{ category }}</label>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                			<hr class="my-1">
-                            <div class="filters-title"><img src="{{ asset('images/untappd_bottles.png') }}"> Untappd Button Action</div>
-                            <div class="form-group filter-group-table">
-                            	<select id="taplist-buttonAction-select" class="form-control form-control-sm">
-                                	<option value="quick-checkin">Quick Check-in (Logged-in Only)</option>
-                                	<option value="open-app">Open App (Mobile Only)</option>
-                                	<option value="open-web">Open Website</option>
-                                </select>
-                            </div>
-                			<hr class="my-1">
-                            <div class="filters-title"><i class="fa fa-check" aria-hidden="true"></i> Tick all checked-in beers</div>
-            				<div class="input-group-chk">
-                                <input class="form-check-input" type="checkbox" value="" id="tickCheckedIn" data-filter="tickCheckedIn">
-                                <label class="form-check-label" for="tickCheckedIn">Enable</label>
-                            </div>
+                        <div class="center-checkboxes">
+                            {% for category in styleCategories %}
+                                <div class="form-check form-check-inline">
+                                	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category }}" data-style="{{ category }}" checked>
+                                	<label class="form-check-label" for="chk-style-{{ category }}">{{ category }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+            			<hr class="my-1">
+                        <div class="filters-title"><img src="{{ asset('images/untappd_bottles.png') }}"> Untappd Button Action</div>
+                        <div class="form-group filter-group-table">
+                        	<select id="taplist-buttonAction-select" class="form-control form-control-sm">
+                            	<option value="quick-checkin">Quick Check-in (Logged-in Only)</option>
+                            	<option value="open-app">Open App (Mobile Only)</option>
+                            	<option value="open-web">Open Website</option>
+                            </select>
+                        </div>
+            			<hr class="my-1">
+                        <div class="filters-title"><i class="fa fa-check" aria-hidden="true"></i> Tick all checked-in beers</div>
+        				<div class="input-group-chk">
+                            <input class="form-check-input" type="checkbox" value="" id="tickCheckedIn" data-filter="tickCheckedIn">
+                            <label class="form-check-label" for="tickCheckedIn">Enable</label>
                         </div>
                     </form>
     			</div>

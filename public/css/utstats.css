@@ -929,6 +929,10 @@ rating.small.r200{
 	background:rgba(255,255,255,0.9);
 }
 
+#taplist-content {
+	margin-bottom: 70px;
+}
+
 .fixed-button {
 	text-align: center;
 	position: fixed;
@@ -1148,4 +1152,8 @@ div.filters-title {
 
 .form-check-label img {
 	width: 14px;
+}
+
+.mass-check {
+	cursor: pointer;
 }
