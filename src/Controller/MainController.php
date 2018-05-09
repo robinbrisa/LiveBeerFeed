@@ -33,18 +33,32 @@ class MainController extends Controller
      */
     public function load_mbcc()
     {
+        $diff = false;
+        if (isset($_GET['diff'])) {
+            $diff = true;
+        }
+        
         // date example : 2018-05-03T12:13:24Z
-        $date = $_GET['date'];
-        $diff = $_GET['diff'];
+        if (isset($_GET['date'])) {
+            $date = $_GET['date'];
+        } else {
+            if (!$diff) {
+                die('Missing date or diff param');
+            }
+        }
+        
         $beerIDs = array();
         
         $headers = array('Accept' => 'application/json');
         $query = array(
-            '$lastLocallyModified' => '"'.$date.'"',
             'query' => '%7B%22updated%22%3A%20*%5B_updatedAt%20%3E%20%24lastLocallyModified%5D%5B0...5000%5D,%22ids%22%3A%20*%5B0...5000%5D._id%7D'
         );
+        if ($diff) {
+            $query['$lastLocallyModified'] = '"2000-01-01T00:00:00Z"';
+        } else {
+            $query['$lastLocallyModified'] = '"'.$date.'"';
+        }
         $response = Unirest\Request::get('https://d76bptot.api.sanity.io/v1/data/query/2018', $headers, $query);
-                
         $beers = array();
         $sessions = array();
         $breweries = array();
@@ -62,7 +76,7 @@ class MainController extends Controller
             if ($element->_type == "beer") {
                 $beers[$element->_id] = $element;
                 if (isset($element->untappdId)) {
-                    $beerIDs[$element->untappdId] = $element->name;
+                    $beerIDs[$element->untappdId] = $element->_id;
                 }
             }
             if ($element->_type == "brewery") {
@@ -88,24 +102,49 @@ class MainController extends Controller
                     }
                 }
             }
-            $em->flush();
         } else {
+            $sessionRef = array();
+            $beerRef = array();
+            $eventSessions = $em->getRepository('\App\Entity\Event\Session')->findBy(array('event' => $event));
+            foreach($eventSessions as $eventSession) {
+                $sessionRef[$eventSession->getName()] = $eventSession;
+                foreach ($eventSession->getBeers() as $sessionBeer) {
+                    $beerRef[$sessionBeer->getId()] = $eventSession;
+                }
+            }
+            
             $currentBeers = array();
             foreach ($event->getSessions() as $eventSession) {
                 foreach ($eventSession->getBeers() as $sessionBeer) {
-                    $currentBeers[$sessionBeer->getId()] = $sessionBeer->getName();
+                    $currentBeers[$sessionBeer->getId()] = $sessionBeer;
                 }
             }
             
             echo '<h3><strong>Currently missing</strong></h3>';
-            foreach (array_diff_key($beerIDs, $currentBeers) as $diffKey => $diffValue) {
-                echo $diffKey . " (" . $diffValue . ")<br>";
+            foreach (array_diff_key($beerIDs, $currentBeers) as $beerID => $beerKey) {
+                $session = null;
+                foreach($sessions as $sessionKey => $sessionVal) {
+                    if (in_array($beerKey, $sessionVal)) {
+                        $session = $sessionKey;
+                        break;
+                    }
+                }
+                if ($session) {
+                    echo $beerID . " (" . $beers[$beerKey]->name . ") [" . $session . "]<br>";
+                    $queueElement = new TapListQueue();
+                    $queueElement->setSession($sessionRef[$session]);
+                    $queueElement->setUntappdID($beerID);
+                    $em->merge($queueElement);
+                }
             }
             echo '<h3><strong>To be deleted</strong></h3>';
-            foreach (array_diff_key($currentBeers, $beerIDs) as $diffKey => $diffValue) {
-                echo $diffKey . " (" . $diffValue . ")<br>";
+            foreach (array_diff_key($currentBeers, $beerIDs) as $beerID => $beerValue) {
+                echo $beerID . " (" . $beerValue->getName() . ")<br>";
+                $beerRef[$beerID]->removeBeer($beerValue);
+                $em->persist($beerRef[$beerID]);
             }
         }
+        $em->flush();
         return $this->render('main/debug.html.twig', []);
     }
     
