@@ -275,7 +275,7 @@ class UntappdAPISerializer
         $output->setCreatedAt(\DateTime::createFromFormat(DATE_RFC2822, $beer->created_at)->setTimeZone(new \DateTimeZone(date_default_timezone_get())));
         $output->setRatingScore($beer->rating_score);
         $output->setRatingCount($beer->rating_count);
-        $output->setUniqueCount($beer->total_user_count);
+        if (isset($beer->total_user_count)) { $output->setUniqueCount($beer->total_user_count); }
         $output->setTotalCount($beer->stats->total_count);
         $brewery = $this->em->getRepository('\App\Entity\Brewery\Brewery')->find($beer->brewery->brewery_id);
         if (!$brewery) {

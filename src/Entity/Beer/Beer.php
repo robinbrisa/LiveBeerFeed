@@ -118,9 +118,15 @@ class Beer
     private $internal_updated_at;
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $needs_refresh = false;
+    
+    /**
      * @ORM\Column(type="boolean", options={"default":false})
      */
     private $internal_data_gathered = false;
+    
     /**
      * Constructor
      */
@@ -167,7 +173,31 @@ class Beer
     {
         return $this->id;
     }
-
+    
+    /**
+     * Get $needs_refresh
+     *
+     * @return boolean
+     */
+    public function getNeedsRefresh()
+    {
+        return $this->needs_refresh;
+    }
+    
+    /**
+     * Set $needs_refresh
+     *
+     * @param boolean $needs_refresh
+     *
+     * @return Beer
+     */
+    public function setNeedsRefresh($needs_refresh)
+    {
+        $this->needs_refresh = $needs_refresh;
+        
+        return $this;
+    }
+    
     /**
      * Set name
      *

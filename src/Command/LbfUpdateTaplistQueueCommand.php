@@ -47,7 +47,6 @@ class LbfUpdateTaplistQueueCommand extends Command
             } elseif (array_sum($apiKeyPool) < 5) {
                 $output->writeln(sprintf('[%s] API Key pool is too low (%d)', date('H:i:s'), array_sum($apiKeyPool)));
             } else {
-                $output->writeln(sprintf('[%s] Adding beer %d', date('H:i:s'), $queue[0]->getUntappdId()));
                 $session = $queue[0]->getSession();
                 
                 $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
@@ -56,33 +55,50 @@ class LbfUpdateTaplistQueueCommand extends Command
                     $output->writeln(sprintf('[%s] No more API keys available', date('H:i:s')));
                     return false;
                 }
+                $rateLimitRemaining = 0;
+                $i = 0;
                 
-                if ($response = $this->untappdAPI->getBeerInfo($queue[0]->getUntappdId(), $apiKey)) {
-                    if ($response == "DELETED") {
-                        $this->em->remove($queue[0]);
-                        $this->em->flush();
-                        $output->writeln(sprintf('[%s] Beer has been deleted from Untappd, removing from queue', date('H:i:s')));
-                    } else {
-                        $output->writeln(sprintf('[%s] Successfully received beer information', date('H:i:s')));
-                        $beerData = $response->body->response->beer;
-                        $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
-                        $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
-                        if ($beer) {
-                            if (!$session->getBeers()->contains($beer)) {
-                                $session->addBeer($beer);
-                                $this->em->persist($session);
-                            } else {
-                                $output->writeln(sprintf('[%s] Beer was already in taplist', date('H:i:s')));
-                            }
-                            $this->em->remove($queue[0]);
+                foreach ($queue as $queueElement) {
+                    $i++;
+                    $output->writeln(sprintf('[%s] Adding beer %d', date('H:i:s'), $queueElement->getUntappdId()));
+                    if ($response = $this->untappdAPI->getBeerInfo($queueElement->getUntappdId(), $apiKey)) {
+                        $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                        if ($response == "DELETED") {
+                            $this->em->remove($queueElement);
                             $this->em->flush();
-                            $output->writeln(sprintf('[%s] Beer has been moved from queue to taplist', date('H:i:s')));
+                            $output->writeln(sprintf('[%s] Beer has been deleted from Untappd, removing from queue', date('H:i:s')));
                         } else {
-                            $output->writeln(sprintf('[%s] Couldn\'t find the created beer', date('H:i:s')));
+                            $beerData = $response->body->response->beer;
+                            $beer = $this->untappdAPISerializer->handleBeerObject($beerData);
+                            $output->writeln(sprintf('[%s] Beer %s has been created/updated', date('H:i:s'), $beer->getName()));
+                            if ($beer) {
+                                if (!$session->getBeers()->contains($beer)) {
+                                    $session->addBeer($beer);
+                                    $this->em->persist($session);
+                                } else {
+                                    $output->writeln(sprintf('[%s] Beer was already in taplist', date('H:i:s')));
+                                }
+                                $this->em->remove($queueElement);
+                                $this->em->flush();
+                                $output->writeln(sprintf('[%s] Beer has been moved from queue to taplist', date('H:i:s')));
+                            } else {
+                                $output->writeln(sprintf('[%s] Couldn\'t find the created beer', date('H:i:s')));
+                            }
+                            $output->writeln(sprintf('[%s] %d beers left in taplist queue', date('H:i:s'), count($queue) - $i));
                         }
+                    } else {
+                        $output->writeln(sprintf('[%s] Couldn\'t get beer information', date('H:i:s')));
                     }
-                } else {
-                    $output->writeln(sprintf('[%s] Couldn\'t get beer information', date('H:i:s')));
+                    $poolKey = $apiKey;
+                    if (is_null($apiKey)) {
+                        $poolKey = 'default';
+                    }
+                    $apiKeyPool[$poolKey] = $rateLimitRemaining;
+                    $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
+                    if ($apiKey === false) {
+                        $output->writeln(sprintf('[%s] Out of API keys', date('H:i:s')));
+                        break;
+                    }
                 }
             }
         }
