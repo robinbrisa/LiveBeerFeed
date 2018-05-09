@@ -376,16 +376,31 @@ function refreshStyleFilters() {
 function sortTaplist(key, order) {
 	key = key || taplistSort.key;
 	order = order || taplistSort.order;
+
+	var level2 = null;
+	var level3 = null;
 	
 	var beers = $('#taplist-content'),
 	beerDiv = beers.children('.taplist-beer');
-		
-	beerDiv.sort(function(a,b){
-		var an = formatDataForSorting(a.getAttribute("data-"+key)),
-			bn = formatDataForSorting(b.getAttribute("data-"+key));
-		var result = (an < bn ? -1 : (an > bn ? +1 : 0));
-		return result * (order == 'asc' ? +1 : -1);
-	});
+	
+	if (key == "brewery" || key == "beer") {
+		level2 = {key: "session-date", order: 'asc'};
+	}
+	
+	beerDiv.sort(function(a, b) {
+        var value1 = formatDataForSorting(a.getAttribute("data-"+key));
+        var value2 = formatDataForSorting(b.getAttribute("data-"+key));
+        var result = (value1 < value2 ? -1 : (value1 > value2 ? +1 : 0));
+        result = result * (order == 'asc' ? +1 : -1);
+        if (!result && level2) {
+            value1 = formatDataForSorting(a.getAttribute("data-"+level2.key));
+            value2 = formatDataForSorting(b.getAttribute("data-"+level2.key));
+            result = (value1 < value2 ? -1 : (value1 > value2 ? +1 : 0));
+            result = result * (level2.order == 'asc' ? +1 : -1);
+        }
+        return result;
+    });
+	
 	beerDiv.detach().appendTo(beers);
 }
 

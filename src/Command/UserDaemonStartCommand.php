@@ -102,7 +102,6 @@ class UserDaemonStartCommand extends EndlessContainerAwareCommand
             $socket->connect("tcp://localhost:5555");
             $socket->send(json_encode($pushData));
             $socket->disconnect("tcp://localhost:5555");
-            echo "SENT";
         }
     }
 }
