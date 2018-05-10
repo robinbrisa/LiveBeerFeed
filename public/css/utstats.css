@@ -982,7 +982,7 @@ rating.small.r200{
 	text-align: center;
 	position: fixed;
 	bottom: 10px;
-	left: 155px;
+	left: 160px;
 	font-size: 12px;
 	width: 140px;
 	border: 2px solid;
@@ -1156,4 +1156,10 @@ div.filters-title {
 
 .mass-check {
 	cursor: pointer;
+}
+
+.page-switcher {
+	margin-top: 6px;
+	margin-right: 8px;
+	font-size: 18px;
 }

@@ -21,6 +21,7 @@
 
 <div class="main-wrapper">
     <div id="event-taplist" class="container" data-event-id="{{ event.id }}">
+    	<a href="{{ path('event', {'eventID': event.id}) }}" class="page-switcher pull-right"><i class="fa fa-bar-chart" aria-hidden="true"></i> Stats <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></a>
         <div id="live-venue-title">
         	{% if event.style and event.style.untappdLogoStyle %}
         		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
