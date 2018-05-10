@@ -93,8 +93,9 @@ $(document).ready(function() {
 		
 		$('#taplist-content').on('click', '.out-of-stock', function() {
 			var beerID = $(this).parents('.taplist-beer').data('id');
+			var sessionID = $(this).parents('.taplist-beer').data('session-id');
 			if (beerID && ($(this).hasClass('active') || confirm("Please confirm the beer is out of stock"))) {
-				setBeerOutOfStock(beerID, !$(this).hasClass('active'));
+				setBeerOutOfStock(beerID, sessionID, !$(this).hasClass('active'));
 			}
 		})
 		
@@ -286,6 +287,7 @@ $(document).ready(function() {
 			refreshSessionFilters();
 		}
 		
+		initOutOfStock();
 		initTaplistSort();
 		setFilterStates();
 		refreshTaplistCounts();
@@ -543,6 +545,18 @@ function initTicks() {
 	}
 }
 
+function initOutOfStock() {
+	$('.taplist-beer').find('.out-of-stock').removeClass('active');
+	$('.taplist-beer').find('.beer-info').removeClass('no-longer-available');
+	$.each(outOfStock, function(sessionID, session) {
+		$.each(session, function(idx, beer) {
+			var outOfStockElement = $('.taplist-beer[data-id="'+beer+'"][data-session-id="'+sessionID+'"]').find('.out-of-stock');
+			$(outOfStockElement).addClass('active');
+			$('.taplist-beer[data-id="'+beer+'"][data-session-id="'+sessionID+'"]').find('.beer-info').addClass('no-longer-available');
+		});
+	});
+}
+
 function tickBeer(beerID, enable) {
 	var tickElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.tick'); 
 	var idx = ticks.indexOf(beerID);
@@ -591,12 +605,20 @@ function favoriteBeer(beerID, enable) {
 	}
 }
 
-function setBeerOutOfStock(beerID, enable) {
+function setBeerOutOfStock(beerID, sessionID, enable) {
 	var outOfStockElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.out-of-stock');
 	if (enable) {
-		favoriteElement.addClass('active');
+		$.post('/ajax/setOutOfStock', { beerID: beerID, sessionID: sessionID, action: "ADD" }, function(data) {
+			if (data.success) {
+				outOfStockElement.addClass('active');
+			}
+		})
 	} else {
-		favoriteElement.removeClass('active');
+		$.post('/ajax/setOutOfStock', { beerID: beerID, sessionID: sessionID, action: "REMOVE" }, function(data) {
+			if (data.success) {
+				outOfStockElement.removeClass('active');
+			}
+		})
 	}
 }
 
@@ -712,22 +734,28 @@ function handleTaplistUserData(data) {
 }
 
 function handleUpToDateTaplistBeer(data) {
-	$.each(data.beers, function(sessionID, session) {
-		$.each(session, function(beerID, beerElement) {
-			var targetElement = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]');
-			if (targetElement.length !== 0) {
-				targetElement.replaceWith(beerElement);
-			} else {
-				$('#taplist-content').append(beerElement);
-			}
+	if (data.push_type == "out_of_stock") {
+		console.log(data.list);
+		outOfStock = data.list;
+		initOutOfStock();
+	} else {
+		$.each(data.beers, function(sessionID, session) {
+			$.each(session, function(beerID, beerElement) {
+				var targetElement = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]');
+				if (targetElement.length !== 0) {
+					targetElement.replaceWith(beerElement);
+				} else {
+					$('#taplist-content').append(beerElement);
+				}
+			});
 		});
-	});
-	initFavorites();
-	initCheckedIn();
-	initTicks();
-	filterTapList();
-	sortTaplist();
-	
+		initFavorites();
+		initCheckedIn();
+		initTicks();
+		filterTapList();
+		sortTaplist();
+		initOutOfStock();
+	}
 }
 
 function handleNewCheckinData(data) {

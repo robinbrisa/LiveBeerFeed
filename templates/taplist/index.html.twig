@@ -344,6 +344,7 @@
 	var savedUntappdButtonAction = "{{ userData.buttonAction }}";
 	var savedTickCheckIn = "{{ userData.tickedCheckedIn }}";
 {% endif %}
+var outOfStock = JSON.parse('{{ outOfStock|raw }}');
 var checkedInBeers = JSON.parse("{{ checkedInBeers|raw }}");
 var locale = "{{ app.request.locale }}";
 var websocket = "{{ websocket }}";

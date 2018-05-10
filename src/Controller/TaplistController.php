@@ -58,13 +58,22 @@ class TaplistController extends Controller
                 $em->flush();
             }
         }
+        
+        $outOfStock = array();
+        foreach ($event->getSessions() as $sess) {
+            $outOfStock[$sess->getId()] = array();
+            foreach($sess->getOutOfStock() as $outOfStockBeer) {
+                $outOfStock[$sess->getId()][] = $outOfStockBeer->getId();
+            }
+        }
                 
         return $this->render('taplist/index.html.twig', [
             'event' => $event,
             'styleCategories' => $styleCategories,
             'user' => $user,
             'userData' => $userData,
-            'checkedInBeers' => json_encode($checkedInBeers)
+            'checkedInBeers' => json_encode($checkedInBeers),
+            'outOfStock' => json_encode($outOfStock)
         ]);
     }
 }

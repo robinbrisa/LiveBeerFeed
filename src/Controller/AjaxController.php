@@ -286,4 +286,69 @@ class AjaxController extends Controller
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
+    
+    /**
+     * @Route("/ajax/setOutOfStock", name="ajax_set_out_of_stock")
+     */
+    public function setOutOfStockAction(Request $request, UntappdAPI $untappdAPI)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $output = array('success' => true);
+        $em = $this->getDoctrine()->getManager();
+        
+        $sessionID = $request->request->get('sessionID');
+        $beerID = $request->request->get('beerID');
+        $action = $request->request->get('action');
+        
+        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_SESSION';
+        }
+        
+        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beerID)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_BEER';
+        }
+        
+        if ($action != "ADD" && $action != "REMOVE") {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_ACTION';
+        }
+        
+        if ($output['success']) {
+            if ($action == "ADD" && !$session->getOutOfStock()->contains($beer)) {
+                $session->addOutOfStock($beer);
+            } elseif ($action == "REMOVE") {
+                $session->removeOutOfStock($beer);
+            }
+            $em->persist($session);
+            $em->flush();
+            $outOfStockFull = array();
+            $output['outOfStock'] = $session->getOutOfStock();
+            foreach($session->getEvent()->getSessions() as $sess) {
+                if (!array_key_exists($sess->getId(), $outOfStockFull)) {
+                    $outOfStockFull[$sess->getId()] = array();
+                }
+                foreach($sess->getOutOfStock() as $beer) {
+                    $outOfStockFull[$sess->getId()][] = $beer->getId();
+                }
+            }
+            $pushData = array(
+                'push_type' => 'out_of_stock',
+                'push_topic' => 'taplist-'.$session->getEvent()->getId().'-all',
+                'list' => $outOfStockFull,
+                'session' => $session->getId()
+            );
+            $context = new \ZMQContext();
+            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+            $socket->connect("tcp://localhost:5555");
+            $socket->send(json_encode($pushData));
+            $socket->disconnect("tcp://localhost:5555");
+        }
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+        
+    }
 }

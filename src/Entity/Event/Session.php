@@ -45,7 +45,16 @@ class Session
      * @ORM\Column(type="string", nullable=false)
      */
     private $color = '#000000';
-        
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer")
+     * @ORM\JoinTable(name="event_session_out_of_stock",
+     *      joinColumns={@ORM\JoinColumn(name="session_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="beer_id", referencedColumnName="id")}
+     *      )
+     */
+    private $out_of_stock;
+    
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer")
      * @ORM\JoinTable(name="event_session_taplist",
@@ -55,8 +64,10 @@ class Session
      */
     private $beers;
     
+
     public function __construct() {
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->out_of_stock = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -206,7 +217,7 @@ class Session
     /**
      * Remove beer
      *
-     * @param \App\Entity\Beer\Vintage $vintage
+     * @param \App\Entity\Beer\Beer $beer
      */
     public function removeBeer(\App\Entity\Beer\Beer $beer)
     {
@@ -223,5 +234,39 @@ class Session
         return $this->beers;
     }
     
+    
+    /**
+     * Add out_of_stock
+     *
+     * @param \App\Entity\Beer\Beer $beer
+     *
+     * @return Event
+     */
+    public function addOutOfStock(\App\Entity\Beer\Beer $beer)
+    {
+        $this->out_of_stock[] = $beer;
+        
+        return $this;
+    }
+    
+    /**
+     * Remove out_of_stock
+     *
+     * @param \App\Entity\Beer\Beer $beer
+     */
+    public function removeOutOfStock(\App\Entity\Beer\Beer $beer)
+    {
+        $this->out_of_stock->removeElement($beer);
+    }
+    
+    /**
+     * Get out_of_stock
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOutOfStock()
+    {
+        return $this->out_of_stock;
+    }
     
 }
