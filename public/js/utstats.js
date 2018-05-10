@@ -12,6 +12,7 @@ var favorites = [];
 var ticks = [];
 var tickCheckIn = true;
 var untappdButtonAction = 'quick-checkin';
+var currentSession;
 
 $(document).ready(function() {
 	if (locale !== undefined) {
@@ -167,16 +168,7 @@ $(document).ready(function() {
 		});
 		
 		$('.session-filter').change(function() {
-			taplistFilters['filteredSessions'] = [];
-			$('.session-filter').each(function() {
-				if (!$(this).prop('checked')) {
-					taplistFilters['filteredSessions'].push($(this).data('session'));
-				}
-			});
-			if (taplistFilters['filteredSessions'].length == 0) {
-				delete taplistFilters['filteredSessions'];
-			}
-			filterTapList();
+			refreshSessionFilters();
 		});
 	
 		$('.style-filter').change(function() {
@@ -273,6 +265,19 @@ $(document).ready(function() {
 			saveData();
 		})
 		
+		// Show only 1 session if one is currently happening
+		var epoch = Date.now() / 1000;
+		$('.session-filter').each(function() {
+			if($(this).data('session-start') < epoch && $(this).data('session-end') > epoch) {
+				 currentSession = $(this).data('session');
+					console.log(currentSession);
+			}
+		})
+		if (currentSession) {
+			$('.session-filter[data-session!="'+currentSession+'"]').prop('checked', false);
+			refreshSessionFilters();
+		}
+		
 		initTaplistSort();
 		setFilterStates();
 		refreshTaplistCounts();
@@ -354,11 +359,17 @@ function filterTapList() {
 
 function refreshTaplistCounts() {
 	var filteredCount = $('.taplist-beer.filtered').length;
-	$('#taplist-info-count').html($('.taplist-beer').length - filteredCount);
+	var showedCount = $('.taplist-beer').length - filteredCount;
+	$('#taplist-info-count').html(showedCount);
 	$('#taplist-info-filtered').html(filteredCount);
 	$('#taplist-info-favorites').html($('.taplist-beer').find('.favorite.active').length);
 	$('#taplist-info-ticks').html($('.taplist-beer').find('.tick.active').length);
 	$('#taplist-info-checkins').html($('.taplist-beer').find('.open-untappd.active').length);
+	if (showedCount == 0) {
+		$('#taplist-no-content').show();
+	} else {
+		$('#taplist-no-content').hide();
+	}
 }
 
 function refreshStyleFilters() {
@@ -370,6 +381,19 @@ function refreshStyleFilters() {
 	});
 	if (taplistFilters['filteredStyles'].length == 0) {
 		delete taplistFilters['filteredStyles'];
+	}
+	filterTapList();
+}
+
+function refreshSessionFilters() {
+	taplistFilters['filteredSessions'] = [];
+	$('.session-filter').each(function() {
+		if (!$(this).prop('checked')) {
+			taplistFilters['filteredSessions'].push($(this).data('session'));
+		}
+	});
+	if (taplistFilters['filteredSessions'].length == 0) {
+		delete taplistFilters['filteredSessions'];
 	}
 	filterTapList();
 }

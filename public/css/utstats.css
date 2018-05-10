@@ -933,6 +933,10 @@ rating.small.r200{
 	margin-bottom: 70px;
 }
 
+#taplist-no-content {
+	display: none;
+}
+
 .fixed-button {
 	text-align: center;
 	position: fixed;
