@@ -274,6 +274,35 @@
         </div>
     </div>
     
+    <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="info-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        	<div class="modal-content">
+    			<div class="modal-header">
+    				<h5 class="modal-title" id="exampleModalLabel">Taplist Information</h5>
+    				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    					<span aria-hidden="true">&times;</span>
+    				</button>
+    			</div>
+    			<div class="modal-body small-text">
+    				<p><strong>Welcome to the {{ event.name }} taplist!</strong></p>
+    				<p>This list allows you to see every beer that should be available during the event.<br />You can filter and sort the list as you like by clicking the <strong>"Filter/Sort"</strong> button at the bottom left of the page.</p>
+    				You can login to Untappd to enhance your experience:
+    				<ul>
+    					<li>Make quick check-ins directly from the taplist</li>
+    					<li>Get the list of beers you already have checked-in</li>
+    					<li>Get your saved data (favorites, ticks, ...) anywhere</li>
+    				</ul>
+    				<p>LBF also offers a <a href="{{ path('event', {'eventID': event.id}) }}">live stats</a> page for the event.</p>
+    				<p>This taplist is powered by <a href="https://www.livebeerfeed.com">Live Beer Feed</a>.</p> 
+    				<p>Any issues, questions, remarks?<br>Feel free to contact me at <a href="mailto:robin@livebeerfeed.com">robin@livebeerfeed.com</a>.</p>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    			</div>
+    		</div>
+        </div>
+    </div>
+
     <div id="filters-open" class="fixed-button">
     	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
     	<div class="desc">Filter/Sort</div>
@@ -292,7 +321,7 @@
     	</a>
     {% endif %}
             
-    <div id="taplist-info">
+    <div id="taplist-info" class="small-bubble">
     	<div><span id="taplist-info-count">0</span> beers (<span id="taplist-info-filtered">0</span> filtered)</div>
     	<div class="taplist-info-icons">
     		<span id="taplist-info-favorites">0</span> <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div>
@@ -300,6 +329,10 @@
     		<span id="taplist-info-checkins">0</span> <div class="taplist-info-untappd-icon"><img src="{{ asset('images/untappd_bottles.png') }}"></div>
     	</div>
     </div>
+    
+    <button id="taplist-help" class="small-bubble" data-toggle="modal" data-target="#info-modal">
+    	<i class="fa fa-info-circle" aria-hidden="true"></i>
+    </button>
 </div>
 <script>
 {% if userData is not null %}
