@@ -19,7 +19,7 @@ class UntappdAPIController extends Controller
                 
         return $this->json([
             'status' => 'SUCCESS',
-            'username' => $user->getUserName()
+            'name' => $user->getUserName()
         ]);
     }
     
@@ -33,7 +33,22 @@ class UntappdAPIController extends Controller
         
         return $this->json([
             'status' => 'SUCCESS',
-            'username' => $brewery->getName()
+            'name' => $brewery->getName()
+        ]);
+    }
+    
+    /**
+     * @Route("/get/beer/info/{id}", name="BeerInfo")
+     */
+    public function get_beer_info($id, UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
+    {
+        $response = $untappdAPI->getBeerInfo($id)->body;
+        $beer = $untappdAPISerializer->handleBeerObject($response->response->beer);
+                
+        return $this->json([
+            'status' => 'SUCCESS',
+            'id' => $beer->getId(),
+            'name' => $beer->getName()
         ]);
     }
 }

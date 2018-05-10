@@ -91,6 +91,14 @@ $(document).ready(function() {
 			}
 		})
 		
+		$('#taplist-content').on('click', '.out-of-stock', function() {
+			var beerID = $(this).parents('.taplist-beer').data('id');
+			if (beerID && ($(this).hasClass('active') || confirm("Please confirm the beer is out of stock"))) {
+				setBeerOutOfStock(beerID, !$(this).hasClass('active'));
+			}
+		})
+		
+		
 		$('#taplist-content').on('click', '.open-untappd', function(e) {
 			e.preventDefault();
 			var beerID = $(this).parents('.taplist-beer').data('id');
@@ -580,6 +588,15 @@ function favoriteBeer(beerID, enable) {
 	refreshTaplistCounts();
 	if (taplistFilters['favorites']) {
 		filterTapList();
+	}
+}
+
+function setBeerOutOfStock(beerID, enable) {
+	var outOfStockElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.out-of-stock');
+	if (enable) {
+		favoriteElement.addClass('active');
+	} else {
+		favoriteElement.removeClass('active');
 	}
 }
 

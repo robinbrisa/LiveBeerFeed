@@ -824,6 +824,22 @@ rating.small.r200{
 	height:30px;
 }
 
+.title .out-of-stock {
+	position: absolute;
+	right: 30px;
+	top: 1px;
+	display: inline-block;	
+	color: #bbb;
+	cursor: pointer;
+	font-size:16px;
+	padding-left: 15px;
+	display: none;
+}
+
+.out-of-stock i {
+	display: inline-block;	
+}
+
 .title .tick {
 	background-color: #e2e2e2;
 	margin-left: 4px;

@@ -15,6 +15,9 @@
         {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
         {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
         .subscribe-button { background-color: {{ event.style.majorInfoColor }}; color: white; }
+        {% if is_granted('ROLE_ADMIN') %}
+        	.out-of-stock { display: inline-block !important; }
+        {% endif %}
     </style>
 {% endif %}
 
