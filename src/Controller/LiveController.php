@@ -52,7 +52,7 @@ class LiveController extends Controller
         
         $venues = $event->getVenues();
         
-        $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 100, $event->getStartDate());
+        $checkins = $em->getRepository('App\Entity\Checkin\Checkin')->getVenueCheckins($venues, null, 100, $event->getStartDate(), $event->getEndDate());
         
         return $this->render('live/event.html.twig', [
             'event' => $event,
