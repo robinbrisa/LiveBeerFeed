@@ -53,6 +53,9 @@
             "ref": "c1431086fec31f17fbcfe6d6d7e92059458facc1"
         }
     },
+    "doctrine/event-manager": {
+        "version": "v1.0.0"
+    },
     "doctrine/inflector": {
         "version": "v1.3.0"
     },
@@ -67,6 +70,12 @@
     },
     "doctrine/orm": {
         "version": "v2.6.1"
+    },
+    "doctrine/persistence": {
+        "version": "v1.0.1"
+    },
+    "doctrine/reflection": {
+        "version": "v1.0.0"
     },
     "easycorp/easyadmin-bundle": {
         "version": "1.17",
@@ -233,15 +242,6 @@
     "react/zmq": {
         "version": "v0.3.0"
     },
-    "sensio/framework-extra-bundle": {
-        "version": "4.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.0",
-            "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
-        }
-    },
     "spomky-labs/base64url": {
         "version": "v1.0.2"
     },
@@ -356,6 +356,9 @@
     "symfony/orm-pack": {
         "version": "v1.0.5"
     },
+    "symfony/polyfill-ctype": {
+        "version": "v1.9.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.7.0"
     },
@@ -469,6 +472,24 @@
     },
     "web-token/jwt-signature": {
         "version": "v1.0.6"
+    },
+    "web-token/jwt-signature-algorithm-ecdsa": {
+        "version": "v1.2.1"
+    },
+    "web-token/jwt-signature-algorithm-eddsa": {
+        "version": "v1.2.1"
+    },
+    "web-token/jwt-signature-algorithm-hmac": {
+        "version": "v1.2.1"
+    },
+    "web-token/jwt-signature-algorithm-none": {
+        "version": "v1.2.1"
+    },
+    "web-token/jwt-signature-algorithm-rsa": {
+        "version": "v1.2.1"
+    },
+    "web-token/jwt-util-ecc": {
+        "version": "v1.2.1"
     },
     "wrep/daemonizable-command": {
         "version": "2.1.0"

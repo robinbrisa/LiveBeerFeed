@@ -76,10 +76,5 @@
 			"allow-contrib" : false
 		}
 	},
-	"minimum-stability" : "stable",
-	"scripts": {
-		"auto-scripts": {
-
-		}
-	}
+	"minimum-stability" : "stable"
 }

@@ -65,6 +65,8 @@ $(document).ready(function() {
 	}
 	
 	if ($('#taplist-content').length > 0) {
+		$(".taplist-loading").fadeOut("slow");
+		
 		pushServerTaplist();
 		
 		$('#filters-open').click(function() {
