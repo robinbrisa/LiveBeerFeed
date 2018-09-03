@@ -74,6 +74,10 @@ general:
 email:
     notify_title: 'Your access code to send notifications during %event%'
     notify_title_batch: 'Access codes list pour to send notifications during %event%'
+tools:
+    form:
+        beers: 'Beers list'
+        send: 'Search'
 event:
     form:
         publishers: 'Publishers'

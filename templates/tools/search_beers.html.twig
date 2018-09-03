@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search for beers{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+        
+{% block body %}
+
+<div class="main-wrapper">
+    <div id="post-message" class="container">        
+    	<span class="page-title info-major">Search for beers</span>
+    		<div class="card">
+    			<div class="card-body">
+                	<p>Please submit a list of all the beers you are searching on Untappd (1 line per beer)</p>
+                	{% if success %}
+                		<div class="alert alert-success alert-dismissible" role="alert">
+                        	The search has been queued.
+                        	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                	{% endif %}
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+               </div>
+          </div>
+    </div>
+    
+</div>
+
+{% endblock %}
