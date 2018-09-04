@@ -354,25 +354,29 @@ class UntappdAPI
      *
      * @return string Returns a JSON object containing the search results
      */
-    public function searchBeer($querystr, $offset = 0, $limit = 25, $sort = "checkin")
+    public function searchBeer($querystr, $accessToken = null, $offset = 0, $limit = 50, $sort = "checkin")
     {
-        if (!is_null($limit) && $limit > 25) {
-            throw new \Exception('Maximum for limit is 25 (requested ' . $limit . ')');
+        if (!is_null($limit) && $limit > 50) {
+            throw new \Exception('Maximum for limit is 50 (requested ' . $limit . ')');
         }
         $headers = array('Accept' => 'application/json');
         $query = array(
-            'client_id' => $this->clientID,
-            'client_secret' => $this->clientSecret,
             'q' => $querystr,
             'offset' => $offset,
             'limit' => $limit,
             'sort' => $sort
         );
+        if (is_null($accessToken)) {
+            $query['client_id'] = $this->clientID;
+            $query['client_secret'] = $this->clientSecret;
+        } else {
+            $query['access_token'] = $accessToken;
+        }
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/beer/', $headers, $query);
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery('/v4/search/beer/', $response);
+            $this->logAPIQuery('/v4/search/beer/ (' . $querystr . ')', $response, $accessToken);
         }
         return $response;
     }

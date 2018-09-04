@@ -19,22 +19,17 @@ class QueryRepository extends ServiceEntityRepository
         parent::__construct($registry, Query::class);
     }
 
-//    /**
-//     * @return Query[] Returns an array of Query objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function findPending()
     {
         return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('q.finished = :val')
+            ->setParameter('val', false)
             ->orderBy('q.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Query

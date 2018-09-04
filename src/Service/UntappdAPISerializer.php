@@ -117,6 +117,19 @@ class UntappdAPISerializer
         return $beersCollection;
     }
     
+    public function handleSearchResults($searchData) {
+        $beersCollection = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($searchData as $data) {
+            $brewery = $this->buildBreweryWithLowInformation($data->brewery);
+            $this->em->persist($brewery);
+            $beer = $this->buildBeerWithLowInformation($data->beer, $brewery);
+            $this->em->persist($beer);
+            $beersCollection->add($beer);
+        }
+        $this->em->flush();
+        return $beersCollection;
+    }
+    
     public function handleBeerObject($beer) {
         $beer = $this->buildBeerWithFullInformation($beer);
         $this->em->persist($beer);
@@ -217,7 +230,11 @@ class UntappdAPISerializer
         }
         $output->setSlug($beer->beer_slug);
         $output->setAbv($beer->beer_abv);
-        $output->setActive($beer->beer_active);
+        if (isset($beer->beer_active)) { 
+            $output->setActive($beer->beer_active); 
+        } else {
+            $output->setActive(true);
+        }
         $output->setBrewery($brewery);
         
         $style = $this->em->getRepository('\App\Entity\Beer\Style')->findOneBy(array('name' => $beer->beer_style));

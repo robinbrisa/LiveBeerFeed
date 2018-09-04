@@ -2,6 +2,7 @@
 
 namespace App\Entity\Search;
 
+use App\Entity\Beer\Beer;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,6 +23,12 @@ class Result
      * @ORM\JoinColumn(name="element_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $element;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Beer\Beer")
+     * @ORM\JoinColumn(name="beer_id", referencedColumnName="id")
+     */
+    private $beer;
     
     /**
      * @ORM\Column(type="boolean")
@@ -53,6 +60,18 @@ class Result
     public function setSelected(bool $selected): self
     {
         $this->selected = $selected;
+
+        return $this;
+    }
+
+    public function getBeer(): ?Beer
+    {
+        return $this->beer;
+    }
+
+    public function setBeer(?Beer $beer): self
+    {
+        $this->beer = $beer;
 
         return $this;
     }
