@@ -32,6 +32,39 @@ $(document).ready(function() {
 		refreshTimes();
 		pushServer();
 	}
+
+	if ($('#search-results').length !== 0) {
+		$('.search-results-row').each(function(row) {
+			if ($(this).find('.search-match-selected').length !== 0) {
+				$(this).find('.search-match-not-selected').hide();
+			}
+		});
+		
+		$('.search-results-expand').click(function() {
+			if ($(this).find('.fa-plus').length !== 0) {
+				$(this).parent().find('.search-match-not-selected').show();
+				$(this).find('.fa-plus').removeClass('fa-plus').addClass('fa-minus');
+			} else {
+				$(this).parent().find('.search-match-not-selected').hide();
+				$(this).find('.fa-minus').removeClass('fa-minus').addClass('fa-plus');
+			}
+		});
+		
+		$('.search-match-name').click(function() {
+			var matchElement = $(this);
+			$.post('/ajax/selectSearchResult', { resultID: matchElement.parent().data('result') }, function(data) {
+				if (data.success) {
+					matchElement.parent().parent().find('.search-match-selected').removeClass('search-match-selected').addClass('search-match-not-selected');
+					matchElement.parent().removeClass('search-match-not-selected').addClass('search-match-selected');
+					matchElement.parent().parent().find('.search-match-not-selected').hide();
+					matchElement.parent().parent().find('.fa-minus').removeClass('fa-minus').addClass('fa-plus');
+				}
+			})
+			.fail(function(data) {
+				alert('Error');
+			});
+		});
+	}
 	
 	if ($('#event-info').length !== 0) {
 		pushServerEventInfo();	

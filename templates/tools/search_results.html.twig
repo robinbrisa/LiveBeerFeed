@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search results{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+        
+{% block body %}
+
+<div class="main-wrapper">
+    <div id="search-results" class="container">        
+    	<span class="page-title info-major">Search for beers</span>
+    		<div class="card">
+    			<div class="card-body container search-results">
+                	{% for element in query.elements %}
+                		{% set i = 0 %}
+                		<div class="row search-results-row" data-element="{{ element.id }}">
+                			<div class="col-3">
+                		        <strong>{{ element.searchString }}</strong>
+                			</div>
+                			<div class="col-9">
+                				{% if element.finished %}
+                					{% for result in element.results %}
+                						{% set i = i + 1 %}
+                						{% if result.selected %}
+                							{% set class = 'search-match-selected' %}
+                						{% else %}
+                							{% set class = 'search-match-not-selected' %}
+                						{% endif %}
+                						<div data-result="{{ result.id }}" class="search-match {{ class }}">
+                						    <a href="javascript:void(0)" class="search-match-name">{{ result.beer.name }} <i>({{ result.beer.brewery.name }})</i></a>
+                						</div>
+                					{% endfor %}
+                				{% else %}
+                					<strong>PENDING</strong>
+                				{% endif %}
+                				{% if i > 1 %}
+                		        	<span class="badge badge-secondary search-results-expand"><i class="fa fa-plus"></i></span>
+                		        {% endif %}
+                			</div>
+                		</div>
+                	{% endfor %}
+               </div>
+          </div>
+    </div>
+    
+</div>
+
+{% endblock %}

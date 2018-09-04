@@ -1229,3 +1229,37 @@ div.filters-title {
 	z-index: 9999;
 	background: url(../images/loading-tl.gif) center no-repeat #fff;
 }
+
+.search-match {
+	display: block;
+}
+
+.search-match-name {
+	
+}
+
+.search-match-not-selected { 
+	
+}
+
+.search-match-selected a {
+	color: green;
+	font-weight: bold;
+}
+
+.search-results {
+	padding: 0 5px;
+}
+
+.search-results .row {
+	border-bottom: 1px solid rgba(0,0,0,.125);
+	margin: 4px 0;
+	padding-bottom: 4px;
+}
+
+.search-results-expand {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	cursor: pointer;
+}

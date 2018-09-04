@@ -63,7 +63,8 @@ class LbfProcessSearch extends Command
                         $i++;
                         $output->writeln(sprintf('[%s] Searching for %s', date('H:i:s'), $element->getSearchString()));
                         if ($response = $this->untappdAPI->searchBeer($element->getSearchString(), $apiKey)) {
-                            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                            $apiKeyPool = $this->tools->getAPIKeysPool();
+                            $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
                             $count = $response->body->response->beers->count;
                             $output->writeln(sprintf('[%s] Got %d results', date('H:i:s'), $count));
                             $found = $this->untappdAPISerializer->handleSearchResults($response->body->response->beers->items);

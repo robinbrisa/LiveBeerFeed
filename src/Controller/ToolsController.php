@@ -56,4 +56,23 @@ class ToolsController extends Controller
         ));
     }
     
+    /**
+     * @Route("/tools/search/results/{id}", name="search_results")
+     */
+    public function results($id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $query = $em->getRepository('App\Entity\Search\Query')->find($id);
+        if (!$query) {
+            $this->createNotFoundException('This search query is unknown');
+        }
+        
+        return $this->render('tools/search_results.html.twig', array(
+            'query' => $query,
+        ));
+    }
+    
 }

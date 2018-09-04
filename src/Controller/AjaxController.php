@@ -349,6 +349,34 @@ class AjaxController extends Controller
         $response = new Response(json_encode($output));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+    
+    /**
+     * @Route("/ajax/selectSearchResult", name="ajax_select_search_result")
+     */
+    public function selectSearchResultAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $output = array('success' => true);
+        $em = $this->getDoctrine()->getManager();
         
+        $resultID = $request->request->get('resultID');
+        
+        if (!$result = $em->getRepository('\App\Entity\Search\Result')->find($resultID)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_RESULT';
+        } else {
+            foreach ($result->getElement()->getResults() as $aResult) {
+                $aResult->setSelected(0);
+                $em->persist($aResult);
+            }
+            $result->setSelected(1);
+            $em->persist($result);
+            $em->flush();
+        }
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }
