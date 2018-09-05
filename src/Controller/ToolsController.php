@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use App\Entity\Search\Query;
 use App\Entity\Search\Element;
+use App\Entity\Event\TapListQueue;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ToolsController extends Controller
 {
@@ -59,10 +61,11 @@ class ToolsController extends Controller
     /**
      * @Route("/tools/search/results/{id}", name="search_results")
      */
-    public function results($id)
+    public function results($id, Request $request)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         
+        $success = false;
         $em = $this->getDoctrine()->getManager();
         
         $query = $em->getRepository('App\Entity\Search\Query')->find($id);
@@ -70,8 +73,41 @@ class ToolsController extends Controller
             $this->createNotFoundException('This search query is unknown');
         }
         
+        $upcomingSessions = $em->getRepository('\App\Entity\Event\Session')->findUpcomingSessions();
+        if (!is_null($upcomingSessions)) {
+            $arraySelect = array();
+            foreach ($upcomingSessions as $session) {
+                $arraySelect[$session->getName()] = $session->getId();
+            }
+        }
+        
+        $form = $this->createFormBuilder()
+        ->add('session_select', ChoiceType::class, array('required' => true, 'choices' => $arraySelect))
+        ->add('send', SubmitType::class, array('label' => 'event.form.register'))
+        ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $session = $em->getRepository('\App\Entity\Event\Session')->find($data['session_select']);
+            $selectedResults = $em->getRepository('\App\Entity\Search\Result')->findSelectedResults($query);
+            foreach ($selectedResults as $result) {
+                if (!$em->getRepository('\App\Entity\Event\TapListQueue')->findOneBy(array('session' => $session, 'untappdID' => $result->getBeer()->getId()))) {
+                    $tapListQueueElement = new TapListQueue();
+                    $tapListQueueElement->setSession($session);
+                    $tapListQueueElement->setUntappdID($result->getBeer()->getId());
+                    $em->persist($tapListQueueElement);
+                    $em->flush();
+                }
+            }
+            $success = true;
+        }
+        
         return $this->render('tools/search_results.html.twig', array(
+            'form' => $form->createView(),
             'query' => $query,
+            'success' => $success
         ));
     }
     

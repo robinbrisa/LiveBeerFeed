@@ -28,22 +28,17 @@ class SessionRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
     }
-//    /**
-//     * @return Session[] Returns an array of Session objects
-//     */
-    /*
-    public function findByExampleField($value)
+    
+    public function findUpcomingSessions()
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        ->join('s.event', 'e')
+        ->where('e.end_date >= :end_date')->setParameter('end_date', new \DateTime(''))
+        ->orderBy('e.start_date', 'ASC')
+        ->getQuery()
+        ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Session

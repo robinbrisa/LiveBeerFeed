@@ -11,6 +11,20 @@
     <div id="search-results" class="container">        
     	<span class="page-title info-major">Search for beers</span>
     		<div class="card">
+    			<div class="card-body">
+                	{% if success %}
+                		<div class="alert alert-success alert-dismissible" role="alert">
+                        	The selected beers have been queued for the requested session.
+                        	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    {% else %}
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        {{ form_end(form) }}
+                	{% endif %}
+                </div>
+    		</div>
+    		<div class="card">
     			<div class="card-body container search-results">
                 	{% for element in query.elements %}
                 		{% set i = 0 %}
