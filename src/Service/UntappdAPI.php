@@ -41,7 +41,15 @@ class UntappdAPI
         );
         $response = Unirest\Request::get('https://untappd.com/oauth/authorize/', $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         }
         return $response->body->response->access_token;
     }
@@ -74,7 +82,15 @@ class UntappdAPI
         }
         $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery($path, $response, $accessToken);
         }
@@ -106,7 +122,15 @@ class UntappdAPI
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/wishlist/' . $username, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/user/wishlist/' . $username, $response);
         }
@@ -148,7 +172,15 @@ class UntappdAPI
         }
         $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery($path, $response, $accessToken);
         }
@@ -178,7 +210,15 @@ class UntappdAPI
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/badges/' . $username, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/user/badges/' . $username, $response);
         }
@@ -210,7 +250,15 @@ class UntappdAPI
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/user/beers/' . $username, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/user/beers/' . $username, $response);
         }
@@ -237,7 +285,15 @@ class UntappdAPI
         if ($response->code != 200) {
             throw new \Exception("API Error. HTTP code: " . $response->code);
         } else {
-            $this->logAPIQuery('/v4/brewery/info/' . $breweryID, $response);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         }
         return $response;
     }
@@ -268,7 +324,15 @@ class UntappdAPI
         if ($response->code == 404) {
             return "DELETED";
         } elseif ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/beer/info/' . $beerID, $response, $accessToken);
         }
@@ -293,7 +357,15 @@ class UntappdAPI
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/venue/info/' . $venueID, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/venue/info/' . $venueID, $response);
         }
@@ -337,7 +409,15 @@ class UntappdAPI
                 $response->body = json_decode('{"response":{"pagination":{"max_id":""}}}');
                 return $response;
             }
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $log = $this->logAPIQuery('/v4/venue/checkins/' . $venueID, $response, $accessToken);
         }
@@ -374,7 +454,15 @@ class UntappdAPI
         }
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/beer/', $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/search/beer/ (' . $querystr . ')', $response, $accessToken);
         }
@@ -405,7 +493,15 @@ class UntappdAPI
         );
         $response = Unirest\Request::get($this->APIUrl . '/v4/search/brewery/', $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/search/brewery/', $response);
         }
@@ -453,7 +549,15 @@ class UntappdAPI
         }
         $response = Unirest\Request::post($this->APIUrl . '/v4/checkin/add?access_token=' . $accessToken, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery('/v4/checkin/add/', $response, $accessToken);
         }
@@ -499,7 +603,15 @@ class UntappdAPI
         }
         $response = Unirest\Request::get($this->APIUrl . $path, $headers, $query);
         if ($response->code != 200) {
-            throw new \Exception("API Error. HTTP code: " . $response->code);
+            if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
+                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
+                $user->setInternalUntappdAccessToken(null);
+                $this->em->persist($user);
+                $this->em->flush();
+                return false;
+            } else {
+                throw new \Exception("API Error. HTTP code: " . $response->code);
+            }
         } else {
             $this->logAPIQuery($path, $response, $accessToken);
         }
