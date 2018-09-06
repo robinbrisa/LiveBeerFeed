@@ -18,6 +18,7 @@
             {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
             {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
         }
+        {% if event.style.headerTextColor %}.page-switcher { color: {{ event.style.headerTextColor }}; }{% endif %}
         {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
         {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
         .subscribe-button { background-color: {{ event.style.majorInfoColor }}; color: white; }
