@@ -51,7 +51,7 @@
         
         <div id="taplist-no-content">
             <div class="alert alert-warning" role="alert">
-              <strong>There's nothing to display! ðŸ™�</strong>
+              <strong>There's nothing to display! 😞</strong>
               <br>It looks like everything is filtered. Please modify your parameters to get results.
             </div>
         </div>
@@ -78,6 +78,7 @@
                             <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> Search</label> <div id="clear-search"><i class="fa fa-ban" aria-hidden="true"></i> Clear</div>
                             <input type="text" class="form-control form-control-sm" id="search-beer" placeholder="Search for styles, beers, breweries...">
                         </div>
+                        {% if event.sessions|length <= 1 %}<div style="display:none">{% endif %}
             			<hr class="my-1">
                         <div class="form-group filter-group">
                             <div class="filters-title"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sessions</div>
@@ -90,6 +91,7 @@
                                 {% endfor %}
                             </div>
                         </div>
+                        {% if event.sessions|length <= 1 %}</div>{% endif %}
             			<hr class="my-1">
                         <div class="filters-title"><i class="fa fa-sort" aria-hidden="true"></i> Sort</div>
                         <div class="form-group filter-group-table">
