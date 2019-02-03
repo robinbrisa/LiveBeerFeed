@@ -379,4 +379,83 @@ class AjaxController extends Controller
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
+    
+    /**
+     * @Route("/ajax/taplistAdminModal/{session_id}/{beer_id}", name="ajax_taplist_admin_modal")
+     */
+    public function taplistAdminModal($session_id, $beer_id, Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $em = $this->getDoctrine()->getManager();
+        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($session_id)) {
+            throw new NotFoundHttpException("Invalid Session ID");
+        }
+        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beer_id)) {
+            throw new NotFoundHttpException("Invalid Beer ID");
+        }
+        
+        return $this->render('taplist/templates/beer-admin.html.twig', [
+            'session' => $session,
+            'beer' => $beer
+        ]);
+    }
+    
+    /**
+     * @Route("/ajax/removeFromTaplist/{session_id/{beer_id}", name="ajax_remove_from_taplist")
+     */
+    public function removeFromTaplist($session_id, $beer_id, Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $output = array('success' => true);
+        $em = $this->getDoctrine()->getManager();
+        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($session_id)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_SESSION';
+        }
+        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beer_id)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_BEER';
+        }
+        
+        $session->removeBeer($beer);
+        $this->em->persist($session);
+        $this->em->flush();
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+    
+    /**
+     * @Route("/ajax/searchBeer", name="ajax_search_beer")
+     */
+    public function searchBeer(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $output = array('success' => true);
+        $searchString = $request->request->get('searchString');
+        
+        $apiKeyPool = $this->tools->getAPIKeysPool();
+        if ((array_sum($apiKeyPool) < 40 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents()) || array_sum($apiKeyPool) < 5) {
+            $output['success'] = false;
+            $output['error'] = 'NOT_ENOUGH_API_KEYS';
+        } else {
+            $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
+            if ($response = $this->untappdAPI->searchBeer($searchString, $apiKey)) {
+                $output['count'] = $response->body->response->beers->count;
+                $found = $this->untappdAPISerializer->handleSearchResults($response->body->response->beers->items);
+                foreach ($found as $beer) {
+                    $output['results'][$beer->getId()] = $beer->getName() . ' (' . $beer->getBrewery()->getName() . ')';
+                }
+            } else {
+                $output['success'] = false;
+                $output['error'] = 'SEARCH_FAILED';
+            }
+        }
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+    
 }

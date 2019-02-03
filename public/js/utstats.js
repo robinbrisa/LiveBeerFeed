@@ -126,14 +126,27 @@ $(document).ready(function() {
 			}
 		})
 		
-		$('#taplist-content').on('click', '.out-of-stock', function() {
-			var beerID = $(this).parents('.taplist-beer').data('id');
-			var sessionID = $(this).parents('.taplist-beer').data('session-id');
-			if (beerID && ($(this).hasClass('active') || confirm("Please confirm the beer is out of stock"))) {
-				setBeerOutOfStock(beerID, sessionID, !$(this).hasClass('active'));
+		$('#taplist-content').on('click', '.admin', function() {
+			$('#quick-checkin-modal').modal('show');
+			$('#quick-checkin-modal').find('.modal-body').load( "/ajax/taplistAdminModal/" + $(this).parents('.taplist-beer').data('session-id') + "/" + $(this).parents('.taplist-beer').data('id'));
+		});
+		
+		$('#quick-checkin-modal').on('click', '#flag-out-of-stock', function() {
+			var beerID = $(this).parents('.admin-actions').data('beer-id');
+			var sessionID = $(this).parents('.admin-actions').data('session-id');
+			var currentState = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]').find('.beer-info').hasClass('no-longer-available');
+			if (beerID && (currentState || confirm("Please confirm the beer is out of stock"))) {
+				setBeerOutOfStock(beerID, sessionID, !currentState);
 			}
 		})
 		
+		$('#quick-checkin-modal').on('click', '#remove-from-taplist', function() {
+			var beerID = $(this).parents('.admin-actions').data('beer-id');
+			var sessionID = $(this).parents('.admin-actions').data('session-id');
+			if (beerID && (currentState || confirm("Please confirm you want to remove this beer. This is no going back."))) {
+				removeBeer(beerID, sessionID);
+			}
+		})
 		
 		$('#taplist-content').on('click', '.open-untappd', function(e) {
 			e.preventDefault();
@@ -657,6 +670,17 @@ function setBeerOutOfStock(beerID, sessionID, enable) {
 	}
 }
 
+function removeBeer(beerID, sessionID) {
+	var beerElement = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]');
+	$.post('/ajax/removeFromTaplist', { beerID: beerID, sessionID: sessionID }, function(data) {
+		if (data.success) {
+			beerElement.remove();
+		} else {
+			alert('An error occured while trying to delete the beer')
+		}
+	})
+}
+
 function addCheckedInBeer(beerID) {
 	var tickElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.open-untappd');
 	var idx = checkedInBeers.indexOf(beerID);
@@ -770,7 +794,6 @@ function handleTaplistUserData(data) {
 
 function handleUpToDateTaplistBeer(data) {
 	if (data.push_type == "out_of_stock") {
-		console.log(data.list);
 		outOfStock = data.list;
 		initOutOfStock();
 	} else {

@@ -845,6 +845,18 @@ rating.small.r200{
 	text-shadow: 0px 0px 1px rgba(150, 150, 150, 1);
 }
 
+.title .admin {
+	position: absolute;
+	right: 30px;
+	top: 1px;
+	display: inline-block;	
+	color: #bbb;
+	cursor: pointer;
+	font-size:16px;
+	padding-left: 15px;
+	display: none;
+}
+
 .title .tick {
 	background-color: #e2e2e2;
 	margin-left: 4px;
