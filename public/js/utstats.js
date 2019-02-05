@@ -128,6 +128,7 @@ $(document).ready(function() {
 		
 		$('#taplist-content').on('click', '.admin', function() {
 			$('#quick-checkin-modal').modal('show');
+			$('.modal-header').hide();
 			$('#quick-checkin-modal').find('.modal-body').load( "/ajax/taplistAdminModal/" + $(this).parents('.taplist-beer').data('session-id') + "/" + $(this).parents('.taplist-beer').data('id'));
 		});
 		
@@ -135,15 +136,25 @@ $(document).ready(function() {
 			var beerID = $(this).parents('.admin-actions').data('beer-id');
 			var sessionID = $(this).parents('.admin-actions').data('session-id');
 			var currentState = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]').find('.beer-info').hasClass('no-longer-available');
-			if (beerID && (currentState || confirm("Please confirm the beer is out of stock"))) {
-				setBeerOutOfStock(beerID, sessionID, !currentState);
+			if (beerID) {
+				$('#flag-out-of-stock').attr('disabled', true);
+				setBeerOutOfStock(beerID, sessionID, !currentState, function() {
+					currentState = $('.taplist-beer[data-id="'+beerID+'"][data-session-id="'+sessionID+'"]').find('.beer-info').hasClass('no-longer-available');
+					if (currentState) {
+						$('#flag-out-of-stock').html('<i class="fa fa-check"/> Set as available');
+ 					} else {
+						$('#flag-out-of-stock').html('<i class="fa fa-times"/> Set as out of stock');
+					}
+				});
+				$('#flag-out-of-stock').attr('disabled', false);
 			}
 		})
 		
 		$('#quick-checkin-modal').on('click', '#remove-from-taplist', function() {
 			var beerID = $(this).parents('.admin-actions').data('beer-id');
 			var sessionID = $(this).parents('.admin-actions').data('session-id');
-			if (beerID && (currentState || confirm("Please confirm you want to remove this beer. This is no going back."))) {
+			console.log("here");
+			if (beerID && confirm("Please confirm you want to remove this beer. This is no going back.")) {
 				removeBeer(beerID, sessionID);
 			}
 		})
@@ -165,6 +176,7 @@ $(document).ready(function() {
 				case "quick-checkin":
 					if ($("#logged-in").length > 0) {
 						$('#quick-checkin-modal').modal('show');
+						$('.modal-header').show();
 						$('#quick-checkin-modal').find('.modal-body').load( "/ajax/quickCheckInModal/" + $('#event-taplist').data('event-id') + "/" + beerID);
 					} else {
 						if (platform.os.family == "Android" || platform.os.family == "iOS") {
@@ -653,18 +665,20 @@ function favoriteBeer(beerID, enable) {
 	}
 }
 
-function setBeerOutOfStock(beerID, sessionID, enable) {
+function setBeerOutOfStock(beerID, sessionID, enable, callback) {
 	var outOfStockElement = $('.taplist-beer[data-id="'+beerID+'"]').find('.out-of-stock');
 	if (enable) {
 		$.post('/ajax/setOutOfStock', { beerID: beerID, sessionID: sessionID, action: "ADD" }, function(data) {
 			if (data.success) {
 				outOfStockElement.addClass('active');
+				callback();
 			}
 		})
 	} else {
 		$.post('/ajax/setOutOfStock', { beerID: beerID, sessionID: sessionID, action: "REMOVE" }, function(data) {
 			if (data.success) {
 				outOfStockElement.removeClass('active');
+				callback();
 			}
 		})
 	}
@@ -675,6 +689,7 @@ function removeBeer(beerID, sessionID) {
 	$.post('/ajax/removeFromTaplist', { beerID: beerID, sessionID: sessionID }, function(data) {
 		if (data.success) {
 			beerElement.remove();
+			$('#quick-checkin-modal').modal('hide');
 		} else {
 			alert('An error occured while trying to delete the beer')
 		}
@@ -796,6 +811,8 @@ function handleUpToDateTaplistBeer(data) {
 	if (data.push_type == "out_of_stock") {
 		outOfStock = data.list;
 		initOutOfStock();
+	} else if (data.push_type == "remove") {
+		$('.taplist-beer[data-id="'+data.beer+'"][data-session-id="'+data.session+'"]').remove();
 	} else {
 		$.each(data.beers, function(sessionID, session) {
 			$.each(session, function(beerID, beerElement) {

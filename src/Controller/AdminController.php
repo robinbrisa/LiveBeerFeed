@@ -189,4 +189,14 @@ class AdminController extends Controller
         }
     }
     
+    /**
+     * @Route("/admin/login/{id}", name="force_untappd_login")
+     */
+    public function forceUntappdLogin($id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $session = $this->get('session');
+        $session->set('userUntappdID', $id);
+        return $this->redirectToRoute('homepage');
+    }
 }

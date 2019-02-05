@@ -401,25 +401,40 @@ class AjaxController extends Controller
     }
     
     /**
-     * @Route("/ajax/removeFromTaplist/{session_id/{beer_id}", name="ajax_remove_from_taplist")
+     * @Route("/ajax/removeFromTaplist", name="ajax_remove_from_taplist")
      */
-    public function removeFromTaplist($session_id, $beer_id, Request $request)
+    public function removeFromTaplist(Request $request)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $output = array('success' => true);
         $em = $this->getDoctrine()->getManager();
-        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($session_id)) {
+        $output = array('success' => true);
+        $sessionID = $request->request->get('sessionID');
+        $beerID = $request->request->get('beerID');
+        $em = $this->getDoctrine()->getManager();
+        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
             $output['success'] = false;
             $output['error'] = 'INVALID_SESSION';
         }
-        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beer_id)) {
+        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beerID)) {
             $output['success'] = false;
             $output['error'] = 'INVALID_BEER';
         }
         
         $session->removeBeer($beer);
-        $this->em->persist($session);
-        $this->em->flush();
+        $em->persist($session);
+        $em->flush();
+        
+        $pushData = array(
+            'push_type' => 'remove',
+            'push_topic' => 'taplist-'.$session->getEvent()->getId().'-all',
+            'session' => $session->getId(),
+            'beer' => $beer->getId()
+        );
+        $context = new \ZMQContext();
+        $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+        $socket->connect("tcp://localhost:5555");
+        $socket->send(json_encode($pushData));
+        $socket->disconnect("tcp://localhost:5555");
         
         $response = new Response(json_encode($output));
         $response->headers->set('Content-Type', 'application/json');
