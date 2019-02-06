@@ -357,51 +357,91 @@ $(document).ready(function() {
 			$('#add-beer-submit').prop('disabled', true);
 			$('#add-beer-error').hide();
 			$('#add-beer-success').hide();
-			$('#add-beer-submit').html('<i class="fa fa-spinner fa-pulse"></i>')
+			$('#add-beer-submit').html('<i class="fa fa-spinner fa-pulse"></i>');
 			$.post('/ajax/searchBeer', $('#add-beer-form').serialize(), function(data) {
 				$('#add-beer-submit').prop('disabled', false);
+				$('#add-beer-submit').html("Add");
 				if (data.success) {
 					if (data.count == 0) {
 						$('#add-beer-error').html('No results found on Untappd for the requested keywords.').show();
-						$('#add-beer-submit').html("Add");
 					} else if (data.count == 1) {
 						$.post('/ajax/addBeerToTaplist', { 'beer-id': Object.keys(data.results)[0], 'session-id': $('#add-beer-session').val() }, function(data2) {
 							if (data2.success) {
 								$('#add-beer-success').html('Successfully added <strong>' + data.results[Object.keys(data.results)[0]] + '</strong>.').show();
-								$('#add-beer-submit').html("Add");
 								$('#searchString').val("");
 								$('#add-beer-session').val("");
 							} else {
 								if (data2.error == "DUPLICATE") {
-									$('#add-beer-error').html("The beer has not been added into the taplist because it was already existing.").show();
-									$('#add-beer-submit').html("Add");
+									$('#add-beer-error').html("The beer has not been added because it already exists.").show();
 									$('#searchString').val("");
 									$('#add-beer-session').val("");
 								} else {
 									$('#add-beer-error').html("An error occured, please retry later.").show();
-									$('#add-beer-submit').html("Retry");
 								}
 							}
 						})
 						.fail(function(data2) {
 							$('#add-beer-error').html('An error occured, please retry later.').show();
-							$('#add-beer-submit').html("Retry");
 						});
 					} else {
-						
+						$.each(data.results, function(idx, beer) {
+							$('#select-beer-field').append('<option value="'+idx+'">'+beer+'</option>');
+						});
+						$('#add-beer-form').hide();
+						$('#select-beer-form').show();
+						$('#select-beer-count').html(data.count);
 					}
 				} else {
 					$('#add-beer-error').html('An error occured, please retry later.').show();
-					$('#add-beer-submit').html("Retry");
 				}
 			})
 			.fail(function(data) {
 				$('#add-beer-submit').prop('disabled', false);
 				$('#add-beer-error').html("An error occured, please retry later.").show();
-				$('#add-beer-submit').html("Retry");
 			});
 		});
-
+		
+		$(document).on("submit", '#select-beer-form', function(e) {
+			e.preventDefault();
+			$('#select-beer-submit').html('<i class="fa fa-spinner fa-pulse"></i>');
+			$('#select-beer-submit').prop('disabled', true);
+			$.post('/ajax/addBeerToTaplist', { 'beer-id': $('#select-beer-field').val(), 'session-id': $('#add-beer-session').val() }, function(data) {
+				$('#select-beer-submit').prop('disabled', false);
+				$('#select-beer-submit').html('Submit');
+				if (data.success) {
+					$('#add-beer-success').html('Successfully added <strong>' + $("#select-beer-field option:selected").text() + '</strong>.').show();
+					$('#searchString').val("");
+					$('#add-beer-session').val("");
+					$('#select-beer-form').hide();
+					$('#add-beer-form').show();
+				} else {
+					if (data.error == "DUPLICATE") {
+						$('#add-beer-error').html("The beer has not been added because it already exists.").show();
+						$('#searchString').val("");
+						$('#add-beer-session').val("");
+					} else {
+						$('#add-beer-error').html("An error occured, please retry later.").show();
+					}
+					$('#select-beer-form').hide();
+					$('#add-beer-form').show();
+				}
+				$('#select-beer-field').find('option').not(':first').remove();
+			})
+			.fail(function(data) {
+				$('#select-beer-submit').prop('disabled', false);
+				$('#select-beer-submit').html('Submit');
+				$('#add-beer-error').html('An error occured, please retry later.').show();
+				$('#select-beer-form').hide();
+				$('#add-beer-form').show();
+			});
+		});
+			
+		$('#select-beer-cancel').click(function() {
+			$('#select-beer-field').find('option').not(':first').remove();
+			$('#select-beer-form').hide();
+			$('#add-beer-form').show();
+		});
+		
 	}
 });
 

@@ -300,7 +300,7 @@
             			<div class="modal-body">
             				<form id="add-beer-form">
                                 <div class="form-group filter-group">
-                                    <label class="filters-title" for="searchString"><i class="fa fa-plus" aria-hidden="true"></i> Add a beer</label>
+                                    <label class="filters-title" for="searchString"><i class="fa fa-plus" aria-hidden="true"></i> Add a beer to the taplist</label>
                                 	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
                                 	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
                                     <input type="text" class="form-control form-control-sm" id="searchString" name="searchString" placeholder="Enter keywords" required>
@@ -313,7 +313,20 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-        						<button id="add-beer-submit" type="submit" class="btn btn-secondary pull-right">Add a beer</button>
+        						<button id="add-beer-submit" type="submit" class="btn btn-secondary pull-right">Add</button>
+        					</form>
+            				<form id="select-beer-form">
+                                <div class="form-group filter-group">
+                                    <label class="filters-title" for="select-beer-field"><i class="fa fa-plus" aria-hidden="true"></i> Add a beer to the taplist</label>
+                                	<div id="select-beer-warning" class="alert alert-warning" role="alert">The search returned <span id="select-beer-count">0</span> results.<br />Please select the beer to add.</div>
+                                </div>
+                                <div class="form-group filter-group-table">
+                                	<select id="select-beer-field" name="select-beer-field" class="form-control form-control-sm filters-sort-select" required>
+                                    	<option value="">Select a beer</option>
+                                    </select>
+                                </div>
+        						<button id="select-beer-submit" type="submit" class="btn btn-success pull-right">Submit</button>
+        						<button id="select-beer-cancel" type="button" class="btn btn-warning pull-right" style="margin-right:4px;">Cancel</button>
         					</form>
                         </div>
             		</div>

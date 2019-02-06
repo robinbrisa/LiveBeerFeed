@@ -1287,3 +1287,7 @@ div.filters-title {
 #add-beer-success {
 	display: none;
 }
+
+#select-beer-form {
+	display: none;
+}
