@@ -2,9 +2,9 @@
     <div class="quick-checkin-label"><img src="{{ beer.label }}"/></div>
     <div class="quick-checkin-info"><strong>{{ beer.untappdLink|raw }}</strong></div>
     <div class="quick-checkin-info">{{ beer.brewery.name }}</div>
-    <div class="quick-checkin-info">Session : {{ session.name }}</div>
+    <div class="quick-checkin-info"><strong>Session :</strong> {{ session.name }}</div>
 </div>
 <div class="clearfix admin-actions" id="admin-form" data-beer-id="{{ beer.id }}" data-session-id="{{ session.id }}">
-	<button type="button" id="flag-out-of-stock">{% if beer not in session.outOfStock %}<i class="fa fa-times"/> Set as out of stock{% else %}<i class="fa fa-check"/> Set as available{% endif %}</button>
-	<button type="button" id="remove-from-taplist">Remove</button>
+	<button type="button" class="btn btn-secondary" id="flag-out-of-stock">{% if beer not in session.outOfStock %}<i class="fa fa-times"/> Set as out of stock{% else %}<i class="fa fa-check"/> Set as available{% endif %}</button>
+	<button type="button" class="btn btn-danger" id="remove-from-taplist"><i class="fa fa-trash" aria-hidden="true"></i> Remove</button>
 </div>

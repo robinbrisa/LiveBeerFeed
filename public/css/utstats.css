@@ -811,17 +811,18 @@ rating.small.r200{
 }
 
 .beer-info .title {
-	background-color: #e2e2e2;
+	background-color: #eaeaea;
 	white-space: nowrap;
+	border-bottom: 2px solid #e2e2e2;
 }
 
 .title .beer-name {
 	text-overflow: ellipsis;
     overflow: hidden;
-    padding: 1px 7px;
+    padding: 0px 7px;
     font-weight: bold;
 	width: calc(100% - 30px);
-	height:30px;
+	height:28px;
 }
 
 .title .out-of-stock {
@@ -848,7 +849,6 @@ rating.small.r200{
 .title .admin {
 	position: absolute;
 	right: 30px;
-	top: 1px;
 	display: inline-block;	
 	color: #bbb;
 	cursor: pointer;
@@ -858,7 +858,7 @@ rating.small.r200{
 }
 
 .title .tick {
-	background-color: #e2e2e2;
+	background-color: #eaeaea;
 	margin-left: 4px;
 	font-size:18px;
 	display: inline-block;	
@@ -973,7 +973,6 @@ rating.small.r200{
 }
 
 #taplist-content {
-	margin-bottom: 70px;
 }
 
 #taplist-no-content {
@@ -1290,4 +1289,8 @@ div.filters-title {
 
 #select-beer-form {
 	display: none;
+}
+
+#event-taplist {
+	margin-bottom: 85px;
 }

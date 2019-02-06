@@ -5,7 +5,7 @@
 </div>
 <form class="clearfix" id="quick-checkin-form">
 	<a class="open-checkin btn btn-warning pull-right" data-checkin="{{ response.checkin_id }}" target="_blank" href="https://www.untappd.com/user/{{ response.user.user_name }}/checkin/{{ response.checkin_id }}">View on Untappd</a>
-	<div class="text-success">Your check-in has been created!</div>
+	<div class="text-success"><strong>Your check-in has been created!</strong></div>
 	<div class="badges-unlocked-list">You have unlocked {{ response.badges.count }} badge{% if response.badges.count != 1 %}s{% endif %}.
     	{% for badge in response.badges.items %}
     		<div class="unlocked-badge clearfix">
