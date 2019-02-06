@@ -13,6 +13,8 @@ use App\Entity\PushSubscription;
 use App\Entity\User\SavedData;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\UntappdAPI;
+use App\Service\UntappdAPISerializer;
+use App\Service\Tools;
 
 class AjaxController extends Controller
 {
@@ -444,21 +446,21 @@ class AjaxController extends Controller
     /**
      * @Route("/ajax/searchBeer", name="ajax_search_beer")
      */
-    public function searchBeer(Request $request)
+    public function searchBeer(Request $request, Tools $tools, UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $output = array('success' => true);
         $searchString = $request->request->get('searchString');
         
-        $apiKeyPool = $this->tools->getAPIKeysPool();
-        if ((array_sum($apiKeyPool) < 40 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents()) || array_sum($apiKeyPool) < 5) {
+        $apiKeyPool = $tools->getAPIKeysPool();
+        if ((array_sum($apiKeyPool) < 15 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents()) || array_sum($apiKeyPool) < 5) {
             $output['success'] = false;
             $output['error'] = 'NOT_ENOUGH_API_KEYS';
         } else {
-            $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
-            if ($response = $this->untappdAPI->searchBeer($searchString, $apiKey)) {
+            $apiKey = $tools->getBestAPIKey($apiKeyPool);
+            if ($response = $untappdAPI->searchBeer($searchString, $apiKey)) {
                 $output['count'] = $response->body->response->beers->count;
-                $found = $this->untappdAPISerializer->handleSearchResults($response->body->response->beers->items);
+                $found = $untappdAPISerializer->handleSearchResults($response->body->response->beers->items);
                 foreach ($found as $beer) {
                     $output['results'][$beer->getId()] = $beer->getName() . ' (' . $beer->getBrewery()->getName() . ')';
                 }
@@ -473,4 +475,72 @@ class AjaxController extends Controller
         return $response;
     }
     
+    /**
+     * @Route("/ajax/addBeerToTaplist", name="ajax_add_beer_to_taplist")
+     */
+    public function addBeerToTaplist(Request $request, Tools $tools, UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $em = $this->getDoctrine()->getManager();
+        $output = array('success' => true);
+        
+        $beerID = $request->request->get('beer-id');
+        $sessionID = $request->request->get('session-id');
+        
+        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_SESSION';
+        } else {        
+            $apiKeyPool = $tools->getAPIKeysPool();
+            if ((array_sum($apiKeyPool) < 15 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents()) || array_sum($apiKeyPool) < 5) {
+                $output['success'] = false;
+                $output['error'] = 'NOT_ENOUGH_API_KEYS';
+            } else {
+                $apiKey = $tools->getBestAPIKey($apiKeyPool);
+                if ($response = $untappdAPI->getBeerInfo($beerID, $apiKey)) {
+                    if ($response == "DELETED") {
+                        $output['success'] = false;
+                        $output['error'] = 'API_FAILURE';
+                    } else {
+                        $beerData = $response->body->response->beer;
+                        $beer = $untappdAPISerializer->handleBeerObject($beerData);
+                        if ($beer) {
+                            if (!$session->getBeers()->contains($beer)) {
+                                $session->addBeer($beer);
+                                $em->persist($session);
+                                $em->flush();
+                                
+                                $pushData = array(
+                                    'push_type' => 'add',
+                                    'push_topic' => 'taplist-'.$session->getEvent()->getId().'-all',
+                                    'session' => $session->getId(),
+                                    'beer' => $beer->getId(), 
+                                    'html' => $this->render('taplist/templates/beer.template.html.twig', array('session' => $session, 'beer' => $beer))->getContent()
+                                );
+                                $context = new \ZMQContext();
+                                $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'onNewMessage');
+                                $socket->connect("tcp://localhost:5555");
+                                $socket->send(json_encode($pushData));
+                                $socket->disconnect("tcp://localhost:5555");
+                                
+                            } else {
+                                $output['success'] = false;
+                                $output['error'] = 'DUPLICATE';
+                            }
+                        } else {
+                            $output['success'] = false;
+                            $output['error'] = 'API_FAILURE';
+                        }
+                    }
+                } else {
+                    $output['success'] = false;
+                    $output['error'] = 'API_FAILURE';
+                }
+            }
+        }
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
 }

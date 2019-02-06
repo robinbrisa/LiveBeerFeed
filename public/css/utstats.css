@@ -1038,19 +1038,22 @@ rating.small.r200{
 }
 
 #taplist-help {
-	left: 310px;
+	left: 280px;
 	bottom: 10px;
-	height: 42px;
-	width: 42px;
-	font-size: 20px;
-	line-height: 28px;
 	cursor: pointer;
 }
 
 #taplist-info {
-	width: 140px;
+	height: 65px;
+	width: 110px;
 	bottom: 10px;
 	left: 160px;
+}
+
+#taplist-admin {
+	left: 280px;
+	bottom: 10px;
+	cursor: pointer;
 }
 
 .taplist-info-untappd-icon {
@@ -1063,6 +1066,7 @@ rating.small.r200{
 
 .taplist-info-icons i {
 	margin-right: 2px;
+	margin-top:7px;
 }
 
 .input-group-chk {
@@ -1274,4 +1278,12 @@ div.filters-title {
 	top: 3px;
 	right: 3px;
 	cursor: pointer;
+}
+
+#add-beer-error {
+	display: none;
+}
+
+#add-beer-success {
+	display: none;
 }

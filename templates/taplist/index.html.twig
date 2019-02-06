@@ -287,34 +287,68 @@
         </div>
     </div>
     
-    <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="info-modal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        	<div class="modal-content">
-    			<div class="modal-header">
-    				<h5 class="modal-title" id="exampleModalLabel">Taplist Information</h5>
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    					<span aria-hidden="true">&times;</span>
-    				</button>
-    			</div>
-    			<div class="modal-body small-text">
-    				<p><strong>Welcome to the {{ event.name }} taplist!</strong></p>
-    				<p>This list allows you to see every beer that should be available during the event.<br />You can filter and sort the list as you like by clicking the <strong>"Filter/Sort"</strong> button at the bottom left of the page.</p>
-    				You can login to Untappd to enhance your experience:
-    				<ul>
-    					<li>Make quick check-ins directly from the taplist</li>
-    					<li>Get the list of beers you already have checked-in</li>
-    					<li>Get your saved data (favorites, ticks, ...) anywhere</li>
-    				</ul>
-    				<p>LBF also offers a <a href="{{ path('event', {'eventID': event.id}) }}">live stats</a> page for the event.</p>
-    				<p>This taplist is powered by <a href="https://www.livebeerfeed.com">Live Beer Feed</a>.</p> 
-    				<p>Any issues, questions, remarks?<br>Feel free to contact me at <a href="mailto:robin@livebeerfeed.com">robin@livebeerfeed.com</a>.</p>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    			</div>
-    		</div>
+    {% if is_granted('ROLE_ADMIN') %}
+            <div class="modal fade" id="admin-modal" tabindex="-1" role="dialog" aria-labelledby="admin-modal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                	<div class="modal-content">
+            			<div class="modal-header">
+            				<h5 class="modal-title" id="">Administration</h5>
+            				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            					<span aria-hidden="true">&times;</span>
+            				</button>
+            			</div>
+            			<div class="modal-body">
+            				<form id="add-beer-form">
+                                <div class="form-group filter-group">
+                                    <label class="filters-title" for="searchString"><i class="fa fa-plus" aria-hidden="true"></i> Add a beer</label>
+                                	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
+                                	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
+                                    <input type="text" class="form-control form-control-sm" id="searchString" name="searchString" placeholder="Enter keywords" required>
+                                </div>
+                                <div class="form-group filter-group-table">
+                                	<select id="add-beer-session" name="add-beer-session" class="form-control form-control-sm filters-sort-select" required>
+                                    	<option value="">Select session</option>
+                                        {% for session in event.sessions %}
+                                            <option value="{{ session.id }}">{{ session.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        						<button id="add-beer-submit" type="submit" class="btn btn-secondary pull-right">Add a beer</button>
+        					</form>
+                        </div>
+            		</div>
+                </div>
+            </div>
+    {% else %}
+        <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="info-modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            	<div class="modal-content">
+        			<div class="modal-header">
+        				<h5 class="modal-title" id="">Taplist Information</h5>
+        				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        					<span aria-hidden="true">&times;</span>
+        				</button>
+        			</div>
+        			<div class="modal-body small-text">
+        				<p><strong>Welcome to the {{ event.name }} taplist!</strong></p>
+        				<p>This list allows you to see every beer that should be available during the event.<br />You can filter and sort the list as you like by clicking the <strong>"Filter/Sort"</strong> button at the bottom left of the page.</p>
+        				You can login to Untappd to enhance your experience:
+        				<ul>
+        					<li>Make quick check-ins directly from the taplist</li>
+        					<li>Get the list of beers you already have checked-in</li>
+        					<li>Get your saved data (favorites, ticks, ...) anywhere</li>
+        				</ul>
+        				<p>LBF also offers a <a href="{{ path('event', {'eventID': event.id}) }}">live stats</a> page for the event.</p>
+        				<p>This taplist is powered by <a href="https://www.livebeerfeed.com">Live Beer Feed</a>.</p> 
+        				<p>Any issues, questions, remarks?<br>Feel free to contact me at <a href="mailto:robin@livebeerfeed.com">robin@livebeerfeed.com</a>.</p>
+        			</div>
+        			<div class="modal-footer">
+        				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        			</div>
+        		</div>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     <div id="filters-open" class="fixed-button">
     	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
@@ -335,7 +369,8 @@
     {% endif %}
             
     <div id="taplist-info" class="small-bubble">
-    	<div><span id="taplist-info-count">0</span> beers (<span id="taplist-info-filtered">0</span> filtered)</div>
+    	<div><span id="taplist-info-count">0</span> beers</div>
+    	<div>(<span id="taplist-info-filtered">0</span> filtered)</div>
     	<div class="taplist-info-icons">
     		<span id="taplist-info-favorites">0</span> <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div>
     		<span id="taplist-info-ticks">0</span> <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div>
@@ -343,9 +378,17 @@
     	</div>
     </div>
     
-    <button id="taplist-help" class="small-bubble" data-toggle="modal" data-target="#info-modal">
-    	<i class="fa fa-info-circle" aria-hidden="true"></i>
-    </button>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div id="taplist-admin" class="fixed-button" data-toggle="modal" data-target="#admin-modal">
+        	<i class="fa fa-cogs" aria-hidden="true"></i>
+            <div class="desc">Admin</div>
+        </div>
+    {% else %}
+        <div id="taplist-help" class="fixed-button" data-toggle="modal" data-target="#info-modal">
+        	<i class="fa fa-info-circle" aria-hidden="true"></i>
+            <div class="desc">Info</div>
+        </div>
+    {% endif %}
 </div>
 <script>
 {% if userData is not null %}
