@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage taplist for {{ event.name }}{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+        
+{% block body %}
+{% if event.style %}
+    <style>
+    	#live-venue-title {
+            {% if event.style.headerBackgroundColor %}background-color: {{ event.style.headerBackgroundColor }};{% endif %}
+            {% if event.style.headerTextColor %}color: {{ event.style.headerTextColor }};{% endif %}
+        }
+        {% if event.style.linkColor %}a { color: {{ event.style.linkColor }};}{% endif %}
+        {% if event.style.majorInfoColor %}.info-major { color: {{ event.style.majorInfoColor }}; border-color: {{ event.style.majorInfoColor }};}{% endif %}	
+    </style>
+{% endif %}
+
+<div class="main-wrapper">
+    <div id="post-message" class="container">
+		<a href="{{ path('brewery_portal', {'eventID' : event.id}) }}" type="button" class="btn btn-secondary btn-sm float-right mt-1 mr-1"  style="right:0px;" ><i class="fa fa-arrow-left" aria-hidden="true"></i> {{ 'event.brewery_portal.back'|trans }}</a>
+        <div id="live-venue-title">
+        	{% if event.style and event.style.untappdLogoStyle %}
+        		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}
+        	{% else %}
+        		{% set untappdLogo = 'untappd_black' %}
+        	{% endif %}
+            <div class="description">
+            	{% if event.eventLogo %}
+            		<img src="{{ asset("images/events/") ~ event.eventLogo }}" />
+            	{% else %}
+    				{{ event.name }}
+            	{% endif %}
+            </div>
+        </div>
+        
+        <span class="page-title info-major">{{ 'event.taplist_management.title'|trans }}</span>
+        {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{ 'event.taplist_management.success'|trans }}
+            </div>
+        {% endif %}
+        <div class="card">
+        	<div class="card-body">
+        		<div id="import-untappd-beer" {{ ( local_mode ? 'style="display:none;"' : '' ) }}>
+            		<form id="add-beer-form">
+                        <a href="javascript:void()" id="switch-to-local" class="float-right">{{ 'event.taplist_management.switch_to_local'|trans }}</a>
+        				<h5 class="card-title">{{ 'event.taplist_management.import'|trans }}</h5>
+                        <div class="form-group filter-group">
+                        	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
+                        	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
+                            <input type="text" class="form-control form-control-sm" id="searchString" name="searchString" placeholder="{{ 'event.taplist_management.keywords'|trans }}" required>
+                        </div>
+                        <div class="form-group filter-group-table">
+                        	<select id="add-beer-session" name="add-beer-session" class="form-control form-control-sm filters-sort-select" required>
+                                {% if event.sessions|length > 1 %}<option value="all">{{ 'event.taplist_management.all_sessions'|trans }}</option>{% endif %}
+                                {% for session in event.sessions %}
+                                    <option value="{{ session.id }}">{{ session.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            			<button id="add-beer-submit" type="submit" class="btn btn-secondary pull-right mt-1">{{ 'event.taplist_management.search'|trans }}</button>
+            		</form>
+            		<form id="select-beer-form">
+                        <div class="form-group filter-group">
+                            <label class="filters-title" for="select-beer-field">{{ 'event.taplist_management.import'|trans }}</label>
+                        	<div id="select-beer-warning" class="alert alert-warning" role="alert">{{ 'event.taplist_management.results'|trans|raw }}</div>
+                        </div>
+                        <div class="form-group filter-group-table">
+                        	<select id="select-beer-field" name="select-beer-field" class="form-control form-control-sm filters-sort-select" required>
+                            	<option value="">{{ 'event.taplist_management.select'|trans }}</option>
+                            </select>
+                        </div>
+            			<button id="select-beer-submit" type="submit" class="btn btn-success pull-right mt-1">{{ 'event.taplist_management.add'|trans }}</button>
+            			<button id="select-beer-cancel" type="button" class="btn btn-warning pull-right mt-1 mr-1">{{ 'event.taplist_management.cancel'|trans }}</button>
+            		</form>
+        		</div>
+        		<div id="add-local-beer" {{ ( local_mode ? '' : 'style="display:none;"') }}>
+                    <a href="javascript:void()" id="switch-to-untappd" class="float-right">{{ 'event.taplist_management.switch_to_untappd'|trans }}</a>
+        			<h5 class="card-title">{{ 'event.taplist_management.add_local'|trans }}</h5>
+                    {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <button class="btn">{{ "event.taplist_management.local_beer.save"|trans }}</button>
+                    {{ form_end(form) }}
+        		</div>
+        	</div>
+        </div>
+
+        <div class="card mt-2">
+        	<div class="card-body">
+    			<h5 class="card-title">{{ 'event.taplist_management.beer_list'|trans }}</h5>
+    			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
+                {% for tapListItem in tapListItems %}
+                    <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">
+                    	<div class="beer-info">
+                    	    <div class="title">
+                    	    	<button type="button" class="btn btn-danger btn-xs float-right delete-beer"><i class="fa fa-times" aria-hidden="true"></i></button>
+                    	    	<div class="beer-name">{{ tapListItem.beer.name|trim }}</div> 
+                    	    </div>
+                    	    <div class="session-color" style="background-color:{{ tapListItem.session.color }}"></div>
+                    		<div class="content">
+                    			<div class="pull-right right-side">
+                    		    	<div class="beer-details">{% if tapListItem.beer.abv > 0 %}{{ tapListItem.beer.abv|round(2) }}%{% else %}N/A{% endif %} ABV</div>
+                    		   		<div class="beer-details" {% if tapListItem.beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ tapListItem.beer.ibu|round(2) }} IBU</div>
+                    		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ tapListItem.beer.slug }}/{{ tapListItem.beer.id }}">
+                    		    		<div class="checked-in"><i class="fa fa-check" aria-hidden="true"></i></div>
+                    		    		<img src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
+                    		    	</a>
+                    			</div>
+                    		    <div class="beer-details">{{ tapListItem.beer.brewery.countryName|country }} {{ tapListItem.beer.brewery.name|trim }}</div>
+                    		    <div class="beer-details"><div class="style-color-square" style="background-color:{{ tapListItem.beer.style.color }}"></div> {{ tapListItem.beer.style.name }}</div>
+								<div class="beer-details">
+    								<form class="form-inline">
+    									<input class="form-control form-control-sm w-75 inline-block mr-0 extra-info-field" type="text" maxlength="255" placeholder="{{ 'event.taplist_management.extra_info'|trans }}" value="{{ tapListItem.beer.extraInfo }}">
+                        	    		<button type="button" class="btn btn-sm btn-success save-extra-info inline-block ml-2"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    	    		</form>
+								</div>
+                    		</div>
+                    	</div>
+                    </div>
+                {% endfor %}
+        	</div>
+        </div>
+        <div id="publisher-add-beer"></div>
+    </div>
+    
+</div>
+
+<script>
+	var minTime = "{{ "now"|date('H:i') }}"
+</script>
+
+{% endblock %}

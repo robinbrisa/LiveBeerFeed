@@ -22,7 +22,8 @@ class SessionRepository extends ServiceEntityRepository
     public function getEventSessionsWhereBeerIsAvailable($event, $beer) {
         return $this->createQueryBuilder('s')
         ->join('s.event', 'e')
-        ->join('s.beers', 'b')
+        ->join('s.tap_list_items', 'tli')
+        ->join('tli.beer', 'b')
         ->where('e.id = :event')->setParameter('event', $event)
         ->andWhere('b.id = :beer')->setParameter('beer', $beer)
         ->getQuery()

@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\UntappdAPI;
 use App\Service\UntappdAPISerializer;
 use App\Service\Tools;
+use App\Entity\Event\TapListItem;
 
 class AjaxController extends Controller
 {
@@ -312,33 +313,39 @@ class AjaxController extends Controller
             $output['error'] = 'INVALID_BEER';
         }
         
+        if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer])) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_TAP_LIST_ITEM';
+        }
+        
         if ($action != "ADD" && $action != "REMOVE") {
             $output['success'] = false;
             $output['error'] = 'INVALID_ACTION';
         }
         
         if ($output['success']) {
-            if ($action == "ADD" && !$session->getOutOfStock()->contains($beer)) {
-                $session->addOutOfStock($beer);
+            if ($action == "ADD" && !$tapListItem->getOutOfStock()) {
+                $tapListItem->setOutOfStock(1);
             } elseif ($action == "REMOVE") {
-                $session->removeOutOfStock($beer);
+                $tapListItem->setOutOfStock(0);
             }
-            $em->persist($session);
+            $em->persist($tapListItem);
             $em->flush();
-            $outOfStockFull = array();
-            $output['outOfStock'] = $session->getOutOfStock();
-            foreach($session->getEvent()->getSessions() as $sess) {
-                if (!array_key_exists($sess->getId(), $outOfStockFull)) {
-                    $outOfStockFull[$sess->getId()] = array();
+            
+            $outOfStockTapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getOutOfStockBeers($session->getEvent());
+            
+            $outOfStock = array();
+            foreach ($outOfStockTapListItems as $outOfStockTapListItem) {
+                if (!array_key_exists($outOfStockTapListItem->getSession()->getId(), $outOfStock)) {
+                    $outOfStock[$outOfStockTapListItem->getSession()->getId()] = array();
                 }
-                foreach($sess->getOutOfStock() as $beer) {
-                    $outOfStockFull[$sess->getId()][] = $beer->getId();
-                }
+                $outOfStock[$outOfStockTapListItem->getSession()->getId()][] = $outOfStockTapListItem->getBeer()->getId();
             }
+            
             $pushData = array(
                 'push_type' => 'out_of_stock',
                 'push_topic' => 'taplist-'.$session->getEvent()->getId().'-all',
-                'list' => $outOfStockFull,
+                'list' => $outOfStock,
                 'session' => $session->getId()
             );
             $context = new \ZMQContext();
@@ -395,10 +402,14 @@ class AjaxController extends Controller
         if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beer_id)) {
             throw new NotFoundHttpException("Invalid Beer ID");
         }
+        if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer])) {
+            throw new NotFoundHttpException("Beer is not in the taplist");
+        }
         
         return $this->render('taplist/templates/beer-admin.html.twig', [
             'session' => $session,
-            'beer' => $beer
+            'beer' => $beer,
+            'tapListItem' => $tapListItem
         ]);
     }
     
@@ -407,24 +418,46 @@ class AjaxController extends Controller
      */
     public function removeFromTaplist(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
         $output = array('success' => true);
         $sessionID = $request->request->get('sessionID');
-        $beerID = $request->request->get('beerID');
         $em = $this->getDoctrine()->getManager();
-        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
-            $output['success'] = false;
-            $output['error'] = 'INVALID_SESSION';
-        }
+        $beerID = $request->request->get('beerID');
         if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beerID)) {
             $output['success'] = false;
             $output['error'] = 'INVALID_BEER';
         }
+        if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_SESSION';
+        }
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $sess = $request->getSession();
+            if (!$sess->get('post_access_key/'.$session->getEvent()->getId())) {
+                $this->denyAccessUnlessGranted('ROLE_ADMIN');
+            } else {
+                $authKey = $sess->get('post_access_key/'.$session->getEvent()->getId());
+                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $session->getEvent()));
+                if (!$publisher) {
+                    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+                } else {
+                    if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer, 'owner' => $publisher])) {
+                        $output['success'] = false;
+                        $output['error'] = 'INVALID_TAP_LIST_ITEM';
+                    }
+                }
+            }
+        } else {
+            if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer])) {
+                $output['success'] = false;
+                $output['error'] = 'INVALID_TAP_LIST_ITEM';
+            }
+        }
         
-        $session->removeBeer($beer);
-        $em->persist($session);
-        $em->flush();
+        if ($output['success']) {
+            $em->remove($tapListItem);
+            $em->flush();
+        }
         
         $pushData = array(
             'push_type' => 'remove',
@@ -444,11 +477,60 @@ class AjaxController extends Controller
     }
     
     /**
+     * @Route("/ajax/saveExtraInfo", name="ajax_save_extra_info")
+     */
+    public function saveExtraInfo(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $output = array('success' => true);
+        $info = strip_tags($request->request->get('extraInfo'));
+        $em = $this->getDoctrine()->getManager();
+        $beerID = $request->request->get('beerID');
+        $sessionID = $request->request->get('sessionID');
+        if (!$beer = $em->getRepository('\App\Entity\Beer\Beer')->find($beerID)) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_BEER';
+        } 
+        $session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID);
+        if (!$session && !$this->isGranted('ROLE_ADMIN')) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_SESSION';
+        } 
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $sess = $request->getSession();
+            if (!$sess->get('post_access_key/'.$session->getEvent()->getId())) {
+                $this->denyAccessUnlessGranted('ROLE_ADMIN');
+            } else {
+                $authKey = $sess->get('post_access_key/'.$session->getEvent()->getId());
+                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $session->getEvent()));
+                if (!$publisher) {
+                    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+                } else {
+                    if (!$em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer, 'owner' => $publisher])) {
+                        $output['success'] = false;
+                        $output['error'] = 'NOT_ALLOWED';
+                    }
+                }
+            }
+        } 
+        
+        if ($output['success']) {
+            $beer->setExtraInfo($info);
+            $beer->setNeedsRefresh(1);
+            $em->persist($beer);
+            $em->flush();
+        }
+        
+        $response = new Response(json_encode($output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+    
+    /**
      * @Route("/ajax/searchBeer", name="ajax_search_beer")
      */
     public function searchBeer(Request $request, Tools $tools, UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $output = array('success' => true);
         $searchString = $request->request->get('searchString');
         
@@ -480,17 +562,27 @@ class AjaxController extends Controller
      */
     public function addBeerToTaplist(Request $request, Tools $tools, UntappdAPI $untappdAPI, UntappdAPISerializer $untappdAPISerializer)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
         $output = array('success' => true);
         
         $beerID = $request->request->get('beer-id');
         $sessionID = $request->request->get('session-id');
+        $storeOwner = $request->request->get('own');
         
         if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
             $output['success'] = false;
             $output['error'] = 'INVALID_SESSION';
         } else {        
+            $sess = $request->getSession();
+            if (!$storeOwner || !$sess->get('post_access_key/'.$session->getEvent()->getId())) {
+                $this->denyAccessUnlessGranted('ROLE_ADMIN');
+            } else {
+                $authKey = $sess->get('post_access_key/'.$session->getEvent()->getId());
+                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $session->getEvent()));
+                if (!$publisher) {
+                    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+                }
+            }
             $apiKeyPool = $tools->getAPIKeysPool();
             if ((array_sum($apiKeyPool) < 15 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents()) || array_sum($apiKeyPool) < 5) {
                 $output['success'] = false;
@@ -505,9 +597,15 @@ class AjaxController extends Controller
                         $beerData = $response->body->response->beer;
                         $beer = $untappdAPISerializer->handleBeerObject($beerData);
                         if ($beer) {
-                            if (!$session->getBeers()->contains($beer)) {
-                                $session->addBeer($beer);
-                                $em->persist($session);
+                            if (!$em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer])) {
+                                $tapListItem = new TapListItem();
+                                $tapListItem->setSession($session);
+                                $tapListItem->setBeer($beer);
+                                $tapListItem->setOutOfStock(0);
+                                if ($storeOwner && $publisher) {
+                                    $tapListItem->setOwner($publisher);
+                                }
+                                $em->persist($tapListItem);
                                 $em->flush();
                                 
                                 $pushData = array(

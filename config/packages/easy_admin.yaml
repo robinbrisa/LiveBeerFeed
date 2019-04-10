@@ -63,4 +63,19 @@ easy_admin:
                     - { property : 'last_publication_date', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { date_widget: single_text, time_widget: single_text } }
                     - remaining_messages
                     - event
+        Beer:
+            class: App\Entity\Beer\Beer
+            form:
+                fields:
+                    - name
+                    - brewery
+                    - style
+                    - abv
+                    - ibu
+                    - label
+                    - description
+                    - slug
+                    - rating_count
+                    - parent
+                    - extra_info
                     

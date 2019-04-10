@@ -59,12 +59,14 @@ class TaplistController extends Controller
             }
         }
         
+        $outOfStockTapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getOutOfStockBeers($event);
+        
         $outOfStock = array();
-        foreach ($event->getSessions() as $sess) {
-            $outOfStock[$sess->getId()] = array();
-            foreach($sess->getOutOfStock() as $outOfStockBeer) {
-                $outOfStock[$sess->getId()][] = $outOfStockBeer->getId();
+        foreach ($outOfStockTapListItems as $outOfStockTapListItem) {
+            if (!array_key_exists($outOfStockTapListItem->getSession()->getId(), $outOfStock)) {
+                $outOfStock[$outOfStockTapListItem->getSession()->getId()] = array();
             }
+            $outOfStock[$outOfStockTapListItem->getSession()->getId()][] = $outOfStockTapListItem->getBeer()->getId();
         }
                 
         return $this->render('taplist/index.html.twig', [

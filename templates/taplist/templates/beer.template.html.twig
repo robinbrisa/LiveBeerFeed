@@ -18,6 +18,9 @@
 		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}</div>
 		    <div class="beer-details"><div class="style-color-square" style="background-color:{{ beer.style.color }}"></div> {{ beer.style.name }}</div>
 		    <div class="beer-details">{{ beer.ratingScore|rating|raw }} <span class="rating-value"><strong>{% if beer.ratingScore == 0 %}N/A{% else %}{{ beer.ratingScore|round(2) }}{% endif %}</strong> Avg ({{ beer.ratingCount }} ratings)</span></div>
+		    {% if beer.extraInfo is not null %}
+		    	<div class="beer-extra-info beer-details border rounded px-1 mt-1">{{ beer.extraInfo }}</div>  
+		    {% endif %}
 		</div>
 	</div>
 </div>

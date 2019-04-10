@@ -2,6 +2,8 @@
 
 namespace App\Entity\Event;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -47,27 +49,15 @@ class Session
     private $color = '#000000';
     
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer")
-     * @ORM\JoinTable(name="event_session_out_of_stock",
-     *      joinColumns={@ORM\JoinColumn(name="session_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="beer_id", referencedColumnName="id")}
-     *      )
+     * @ORM\OneToMany(targetEntity="App\Entity\Event\TapListItem", mappedBy="session", orphanRemoval=true)
      */
-    private $out_of_stock;
-    
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer")
-     * @ORM\JoinTable(name="event_session_taplist",
-     *      joinColumns={@ORM\JoinColumn(name="session_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="beer_id", referencedColumnName="id")}
-     *      )
-     */
-    private $beers;
+    private $tap_list_items;
     
 
     public function __construct() {
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->out_of_stock = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tap_list_items = new ArrayCollection();
     }
     
     /**
@@ -199,74 +189,35 @@ class Session
         return $this;
     }
     
-    
     /**
-     * Add beer
-     *
-     * @param \App\Entity\Beer\Beer $beer
-     *
-     * @return Event
+     * @return Collection|TapListItem[]
      */
-    public function addBeer(\App\Entity\Beer\Beer $beer)
+    public function getTapListItems(): Collection
     {
-        $this->beers[] = $beer;
-        
+        return $this->tap_list_items;
+    }
+
+    public function addTapListItem(TapListItem $tapListItem): self
+    {
+        if (!$this->tap_list_items->contains($tapListItem)) {
+            $this->tap_list_items[] = $tapListItem;
+            $tapListItem->setSession($this);
+        }
+
         return $this;
     }
-    
-    /**
-     * Remove beer
-     *
-     * @param \App\Entity\Beer\Beer $beer
-     */
-    public function removeBeer(\App\Entity\Beer\Beer $beer)
+
+    public function removeTapListItem(TapListItem $tapListItem): self
     {
-        $this->beers->removeElement($beer);
-    }
-    
-    /**
-     * Get beers
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBeers()
-    {
-        return $this->beers;
-    }
-    
-    
-    /**
-     * Add out_of_stock
-     *
-     * @param \App\Entity\Beer\Beer $beer
-     *
-     * @return Event
-     */
-    public function addOutOfStock(\App\Entity\Beer\Beer $beer)
-    {
-        $this->out_of_stock[] = $beer;
-        
+        if ($this->tap_list_items->contains($tapListItem)) {
+            $this->tap_list_items->removeElement($tapListItem);
+            // set the owning side to null (unless already changed)
+            if ($tapListItem->getSession() === $this) {
+                $tapListItem->setSession(null);
+            }
+        }
+
         return $this;
-    }
-    
-    /**
-     * Remove out_of_stock
-     *
-     * @param \App\Entity\Beer\Beer $beer
-     */
-    public function removeOutOfStock(\App\Entity\Beer\Beer $beer)
-    {
-        $this->out_of_stock->removeElement($beer);
-    }
-    
-    /**
-     * Get out_of_stock
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOutOfStock()
-    {
-        return $this->out_of_stock;
     }
     
 }

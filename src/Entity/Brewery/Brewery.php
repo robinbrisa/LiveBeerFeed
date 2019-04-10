@@ -195,6 +195,11 @@ class Brewery
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+    public function __toString()
+    {
+        return $this->name;
+    }
+    
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("untappd_link")

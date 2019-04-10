@@ -958,6 +958,12 @@ rating.small.r200{
 	line-height:20px;
 }
 
+.content .beer-extra-info {	
+	overflow: auto;
+	white-space: normal;
+	font-style: italic;
+}
+
 .content .right-side {
 	text-align: right;
 }
@@ -1293,4 +1299,17 @@ div.filters-title {
 
 #event-taplist {
 	margin-bottom: 85px;
+}
+
+btn-group-xs > .btn, .btn-xs {
+  padding: .25rem .4rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
+}
+
+.delete-beer {
+	margin-top: 3px;	
+	margin-right: 3px;
+}
 }

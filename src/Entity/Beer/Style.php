@@ -39,6 +39,11 @@ class Style
      */
     private $beers;
     
+    public function __toString()
+    {
+        return $this->name;
+    }
+    
      /**
      * Get $category
      *

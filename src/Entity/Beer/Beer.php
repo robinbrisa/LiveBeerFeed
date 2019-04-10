@@ -2,6 +2,9 @@
 
 namespace App\Entity\Beer;
 
+use App\Entity\Event\TapListItem;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
@@ -126,6 +129,16 @@ class Beer
      * @ORM\Column(type="boolean", options={"default":false})
      */
     private $internal_data_gathered = false;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $extra_info;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event\TapListItem", mappedBy="beer", orphanRemoval=true)
+     */
+    private $tap_list_items;
     
     /**
      * Constructor
@@ -135,6 +148,7 @@ class Beer
         $this->vintages = new \Doctrine\Common\Collections\ArrayCollection();
         $this->parent = new \Doctrine\Common\Collections\ArrayCollection();
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tap_list_items = new ArrayCollection();
     }
     
     public function __toString()
@@ -706,5 +720,48 @@ class Beer
     public function getCheckins()
     {
         return $this->checkins;
+    }
+
+    public function getExtraInfo(): ?string
+    {
+        return $this->extra_info;
+    }
+
+    public function setExtraInfo(?string $extra_info): self
+    {
+        $this->extra_info = $extra_info;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TapListItem[]
+     */
+    public function getTapListItems(): Collection
+    {
+        return $this->tap_list_items;
+    }
+
+    public function addTapListItem(TapListItem $tapListItem): self
+    {
+        if (!$this->tap_list_items->contains($tapListItem)) {
+            $this->tap_list_items[] = $tapListItem;
+            $tapListItem->setBeer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTapListItem(TapListItem $tapListItem): self
+    {
+        if ($this->tap_list_items->contains($tapListItem)) {
+            $this->tap_list_items->removeElement($tapListItem);
+            // set the owning side to null (unless already changed)
+            if ($tapListItem->getBeer() === $this) {
+                $tapListItem->setBeer(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -62,7 +62,8 @@ class EventRepository extends ServiceEntityRepository
     public function getFutureOrCurrentEventsWhereBeerIsAvailable($beer) {
         return $this->createQueryBuilder('e')
         ->join('e.sessions', 's')
-        ->join('s.beers', 'b')
+        ->join('s.tap_list_items', 'tli')
+        ->join('tli.beer', 'b')
         ->where('e.end_date > :now')->setParameter('now', new \DateTime())
         ->andWhere('b.id = :beer')->setParameter('beer', $beer)
         ->getQuery()

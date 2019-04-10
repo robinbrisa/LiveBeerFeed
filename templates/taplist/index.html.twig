@@ -59,10 +59,10 @@
         
         <div id="taplist-content">
             {% for session in event.sessions %}
-                {% for beer in session.beers  %}
-    	            {% include 'taplist/templates/beer.template.html.twig' with { 'beer': beer, 'session': session  } %}
-    	            {% if beer.abv > highestABV %}
-    	            	{% set highestABV = beer.abv %}
+                {% for tapListItem in session.tapListItems  %}
+    	            {% include 'taplist/templates/beer.template.html.twig' with { 'beer': tapListItem.beer, 'session': session  } %}
+    	            {% if tapListItem.beer.abv > highestABV %}
+    	            	{% set highestABV = tapListItem.beer.abv %}
     	            {% endif %}
                 {% endfor %}
             {% endfor %}
@@ -315,7 +315,7 @@
                                 </div>
         						<button id="add-beer-submit" type="submit" class="btn btn-secondary pull-right">Add</button>
         					</form>
-            				<form id="select-beer-form">
+            				<form id="select-beer-form" class="taplist-admin-add-beer">
                                 <div class="form-group filter-group">
                                     <label class="filters-title" for="select-beer-field">Add a beer to the taplist</label>
                                 	<div id="select-beer-warning" class="alert alert-warning" role="alert">The search returned <span id="select-beer-count">0</span> results.<br />Please select the beer to add.</div>

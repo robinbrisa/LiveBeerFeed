@@ -19,6 +19,7 @@
 
 <div class="main-wrapper">
     <div id="post-message" class="container">
+		<a href="{{ path('brewery_portal', {'eventID' : event.id}) }}" type="button" class="btn btn-secondary btn-sm float-right mt-1 mr-1"  style="right:0px;" ><i class="fa fa-arrow-left" aria-hidden="true"></i> {{ 'event.brewery_portal.back'|trans }}</a>
         <div id="live-venue-title">
         	{% if event.style and event.style.untappdLogoStyle %}
         		{% set untappdLogo = 'untappd_' ~ event.style.untappdLogoStyle %}

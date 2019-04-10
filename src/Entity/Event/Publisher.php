@@ -2,6 +2,9 @@
 
 namespace App\Entity\Event;
 
+use App\Entity\Beer\LocalBeer;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -70,6 +73,16 @@ class Publisher
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
      */
     private $updated_at;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Event\TapListItem", mappedBy="owner")
+     */
+    private $tap_list_items;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Beer\LocalBeer", mappedBy="owner", orphanRemoval=true)
+     */
+    private $local_beers;
     
      /**
      * Get $email
@@ -150,6 +163,8 @@ class Publisher
     
     public function __construct() {
         $this->access_key = bin2hex(random_bytes(3));
+        $this->tap_list_items = new ArrayCollection();
+        $this->local_beers = new ArrayCollection();
     }
     
     public function getId()
@@ -333,6 +348,68 @@ class Publisher
     {
         $this->updated_at = $updated_at;
         
+        return $this;
+    }
+
+    /**
+     * @return Collection|TapListItem[]
+     */
+    public function getTapListItems(): Collection
+    {
+        return $this->tap_list_items;
+    }
+
+    public function addTapListItem(TapListItem $tapListItem): self
+    {
+        if (!$this->tap_list_items->contains($tapListItem)) {
+            $this->tap_list_items[] = $tapListItem;
+            $tapListItem->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTapListItem(TapListItem $tapListItem): self
+    {
+        if ($this->tap_list_items->contains($tapListItem)) {
+            $this->tap_list_items->removeElement($tapListItem);
+            // set the owning side to null (unless already changed)
+            if ($tapListItem->getOwner() === $this) {
+                $tapListItem->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LocalBeer[]
+     */
+    public function getLocalBeers(): Collection
+    {
+        return $this->local_beers;
+    }
+
+    public function addLocalBeer(LocalBeer $localBeer): self
+    {
+        if (!$this->local_beers->contains($localBeer)) {
+            $this->local_beers[] = $localBeer;
+            $localBeer->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLocalBeer(LocalBeer $localBeer): self
+    {
+        if ($this->local_beers->contains($localBeer)) {
+            $this->local_beers->removeElement($localBeer);
+            // set the owning side to null (unless already changed)
+            if ($localBeer->getOwner() === $this) {
+                $localBeer->setOwner(null);
+            }
+        }
+
         return $this;
     }
 

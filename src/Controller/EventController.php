@@ -14,6 +14,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use App\Entity\Event\Message;
 use App\Entity\Event\Publisher;
+use App\Entity\Beer\LocalBeer;
+use App\Form\Beer\LocalBeerType;
+use App\Repository\Beer\LocalBeerRepository;
+
 
 class EventController extends Controller
 {
@@ -61,9 +65,9 @@ class EventController extends Controller
     }
     
     /**
-     * @Route("/event/{eventID}/post/", name="post_message")
+     * @Route("/event/{eventID}/brewery/", name="brewery_portal")
      */
-    public function post_event_message($eventID, Request $request)
+    public function brewery_portal($eventID, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
@@ -75,15 +79,6 @@ class EventController extends Controller
             if (is_null($event)) {
                 throw $this->createNotFoundException('Unknown event');
             }
-        }
-        
-        if ($event->getStartDate() > new \DateTime('now') || $event->getEndDate() < new \DateTime('now')) {
-            return $this->render('event/auth.html.twig', array(
-                'form' => null,
-                'event' => $event,
-                'error' => false,
-                'closed' => true
-            ));
         }
         
         $session = $request->getSession();
@@ -102,7 +97,7 @@ class EventController extends Controller
                 $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $data['access_key']));
                 if ($publisher && $publisher->getEvent() === $event) {
                     $session->set('post_access_key/'.$eventID, $data['access_key']);
-                    return $this->redirectToRoute('post_message', array('eventID' => $eventID));
+                    return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
                 } else {
                     $error = true;
                 }
@@ -116,7 +111,52 @@ class EventController extends Controller
             ));
         } else {
             $authKey = $session->get('post_access_key/'.$eventID);
-            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey));
+            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
+            if (!$publisher) {
+                return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
+            }
+            return $this->render('event/brewery_portal.html.twig', array(
+                'event' => $event,
+                'publisher' => $publisher,
+                'success' => $success
+            ));
+        }
+        
+    }
+    
+    /**
+     * @Route("/event/{eventID}/brewery/post/", name="post_message")
+     */
+    public function post_event_message($eventID, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        $success = false;
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unknown event');
+            }
+        }
+        
+        $session = $request->getSession();
+        
+        if ($event->getStartDate() > new \DateTime('now') || $event->getEndDate() < new \DateTime('now')) {
+            return $this->render('event/auth.html.twig', array(
+                'form' => null,
+                'event' => $event,
+                'error' => false,
+                'closed' => true
+            ));
+        }
+        
+        if (!$session->get('post_access_key/'.$eventID)) {
+            return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
+        } else {
+            $authKey = $session->get('post_access_key/'.$eventID);
+            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
                 return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
             }
@@ -196,7 +236,61 @@ class EventController extends Controller
     }
     
     /**
-     * @Route("/event/{eventID}/logout/", name="post_logout")
+     * @Route("/event/{eventID}/brewery/taplist/", name="brewery_taplist")
+     */
+    public function manager_taplist($eventID, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        $success = false;
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unknown event');
+            }
+        }
+        
+        $localBeer = new LocalBeer();
+        $form = $this->createForm(LocalBeerType::class, $localBeer);
+        $form->handleRequest($request);
+        
+        $session = $request->getSession();
+            
+        if (!$session->get('post_access_key/'.$eventID)) {
+            return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
+        } else {
+            $authKey = $session->get('post_access_key/'.$eventID);
+            $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
+            if (!$publisher) {
+                return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
+            }
+            
+            if ($form->isSubmitted() && $form->isValid()) {
+                $localBeer->setOwner($publisher);
+                $em->persist($localBeer);
+                $em->flush();
+                $success = true;
+            }
+            
+            $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event, $publisher);
+                        
+            return $this->render('event/brewery_taplist.html.twig', array(
+                'event' => $event,
+                'publisher' => $publisher,
+                'tapListItems' => $tapListItems,
+                'success' => $success,
+                'local_beer' => $localBeer,
+                'form' => $form->createView(),
+                'local_mode' => $form->isSubmitted(),
+            ));
+        }
+        
+    }
+    
+    /**
+     * @Route("/event/{eventID}/brewery/logout/", name="post_logout")
      */
     public function post_logout($eventID, Request $request)
     {
@@ -212,7 +306,7 @@ class EventController extends Controller
         
         $session = $request->getSession();
         $session->remove('post_access_key/'.$eventID);
-        return $this->redirectToRoute('post_message', array('eventID' => $eventID));
+        return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
     }
     
     /**

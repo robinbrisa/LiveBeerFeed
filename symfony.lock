@@ -1,7 +1,4 @@
 {
-    "beberlei/doctrineextensions": {
-        "version": "v1.0.21"
-    },
     "behat/transliterator": {
         "version": "v1.2.0"
     },
@@ -155,9 +152,6 @@
     "paragonie/sodium_compat": {
         "version": "v1.6.1"
     },
-    "php-http/cache-plugin": {
-        "version": "v1.5.0"
-    },
     "php-http/client-common": {
         "version": "1.7.0"
     },
@@ -245,6 +239,18 @@
     "react/zmq": {
         "version": "v0.3.0"
     },
+    "sensio/framework-extra-bundle": {
+        "version": "5.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        },
+        "files": [
+            "config/packages/sensio_framework_extra.yaml"
+        ]
+    },
     "spomky-labs/base64url": {
         "version": "v1.0.2"
     },
@@ -304,6 +310,9 @@
     },
     "symfony/event-dispatcher": {
         "version": "v4.0.4"
+    },
+    "symfony/expression-language": {
+        "version": "v4.2.5"
     },
     "symfony/filesystem": {
         "version": "v4.0.4"
@@ -367,6 +376,9 @@
     },
     "symfony/polyfill-intl-icu": {
         "version": "v1.7.0"
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.7.0"
