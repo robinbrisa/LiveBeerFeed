@@ -8,7 +8,9 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: ~
-        cookie_lifetime: 604800
+        cookie_lifetime: 2592000
+        cookie_domain: '%env(COOKIE_DOMAIN)%'
+        name: 'LBFSESS'
 
     #esi: true
     #fragments: true

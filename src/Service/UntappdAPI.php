@@ -42,10 +42,6 @@ class UntappdAPI
         $response = Unirest\Request::get('https://untappd.com/oauth/authorize/', $headers, $query);
         if ($response->code != 200) {
             if ($response->code == 401 && $response->body->meta->error_type == "invalid_token") {
-                $user = $this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken));
-                $user->setInternalUntappdAccessToken(null);
-                $this->em->persist($user);
-                $this->em->flush();
                 return false;
             } else {
                 throw new \Exception("API Error. HTTP code: " . $response->code);
