@@ -2,6 +2,9 @@
 
 namespace App\Entity\Brewery;
 
+use App\Entity\Beer\Beer;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
@@ -24,7 +27,7 @@ class Brewery
     private $name;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $slug;
     
@@ -187,12 +190,19 @@ class Brewery
      * @ORM\Column(type="boolean", options={"default":false})
      */
     private $internal_data_gathered;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Beer", mappedBy="collaborating_breweries")
+     */
+    private $collaborations;
+
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->collaborations = new ArrayCollection();
     }
     
     public function __toString()
@@ -1033,4 +1043,33 @@ class Brewery
     {
         return $this->beers;
     }
+
+    /**
+     * @return Collection|Beer[]
+     */
+    public function getCollaborations(): Collection
+    {
+        return $this->collaborations;
+    }
+
+    public function addCollaboration(Beer $collaboration): self
+    {
+        if (!$this->collaborations->contains($collaboration)) {
+            $this->collaborations[] = $collaboration;
+            $collaboration->addCollaboratingBrewery($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCollaboration(Beer $collaboration): self
+    {
+        if ($this->collaborations->contains($collaboration)) {
+            $this->collaborations->removeElement($collaboration);
+            $collaboration->removeCollaboratingBrewery($this);
+        }
+
+        return $this;
+    }
+
 }

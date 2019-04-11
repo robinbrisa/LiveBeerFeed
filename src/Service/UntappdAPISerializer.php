@@ -299,6 +299,13 @@ class UntappdAPISerializer
             $brewery = $this->buildBreweryWithLowInformation($beer->brewery);
         }
         $output->setBrewery($brewery);
+        if (isset($beer->collaborations_with)) {
+            foreach ($beer->collaborations_with->items as $collabBrewery) {
+                $collabBreweryObject = $this->buildBreweryWithLowInformation($collabBrewery->brewery);
+                $this->em->persist($collabBreweryObject);
+                $output->addCollaboratingBrewery($collabBreweryObject);
+            }
+        }
         $style = $this->em->getRepository('\App\Entity\Beer\Style')->findOneBy(array('name' => $beer->beer_style));
         if (!$style) {
             $style = new Style();
@@ -319,9 +326,9 @@ class UntappdAPISerializer
             $output->setIsIndependent(true);
         }
         $output->setName($brewery->brewery_name);
-        $output->setSlug($brewery->brewery_slug);
         $output->setLabel($brewery->brewery_label);
         $output->setCountryName($brewery->country_name);
+        if (isset($brewery->brewery_slug)) { $output->setSlug($brewery->brewery_slug); }
         if (isset($brewery->brewery_active)) { $output->setActive($brewery->brewery_active); }
         if (isset($brewery->contact->facebook)) { $output->setFacebook($brewery->contact->facebook); }
         if (isset($brewery->contact->instagram)) { $output->setInstagram($brewery->contact->instagram); }
@@ -329,8 +336,8 @@ class UntappdAPISerializer
         if (isset($brewery->contact->url)) { $output->setUrl($brewery->contact->url); }
         if ($brewery->location->brewery_city != "") { $output->setCity($brewery->location->brewery_city); }
         if ($brewery->location->brewery_state != "") { $output->setState($brewery->location->brewery_state); }
-        if ($brewery->location->lat != "0") { $output->setLatitude($brewery->location->lat); }
-        if ($brewery->location->lng != "0") { $output->setLongitude($brewery->location->lng); }
+        if (isset($brewery->location->lat) && $brewery->location->lat != "0") { $output->setLatitude($brewery->location->lat); }
+        if (isset($brewery->location->lat) && $brewery->location->lng != "0") { $output->setLongitude($brewery->location->lng); }
         if (isset($brewery->brewery_type)) {
             $type = $this->em->getRepository('\App\Entity\Brewery\Type')->findOneBy(array('name' => $brewery->brewery_type));   
             if ($type) {

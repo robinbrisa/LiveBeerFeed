@@ -2,6 +2,7 @@
 
 namespace App\Entity\Beer;
 
+use App\Entity\Brewery\Brewery;
 use App\Entity\Event\TapListItem;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -139,7 +140,13 @@ class Beer
      * @ORM\OneToMany(targetEntity="App\Entity\Event\TapListItem", mappedBy="beer", orphanRemoval=true)
      */
     private $tap_list_items;
-    
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Brewery\Brewery", inversedBy="collaborations")
+     * @ORM\JoinTable(name="beer_collaborations")
+     */
+    private $collaborating_breweries;
+
     /**
      * Constructor
      */
@@ -149,6 +156,7 @@ class Beer
         $this->parent = new \Doctrine\Common\Collections\ArrayCollection();
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tap_list_items = new ArrayCollection();
+        $this->collaborating_breweries = new ArrayCollection();
     }
     
     public function __toString()
@@ -764,4 +772,31 @@ class Beer
 
         return $this;
     }
+
+    /**
+     * @return Collection|Brewery[]
+     */
+    public function getCollaboratingBreweries(): Collection
+    {
+        return $this->collaborating_breweries;
+    }
+
+    public function addCollaboratingBrewery(Brewery $collaboratingBrewery): self
+    {
+        if (!$this->collaborating_breweries->contains($collaboratingBrewery)) {
+            $this->collaborating_breweries[] = $collaboratingBrewery;
+        }
+
+        return $this;
+    }
+
+    public function removeCollaboratingBrewery(Brewery $collaboratingBrewery): self
+    {
+        if ($this->collaborating_breweries->contains($collaboratingBrewery)) {
+            $this->collaborating_breweries->removeElement($collaboratingBrewery);
+        }
+
+        return $this;
+    }
+
 }
