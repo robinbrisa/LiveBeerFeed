@@ -32,7 +32,9 @@ class TaplistController extends Controller
             }
             $event = $event[0];
         }
-                
+        
+        $session = $request->getSession();
+        $session->set('tlid', $eventID);
         $styles = $em->getRepository('\App\Entity\Beer\Style')->findAll();
         $styleCategories = array();
         foreach ($styles as $style) {
@@ -45,7 +47,6 @@ class TaplistController extends Controller
         $userData = null;
         $checkedInBeers = array();
         
-        $session = $request->getSession();
         if ($userUntappdID = $session->get('userUntappdID')) {
             $user = $em->getRepository('\App\Entity\User\User')->find($userUntappdID);
             $event = $em->getRepository('\App\Entity\Event\Event')->find($event);

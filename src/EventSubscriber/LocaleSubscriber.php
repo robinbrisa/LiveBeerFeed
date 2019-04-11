@@ -35,7 +35,7 @@ class LocaleSubscriber implements EventSubscriberInterface
         }
         
         if ($request->get('_route') && $request->get('_route') != "oauth_authorize" && $request->get('_route') != "_wdt" && $request->get('_route') != "oauth_logout" && substr($request->get('_route'), 0, 5) != "ajax_") {
-            $request->getSession()->getFlashBag()->set('lastURI', $request->getUri());
+            $request->getSession()->set('lastURI', $request->getUri());
         }
     }
 

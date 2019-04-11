@@ -38,7 +38,11 @@ class OAuthController extends Controller
         
         $session = $this->get('session');
         $session->set('userUntappdID', $user->getId());
-        return $this->redirect($session->getFlashBag()->get('lastURI')[0]);
+        if ($session->get('tlid')) {
+            return $this->redirectToRoute('taplist', ['eventID' => $session->get('tlid')]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
     }
     
     /**
@@ -48,6 +52,10 @@ class OAuthController extends Controller
     {
         $session = $this->get('session');
         $session->remove('userUntappdID');
-        return $this->redirect($session->getFlashBag()->get('lastURI')[0]);
+        if ($session->get('tlid')) {
+            return $this->redirectToRoute('taplist', ['eventID' => $session->get('tlid')]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
     }
 }
