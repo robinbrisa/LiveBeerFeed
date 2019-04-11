@@ -1027,7 +1027,7 @@ rating.small.r200{
 
 #taplist-untappd-login {
 	bottom: 10px;
-	left: 85px;
+	left: 80px;
 }
 
 .small-bubble {
@@ -1043,20 +1043,20 @@ rating.small.r200{
 }
 
 #taplist-help {
-	left: 280px;
+	left: 285px;
 	bottom: 10px;
 	cursor: pointer;
 }
 
 #taplist-info {
 	height: 65px;
-	width: 110px;
+	width: 130px;
 	bottom: 10px;
-	left: 160px;
+	left: 150px;
 }
 
 #taplist-admin {
-	left: 280px;
+	left: 285px;
 	bottom: 10px;
 	cursor: pointer;
 }

@@ -515,7 +515,11 @@ class AjaxController extends Controller
         } 
         
         if ($output['success']) {
-            $beer->setExtraInfo($info);
+            if ($info == "") {
+                $beer->setExtraInfo(null);   
+            } else {
+                $beer->setExtraInfo($info);
+            }
             $beer->setNeedsRefresh(1);
             $em->persist($beer);
             $em->flush();

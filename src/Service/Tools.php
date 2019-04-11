@@ -66,7 +66,7 @@ class Tools
         'FROM beer b ' .
         'JOIN checkin c ON c.beer_id = b.id ' .
         'JOIN user u ON c.user_id = u.id ' .
-        'JOIN event_session_taplist tl ON c.beer_id = tl.beer_id ' .
+        'JOIN event_taplist tl ON c.beer_id = tl.beer_id ' .
         'JOIN event_session s ON tl.session_id = s.id ' .
         'JOIN event e ON s.event_id = e.id ' .
         'WHERE u.id = :userID ' .
