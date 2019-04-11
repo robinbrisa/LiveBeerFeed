@@ -10,11 +10,12 @@
 	<div id="cont-mail" style=" width:600px; height:auto; margin-right:auto;	margin-left:auto;	background-color:#2e3338; padding-top:20px;">
         <div id="bonjour-email" style="font-family: Helvetica,Verdana,sans-serif; margin-left:20px; font-size:20px;	color:#c8c8c8; width:300px; font-weight:500;">Hi {{ publisher.name }},</div>
         <div class="txt-email" style="font-family: Helvetica,Verdana,sans-serif;	margin-left:20px;	font-size:14px;	color:#c8c8c8;	width:550px; line-height:22px;">
-			<p>You have been granted rights to create new notifications for the event {{ publisher.event.name }}.</p>
-	        <p>Your access code is:</p>
+			<p>You have been granted access rights to your brewery portal for {{ publisher.event.name }}.</p>
+			<p>This space will allow you to submit the beers (and ciders) you will offer on the tap list, and will also be used to send notifications to the visitors during the event.</p> 
+	        <p>Your access code is :</p>
 			 <div id="box-commentaire" style="margin-top:20px;	margin-left:15px;	width:500px;	height:auto;	padding:15px; background-color:#1c1e22;	 border: 1px solid #0c0d0e; border-radius:4px; margin-bottom:20px;">{{ publisher.accessKey }}</div>
-			<p>As a reminder, here is the URL to publish new messages:<br />
-			<a href="{{ url('post_message',{'eventID': eventID}) }}" style="color:#dddddd; text-decoration:none;">{{ url('post_message',{'eventID': eventID}) }}</a></p> 
+			<p>You can use the following URL to log into your brewery portal :<br />
+			<a href="{{ url('brewery_portal',{'eventID': eventID}) }}" style="color:#dddddd; text-decoration:none;">{{ url('brewery_portal',{'eventID': eventID}) }}</a></p> 
 	        <p>I wish you a wonderful time at {{ publisher.event.name }}!</p>
 			<p>Cheers,<br />Robin from <a href="{{ url('homepage') }}" style="color:#dddddd; text-decoration:none;">Live Beer Feed</a></p>
      	</div>

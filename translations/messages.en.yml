@@ -72,8 +72,8 @@ general:
     is_over: "%event% is over."
     cant_send_notifications_anymore: 'It is no longer possible to send new notifications.'
 email:
-    notify_title: 'Your access code to send notifications during %event%'
-    notify_title_batch: 'Access codes list pour to send notifications during %event%'
+    notify_title: 'Information about your brewer portal access for %event%'
+    notify_title_batch: 'Information about your brewer portals access for %event%'
 tools:
     form:
         beers: 'Beers list'
