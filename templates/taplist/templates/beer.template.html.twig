@@ -12,7 +12,7 @@
 		   		<div class="beer-details" {% if beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ beer.ibu|round(2) }} IBU</div>
 		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ beer.slug }}/{{ beer.id }}">
 		    		<div class="checked-in"><i class="fa fa-check" aria-hidden="true"></i></div>
-		    		<img src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
+		    		<img class="border rounded" src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
 		    	</a>
 			</div>
 		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}{% for brewery in beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>

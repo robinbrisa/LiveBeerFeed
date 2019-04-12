@@ -52,8 +52,8 @@
         
         <div id="taplist-no-content">
             <div class="alert alert-warning" role="alert">
-              <strong>There's nothing to display! 😞</strong>
-              <br>It looks like everything is filtered. Please modify your parameters to get results.
+              <strong>{{ 'taplist.empty'|trans }} 😞</strong>
+              <br>{{ 'taplist.everything_filtered'|trans }}
             </div>
         </div>
         
@@ -76,13 +76,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <form>
                         <div class="form-group filter-group">
-                            <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> Search</label> <div id="clear-search"><i class="fa fa-ban" aria-hidden="true"></i> Clear</div>
-                            <input type="text" class="form-control form-control-sm" id="search-beer" placeholder="Search for styles, beers, breweries...">
+                            <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> {{ 'taplist.filters.search'|trans }}</label> <div id="clear-search"><i class="fa fa-ban" aria-hidden="true"></i> {{ 'taplist.filters.search_clear'|trans }}</div>
+                            <input type="text" class="form-control form-control-sm" id="search-beer" placeholder="{{ 'taplist.filters.search_ph'|trans }}">
                         </div>
                         {% if event.sessions|length <= 1 %}<div style="display:none">{% endif %}
             			<hr class="my-1">
                         <div class="form-group filter-group">
-                            <div class="filters-title"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sessions</div>
+                            <div class="filters-title"><i class="fa fa-calendar-o" aria-hidden="true"></i> {{ 'taplist.filters.sessions'|trans }}</div>
                             <div class="center-checkboxes">
                                 {% for session in event.sessions %}
                                     <div class="form-check form-check-inline">
@@ -94,42 +94,42 @@
                         </div>
                         {% if event.sessions|length <= 1 %}</div>{% endif %}
             			<hr class="my-1">
-                        <div class="filters-title"><i class="fa fa-sort" aria-hidden="true"></i> Sort</div>
+                        <div class="filters-title"><i class="fa fa-sort" aria-hidden="true"></i> {{ 'taplist.filters.sort'|trans }}</div>
                         <div class="form-group filter-group-table">
                         	<select id="taplist-sort-select" class="form-control form-control-sm filters-sort-select">
-                            	<option value="1" data-key="abv" data-order="asc">ABV (Low to High)</option>
-                            	<option value="2" data-key="abv" data-order="desc">ABV (High to Low)</option>
-                            	<option value="3" data-key="name" data-order="asc">Beer Name (A to Z)</option>
-                            	<option value="4" data-key="name" data-order="desc">Beer Name (Z to A)</option>
-                            	<option value="5" data-key="brewery" data-order="asc">Brewery Name (A to Z)</option>
-                            	<option value="6" data-key="brewery" data-order="desc">Brewery Name (Z to A)</option>
-                            	<option value="7" data-key="checkins" data-order="asc">Checkins (Low to High)</option>
-                            	<option value="8" data-key="checkins" data-order="desc">Checkins (High to Low)</option>
-                            	<option value="9" data-key="ibu" data-order="asc">IBU (Low to High)</option>
-                            	<option value="10" data-key="ibu" data-order="desc">IBU (High to Low)</option>
-                            	<option value="13" data-key="score" data-order="asc">Score (Low to High)</option>
-                            	<option value="14" data-key="score" data-order="desc">Score (High to Low)</option>
+                            	<option value="1" data-key="abv" data-order="asc">{{ 'taplist.filters.abv'|trans }} ({{ 'taplist.filters.low_to_high'|trans }})</option>
+                            	<option value="2" data-key="abv" data-order="desc">{{ 'taplist.filters.abv'|trans }} ({{ 'taplist.filters.high_to_low'|trans }})</option>
+                            	<option value="3" data-key="name" data-order="asc">{{ 'taplist.filters.beer_name'|trans }} ({{ 'taplist.filters.a_to_z'|trans }})</option>
+                            	<option value="4" data-key="name" data-order="desc">{{ 'taplist.filters.beer_name'|trans }} ({{ 'taplist.filters.z_to_a'|trans }})</option>
+                            	<option value="5" data-key="brewery" data-order="asc">{{ 'taplist.filters.brewery_name'|trans }} ({{ 'taplist.filters.a_to_z'|trans }})</option>
+                            	<option value="6" data-key="brewery" data-order="desc">{{ 'taplist.filters.brewery_name'|trans }} ({{ 'taplist.filters.z_to_a'|trans }})</option>
+                            	<option value="7" data-key="checkins" data-order="asc">{{ 'taplist.filters.checkins'|trans }} ({{ 'taplist.filters.low_to_high'|trans }})</option>
+                            	<option value="8" data-key="checkins" data-order="desc">{{ 'taplist.filters.checkins'|trans }} ({{ 'taplist.filters.high_to_low'|trans }})</option>
+                            	<option value="9" data-key="ibu" data-order="asc">{{ 'taplist.filters.ibu'|trans }} ({{ 'taplist.filters.low_to_high'|trans }})</option>
+                            	<option value="10" data-key="ibu" data-order="desc">{{ 'taplist.filters.ibu'|trans }} ({{ 'taplist.filters.high_to_low'|trans }})</option>
+                            	<option value="13" data-key="score" data-order="asc">{{ 'taplist.filters.score'|trans }} ({{ 'taplist.filters.low_to_high'|trans }})</option>
+                            	<option value="14" data-key="score" data-order="desc">{{ 'taplist.filters.score'|trans }} ({{ 'taplist.filters.high_to_low'|trans }})</option>
                             </select>
                         </div>
             			<hr class="my-1">
-                        <div class="filters-title"><i class="fa fa-filter" aria-hidden="true"></i> Filters</div>
+                        <div class="filters-title"><i class="fa fa-filter" aria-hidden="true"></i> {{ 'taplist.filters.filters'|trans }}</div>
                         <div class="form-group filter-group-table bordered-group">
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="ticked" type="radio" value="" id="ignoreFavorites"  data-filter="favorites" checked>
-                                    <label class="form-check-label" for="ignoreFavorites">All <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="ignoreFavorites">{{ 'taplist.filters.all'|trans }} <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="ticked" type="radio" value="show" id="showFavorites" data-filter="favorites">
-                                    <label class="form-check-label" for="showFavorites">Only <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="showFavorites">{{ 'taplist.filters.only'|trans }} <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="ticked" type="radio" value="hide" id="hideFavorites" data-filter="favorites">
-                                    <label class="form-check-label" for="hideFavorites">Hide <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="hideFavorites">{{ 'taplist.filters.hide'|trans }} <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                         </div>
@@ -137,19 +137,19 @@
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="favorites" type="radio" value="" id="ignoreTicked"  data-filter="ticked" checked>
-                                    <label class="form-check-label" for="ignoreTicked">All <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="ignoreTicked">{{ 'taplist.filters.all'|trans }} <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="favorites" type="radio" value="show" id="showTicked" data-filter="ticked">
-                                    <label class="form-check-label" for="showTicked">Only <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="showTicked">{{ 'taplist.filters.only'|trans }} <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="favorites" type="radio" value="hide" id="hideTicked" data-filter="ticked">
-                                    <label class="form-check-label" for="hideTicked">Hide <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="hideTicked">{{ 'taplist.filters.hide'|trans }} <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                         </div>
@@ -157,19 +157,19 @@
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="checked-in" type="radio" value="" id="ignoreCheckedIn"  data-filter="checkedIn" checked>
-                                    <label class="form-check-label" for="ignoreCheckedIn">All <img src="{{ asset('images/untappd_bottles.png') }}"></label>
+                                    <label class="form-check-label" for="ignoreCheckedIn">{{ 'taplist.filters.all'|trans }} <img src="{{ asset('images/untappd_bottles.png') }}"></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="checked-in" type="radio" value="show" id="showCheckedIn" data-filter="checkedIn">
-                                    <label class="form-check-label" for="showCheckedIn">Only <img src="{{ asset('images/untappd_bottles.png') }}"></label>
+                                    <label class="form-check-label" for="showCheckedIn">{{ 'taplist.filters.only'|trans }} <img src="{{ asset('images/untappd_bottles.png') }}"></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="checked-in" type="radio" value="hide" id="hideCheckedIn" data-filter="checkedIn">
-                                    <label class="form-check-label" for="hideCheckedIn">Hide <img src="{{ asset('images/untappd_bottles.png') }}"></label>
+                                    <label class="form-check-label" for="hideCheckedIn">{{ 'taplist.filters.hide'|trans }} <img src="{{ asset('images/untappd_bottles.png') }}"></label>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +177,7 @@
                             <div class="half-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" type="checkbox" value="" id="minScore"  data-filter="minScore">
-                                    <label class="form-check-label" for="minScore">Minimum Rating</label>
+                                    <label class="form-check-label" for="minScore">{{ 'taplist.filters.min_rating'|trans }}</label>
                                 </div>
                 				<div class="input-group-remote">
                     				<input class="filter-modifier" data-filter="minScore" type="range" name="minRatingRange" min="0" max="5" step="0.25" value="0" oninput=this.form.minRatingInput.value=this.value />
@@ -187,7 +187,7 @@
                             <div class="half-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" type="checkbox" value="" id="maxScore" data-filter="maxScore">
-                                    <label class="form-check-label" for="maxScore">Maximum Rating</label>
+                                    <label class="form-check-label" for="maxScore">{{ 'taplist.filters.max_rating'|trans }}</label>
                                 </div>
                 				<div class="input-group-remote">
                     				<input class="filter-modifier" data-filter="maxScore" type="range" name="maxRatingRange" min="0" max="5" step="0.25" value="5" oninput=this.form.maxRatingInput.value=this.value />
@@ -199,7 +199,7 @@
                             <div class="half-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" type="checkbox" value="" id="minABV"  data-filter="minABV">
-                                    <label class="form-check-label" for="minABV">Minimum ABV</label>
+                                    <label class="form-check-label" for="minABV">{{ 'taplist.filters.min_abv'|trans }}</label>
                                 </div>
                 				<div class="input-group-remote">
                     				<input class="filter-modifier" data-filter="minABV" type="range" name="minABVRange" min="0" max="{{ highestABV|round(0, 'ceil') }}" value="0" oninput=this.form.minABVInput.value=this.value />
@@ -209,7 +209,7 @@
                             <div class="half-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" type="checkbox" value="" id="maxABV" data-filter="maxABV">
-                                    <label class="form-check-label" for="maxABV">Maximum ABV</label>
+                                    <label class="form-check-label" for="maxABV">{{ 'taplist.filters.max_abv'|trans }}</label>
                                 </div>
                 				<div class="input-group-remote">
                     				<input class="filter-modifier" data-filter="maxABV" type="range" name="maxABVRange" min="0" max="{{ highestABV|round(0, 'ceil') }}" value="{{ highestABV|round(0, 'ceil') }}" oninput=this.form.maxABVInput.value=this.value />
@@ -219,32 +219,34 @@
                         </div>
             			<hr class="my-1">
             			<div class="pull-right">
-            				<span class="mass-check" data-target=".style-filter" data-state="false"><i class="fa fa-square-o" aria-hidden="true"></i> None</span> |
-            				<span class="mass-check" data-target=".style-filter" data-state="true"><i class="fa fa-check-square-o" aria-hidden="true"></i> All</span>
+            				<span class="mass-check" data-target=".style-filter" data-state="false"><i class="fa fa-square-o" aria-hidden="true"></i> {{ 'taplist.filters.style_none'|trans }}</span> |
+            				<span class="mass-check" data-target=".style-filter" data-state="true"><i class="fa fa-check-square-o" aria-hidden="true"></i> {{ 'taplist.filters.style_all'|trans }}</span>
             			</div>
-                        <div class="filters-title"><i class="fa fa-beer" aria-hidden="true"></i> Style Categories</div>
+                        <div class="filters-title"><i class="fa fa-beer" aria-hidden="true"></i> {{ 'taplist.filters.style_categories'|trans }}</div>
                         <div class="center-checkboxes">
                             {% for category in styleCategories %}
-                                <div class="form-check form-check-inline">
-                                	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category }}" data-style="{{ category }}" checked>
-                                	<label class="form-check-label" for="chk-style-{{ category }}">{{ category }}</label>
-                                </div>
+                            	{% if category != "" %}
+                                    <div class="form-check form-check-inline">
+                                    	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category }}" data-style="{{ category }}" checked>
+                                    	<label class="form-check-label" for="chk-style-{{ category }}">{{ ("taplist.filters.styles."~category)|trans }}</label>
+                                    </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
             			<hr class="my-1">
-                        <div class="filters-title"><img src="{{ asset('images/untappd_bottles.png') }}"> Untappd Button Action</div>
+                        <div class="filters-title"><img src="{{ asset('images/untappd_bottles.png') }}"> {{ 'taplist.filters.untappd_button.action'|trans }}</div>
                         <div class="form-group filter-group-table">
                         	<select id="taplist-buttonAction-select" class="form-control form-control-sm">
-                            	<option value="quick-checkin">Quick Check-in (Logged-in Only)</option>
-                            	<option value="open-app">Open App (Mobile Only)</option>
-                            	<option value="open-web">Open Website</option>
+                            	<option value="quick-checkin">{{ 'taplist.filters.untappd_button.quick_checkin'|trans }}</option>
+                            	<option value="open-app">{{ 'taplist.filters.untappd_button.open_app'|trans }}</option>
+                            	<option value="open-web">{{ 'taplist.filters.untappd_button.open_web'|trans }}</option>
                             </select>
                         </div>
             			<hr class="my-1">
-                        <div class="filters-title"><i class="fa fa-check" aria-hidden="true"></i> Tick all checked-in beers</div>
+                        <div class="filters-title"><i class="fa fa-check" aria-hidden="true"></i> {{ 'taplist.filters.tick_checked_in'|trans }}</div>
         				<div class="input-group-chk">
                             <input class="form-check-input" type="checkbox" value="" id="tickCheckedIn" data-filter="tickCheckedIn">
-                            <label class="form-check-label" for="tickCheckedIn">Enable</label>
+                            <label class="form-check-label" for="tickCheckedIn">{{ 'taplist.filters.enable'|trans }}</label>
                         </div>
                     </form>
     			</div>
@@ -256,7 +258,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                	<h5 class="modal-title" id="quick-checkin-modal-title">Quick Check-in</h5>
+                	<h5 class="modal-title" id="quick-checkin-modal-title">{{ 'taplist.quick_checkin'|trans }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -272,16 +274,16 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                	<h5 class="modal-title" id="data-conflict-modal">Data conflict</h5>
+                	<h5 class="modal-title" id="data-conflict-modal">{{ 'taplist.data_conflict.title'|trans }}</h5>
                 </div>
                 <div class="modal-body">
-                	The locally saved data for your ticked and favorites beers is different from the data that is remotely saved for your Untappd account.<br>
-                	Which data source do you want to use?<br/>
-                	<strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> The dismissed data source will be erased.</strong>
+                	{{ 'taplist.data_conflict.l1'|trans }}<br />
+                	{{ 'taplist.data_conflict.l2'|trans }}<br />
+                	<strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {{ 'taplist.data_conflict.l3'|trans }}</strong>
                 </div>
                 <div class="modal-footer">
-                	<button type="button" class="btn btn-secondary" data-dismiss="modal">Keep local data</button>
-                	<button id="data-keep-remote" type="button" class="btn btn-secondary" data-dismiss="modal">Keep remote data</button>
+                	<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'taplist.data_conflict.keep_local'|trans }}</button>
+                	<button id="data-keep-remote" type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'taplist.data_conflict.keep_remote'|trans }}</button>
                 </div>
             </div>
         </div>
@@ -300,7 +302,7 @@
             			<div class="modal-body">
             				<form id="add-beer-form">
                                 <div class="form-group filter-group">
-                                    <label class="filters-title" for="searchString">Add a beer to the taplist</label>
+                                    <label class="filters-title" for="searchString">Add a beer to the tap list</label>
                                 	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
                                 	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
                                     <input type="text" class="form-control form-control-sm" id="searchString" name="searchString" placeholder="Enter keywords" required>
@@ -317,7 +319,7 @@
         					</form>
             				<form id="select-beer-form" class="taplist-admin-add-beer">
                                 <div class="form-group filter-group">
-                                    <label class="filters-title" for="select-beer-field">Add a beer to the taplist</label>
+                                    <label class="filters-title" for="select-beer-field">Add a beer to the tap list</label>
                                 	<div id="select-beer-warning" class="alert alert-warning" role="alert">The search returned <span id="select-beer-count">0</span> results.<br />Please select the beer to add.</div>
                                 </div>
                                 <div class="form-group filter-group-table">
@@ -337,23 +339,23 @@
             <div class="modal-dialog" role="document">
             	<div class="modal-content">
         			<div class="modal-header">
-        				<h5 class="modal-title" id="">Taplist Information</h5>
+        				<h5 class="modal-title" id="">{{ 'taplist.info.title'|trans }}</h5>
         				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
         					<span aria-hidden="true">&times;</span>
         				</button>
         			</div>
         			<div class="modal-body small-text">
-        				<p><strong>Welcome to the {{ event.name }} taplist!</strong></p>
-        				<p>This list allows you to see every beer that should be available during the event.<br />You can filter and sort the list as you like by clicking the <strong>"Filter/Sort"</strong> button at the bottom left of the page.</p>
-        				You can login to Untappd to enhance your experience:
+        				<p><strong>{{ "taplist.info.l1"|trans({'%name%': event.name}) }}</strong></p>
+        				<p>{{ "taplist.info.l2"|trans|raw }}</p>
+        				{{ "taplist.info.l3"|trans }}
         				<ul>
-        					<li>Make quick check-ins directly from the taplist</li>
-        					<li>Get the list of beers you already have checked-in</li>
-        					<li>Get your saved data (favorites, ticks, ...) anywhere</li>
+        					<li>{{ "taplist.info.l4"|trans }}</li>
+        					<li>{{ "taplist.info.l5"|trans }}</li>
+        					<li>{{ "taplist.info.l6"|trans }}</li>
         				</ul>
-        				<p>LBF also offers a <a href="{{ path('event', {'eventID': event.id}) }}">live stats</a> page for the event.</p>
-        				<p>This taplist is powered by <a href="https://www.livebeerfeed.com">Live Beer Feed</a>.</p> 
-        				<p>Any issues, questions, remarks?<br>Feel free to contact me at <a href="mailto:robin@livebeerfeed.com">robin@livebeerfeed.com</a>.</p>
+        				<p>{{ "taplist.info.l7"|trans({'%href%': path('event', {'eventID': event.id})})|raw }}</p>
+        				<p>{{ "taplist.info.l8"|trans|raw }}</p> 
+        				<p>{{ "taplist.info.l9"|trans|raw }}</p>
         			</div>
         			<div class="modal-footer">
         				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -365,25 +367,25 @@
 
     <div id="filters-open" class="fixed-button">
     	<i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-    	<div class="desc">Filter/Sort</div>
+    	<div class="desc">{{ "taplist.icons.filter_sort"|trans }}</div>
     </div>
     
 
     {% if user is null %}
     	<a id="taplist-untappd-login" class="fixed-button" href="https://untappd.com/oauth/authenticate/?client_id={{ untappd_api_client_id }}&response_type=code&redirect_url={{ untappd_api_oauth_redirect_url }}">
         	<img src="{{ asset('images/untappd_bottles.png') }}">
-        	<div class="desc">Login with Untappd</div>
+        	<div class="desc">{{ "taplist.icons.login"|trans }}</div>
     	</a>
     {% else %}
     	<a id="taplist-untappd-login" class="fixed-button" href="{{ path('oauth_logout') }}">
         	<img id="logged-in" data-uid="{{ user.id }}" src="{{ user.useravatar }}">
-        	<div class="desc">Logout</div>
+        	<div class="desc">{{ "taplist.icons.logout"|trans }}</div>
     	</a>
     {% endif %}
             
     <div id="taplist-info" class="small-bubble">
-    	<div><span id="taplist-info-count">0</span> beers</div>
-    	<div>(<span id="taplist-info-filtered">0</span> filtered)</div>
+    	<div><span id="taplist-info-count">0</span> {{ "taplist.icons.beers"|trans }}</div>
+    	<div>(<span id="taplist-info-filtered">0</span> {{ "taplist.icons.filtered"|trans }})</div>
     	<div class="taplist-info-icons">
     		<span id="taplist-info-favorites">0</span> <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div>
     		<span id="taplist-info-ticks">0</span> <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div>
@@ -394,12 +396,12 @@
     {% if is_granted('ROLE_ADMIN') %}
         <div id="taplist-admin" class="fixed-button" data-toggle="modal" data-target="#admin-modal">
         	<i class="fa fa-cogs" aria-hidden="true"></i>
-            <div class="desc">Admin</div>
+            <div class="desc">{{ "taplist.icons.admin"|trans }}</div>
         </div>
     {% else %}
         <div id="taplist-help" class="fixed-button" data-toggle="modal" data-target="#info-modal">
         	<i class="fa fa-info-circle" aria-hidden="true"></i>
-            <div class="desc">Info</div>
+            <div class="desc">{{ "taplist.icons.info"|trans }}</div>
         </div>
     {% endif %}
 </div>
