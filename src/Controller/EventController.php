@@ -275,6 +275,10 @@ class EventController extends Controller
                 $em->persist($localBeer);
                 $em->flush();
                 $success = true;
+                unset($localBeer);
+                unset($form);
+                $localBeer = new LocalBeer();
+                $form = $this->createForm(LocalBeerType::class, $localBeer);
             }
             
             $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event, $publisher);

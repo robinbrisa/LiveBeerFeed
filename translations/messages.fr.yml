@@ -156,7 +156,7 @@ event:
         beer_list_info: 'Les bières que vous avez ajouté s''affichent ici. Vous pouvez supprimer une bière en cliquant sur le bouton <button type="button" class="btn btn-danger btn-xs"><i class="fa fa-times" aria-hidden="true"></i></button><br />Vous avez aussi la possibilité d''ajouter des informations complémentaires sur la bière en les saisissant dans le champ prévu à cet effet. Cette information, limitée à 255 caractères, sera affichée dans la liste des bières publiques. Vous pouvez l''utiliser pour donner des détails sur votre bière (houblons utilisés, vieillissement en barrique, collaboration, originalités, ...). N''oubliez pas d''enregistrer après avoir saisi votre texte !<br />Si des données sont fausses ou incomplètes, veuillez les modifier sur Untappd, celles-ci seront automatiquement mises à jour.'
         local_beer:
             extra_info: 'Informations complémentaires (seront affichées dans la liste des bières publique)'    
-            abv: 'Alc./vol'
+            abv: '% Alc'
             ibu: 'IBU'
             name: 'Nom'
             brewery: 'Brasserie'
