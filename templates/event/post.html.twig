@@ -36,72 +36,98 @@
         </div>
         
     	<span class="page-title info-major">{{ 'event.post.title'|trans }}</span>
-		<div class="alert alert-info" role="alert">
-        	<i class="fa fa-user" aria-hidden="true"></i> {% trans with {'%publisher%': '<strong>' ~ publisher.name ~ '</strong>' } %}event.post.authentication_info{% endtrans %}<br />
-        	<a href="{{ path('post_logout', { 'eventID': event.id }) }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ "event.post.logout"|trans }}</a><br />
-        	<span class="badge badge-{% if publisher.remainingMessages > 0 %}success{% else %}danger{% endif %}">{{ publisher.remainingMessages }}</span> {% transchoice publisher.remainingMessages %}event.post.notifications_remaining{% endtranschoice %}<br />
-            {% if publisher.remainingMessages <= 0 %}
-            	<span class="badge badge-danger">{{ "event.post.out_of_notifications"|trans }}</span>
-            {% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
-            	<span class="badge badge-warning">{% trans with {'%time%': publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") } %}event.post.locked_until{% endtrans %}</span>
-            {% else %}
-            	<span class="badge badge-success">{{ "event.post.notification_available"|trans }}</span>
-            {% endif %}
-        </div>
-    	{% if success %}
-        	<div class="alert alert-success" role="alert">
-        		{{ "event.post.success"|trans }}
-       		 </div>
-    	{% endif %}
-        <div class="card">
-            <div class="card-body">
-        	<strong>{{ "event.post.disclaimer.important"|trans }}</strong><br />
-        	{% trans with {'%event%': event.name } %}event.post.disclaimer.this_form{% endtrans %}<br /> 
-        	{{ "event.post.disclaimer.keep_in_mind"|trans }}<br />
-        	{{ "event.post.disclaimer.you_can_use_it"|trans }}<br /> 
-        	{{ "event.post.disclaimer.post_limit"|trans }}<br /> 
-        	{{ "event.post.disclaimer.will_be_identified"|trans }}<br /> 
-        	{{ "event.post.disclaimer.fill_the_lines"|trans }}<br /> 
-        	{{ "event.post.disclaimer.highlighted"|trans|raw }}<br /> 
-        	{{ "event.post.disclaimer.display_time"|trans }}<br /> 
-        	{% if event.moderated %}{{ "event.post.disclaimer.validation"|trans|raw }}<br /> {% endif %}
-        	<strong class="info-major">{{ "event.post.disclaimer.must_not_share"|trans }}</strong>
-        	</div>
-        </div>
-        <hr class="my-2">
-    	{% if publisher.remainingMessages <= 0 %}
-    		<div class="alert alert-danger" role="alert">
-				{{ "event.post.limit_reached"|trans }}
-			</div>
-    	{% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
-    		<div class="alert alert-warning" role="alert">
-				{{ "event.post.currently_locked"|trans }}<br />
-				{% trans with {'%time%': '<strong>' ~ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") ~ '</strong>' } %}event.post.locked_until_alert{% endtrans %}
-			</div>
+    	{% if closed %}
+        	{% if "now"|date('Y-m-d H:i:s') < event.startDate|date('Y-m-d H:i:s') %}
+        		<div id="event-upcoming">
+                	<div class="alert alert-primary" role="alert">
+                		<div class="large-icon">
+                			<i class="fa fa-clock-o" aria-hidden="true"></i>
+                		</div>
+            			<b>{{ "general.too_early"|trans }} 😉</b></br>
+        	            {% trans with { '%event%': event.name } %}general.not_started_yet{% endtrans %}<br />
+            		    {{ "general.cant_send_notifications_yet"|trans }}
+               		 </div>
+        		</div>
+      		{% elseif "now"|date('Y-m-d H:i:s') > event.endDate|date('Y-m-d H:i:s') %}
+        		<div id="event-upcoming">
+                	<div class="alert alert-primary" role="alert">
+                		<div class="large-icon">
+                			<i class="fa fa-clock-o" aria-hidden="true"></i>
+                		</div>
+            			<b>{{ "general.too_late"|trans }} 😉</b></br>
+        	            {% trans with { '%event%': event.name } %}general.is_over{% endtrans %}<br />
+            		    {{ "general.cant_send_notifications_anymore"|trans }}
+               		 </div>
+        		</div>
+      		{% endif %}
     	{% else %}
-        	<div class="card card-block bg-faded">
-        		<div class="card-body">
-                    {{ form_start(form) }}
-                    <div class="form-group">
-                        {{ form_label(form.message_line_1) }}
-    					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
-                        {{ form_widget(form.message_line_1) }}
+    		<div class="alert alert-info" role="alert">
+            	<i class="fa fa-user" aria-hidden="true"></i> {% trans with {'%publisher%': '<strong>' ~ publisher.name ~ '</strong>' } %}event.post.authentication_info{% endtrans %}<br />
+            	<a href="{{ path('post_logout', { 'eventID': event.id }) }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ "event.post.logout"|trans }}</a><br />
+            	<span class="badge badge-{% if publisher.remainingMessages > 0 %}success{% else %}danger{% endif %}">{{ publisher.remainingMessages }}</span> {% transchoice publisher.remainingMessages %}event.post.notifications_remaining{% endtranschoice %}<br />
+                {% if publisher.remainingMessages <= 0 %}
+                	<span class="badge badge-danger">{{ "event.post.out_of_notifications"|trans }}</span>
+                {% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
+                	<span class="badge badge-warning">{% trans with {'%time%': publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") } %}event.post.locked_until{% endtrans %}</span>
+                {% else %}
+                	<span class="badge badge-success">{{ "event.post.notification_available"|trans }}</span>
+                {% endif %}
+            </div>
+        	{% if success %}
+            	<div class="alert alert-success" role="alert">
+            		{{ "event.post.success"|trans }}
+           		 </div>
+        	{% endif %}
+            <div class="card">
+                <div class="card-body">
+            	<strong>{{ "event.post.disclaimer.important"|trans }}</strong><br />
+            	{% trans with {'%event%': event.name } %}event.post.disclaimer.this_form{% endtrans %}<br /> 
+            	{{ "event.post.disclaimer.keep_in_mind"|trans }}<br />
+            	{{ "event.post.disclaimer.you_can_use_it"|trans }}<br /> 
+            	{{ "event.post.disclaimer.post_limit"|trans }}<br /> 
+            	{{ "event.post.disclaimer.will_be_identified"|trans }}<br /> 
+            	{{ "event.post.disclaimer.fill_the_lines"|trans }}<br /> 
+            	{{ "event.post.disclaimer.highlighted"|trans|raw }}<br /> 
+            	{{ "event.post.disclaimer.display_time"|trans }}<br /> 
+            	{% if event.moderated %}{{ "event.post.disclaimer.validation"|trans|raw }}<br /> {% endif %}
+            	<strong class="info-major">{{ "event.post.disclaimer.must_not_share"|trans }}</strong>
+            	</div>
+            </div>
+            <hr class="my-2">
+        	{% if publisher.remainingMessages <= 0 %}
+        		<div class="alert alert-danger" role="alert">
+    				{{ "event.post.limit_reached"|trans }}
+    			</div>
+        	{% elseif publisher.lastPublicationDate is not null and publisher.getMinutesSinceLastPublication < 120 %}
+        		<div class="alert alert-warning" role="alert">
+    				{{ "event.post.currently_locked"|trans }}<br />
+    				{% trans with {'%time%': '<strong>' ~ publisher.lastPublicationDate|date_modify("+2 hours")|date("H:i:s") ~ '</strong>' } %}event.post.locked_until_alert{% endtrans %}
+    			</div>
+        	{% else %}
+            	<div class="card card-block bg-faded">
+            		<div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.message_line_1) }}
+        					<div class="form-highlight info-major">{{ form_label(form.message_line_1_important) }} {{ form_widget(form.message_line_1_important) }}</div>
+                            {{ form_widget(form.message_line_1) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.message_line_2) }}
+        					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
+                            {{ form_widget(form.message_line_2) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.message_line_3) }}
+        					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
+                            {{ form_widget(form.message_line_3) }}
+                        </div>
+                        {{ form_widget(form) }}
+                        {{ form_end(form) }}
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.message_line_2) }}
-    					<div class="form-highlight info-major">{{ form_label(form.message_line_2_important) }} {{ form_widget(form.message_line_2_important) }}</div>
-                        {{ form_widget(form.message_line_2) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.message_line_3) }}
-    					<div class="form-highlight info-major">{{ form_label(form.message_line_3_important) }} {{ form_widget(form.message_line_3_important) }}</div>
-                        {{ form_widget(form.message_line_3) }}
-                    </div>
-                    {{ form_widget(form) }}
-                    {{ form_end(form) }}
-                </div>
-    		</div>
-    	{% endif %}
+        		</div>
+        	{% endif %}
+        {% endif %}
     </div>
     
 </div>

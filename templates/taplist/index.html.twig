@@ -378,7 +378,7 @@
     	</a>
     {% else %}
     	<a id="taplist-untappd-login" class="fixed-button" href="{{ path('oauth_logout') }}">
-        	<img id="logged-in" data-uid="{{ user.id }}" src="{{ user.useravatar }}">
+        	<img class="rounded" id="logged-in" data-uid="{{ user.id }}" src="{{ user.useravatar }}">
         	<div class="desc">{{ "taplist.icons.logout"|trans }}</div>
     	</a>
     {% endif %}

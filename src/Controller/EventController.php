@@ -144,10 +144,11 @@ class EventController extends Controller
         $session = $request->getSession();
         
         if ($event->getStartDate() > new \DateTime('now') || $event->getEndDate() < new \DateTime('now')) {
-            return $this->render('event/auth.html.twig', array(
+            return $this->render('event/post.html.twig', array(
                 'form' => null,
                 'event' => $event,
-                'error' => false,
+                'publisher' => null,
+                'success' => $success,
                 'closed' => true
             ));
         }
@@ -204,6 +205,7 @@ class EventController extends Controller
                 if ($event->getModerated()) {
                     $message->setValidationPending(1);
                     
+                    $data = array();
                     $data['push_type'] = 'validation';
                     $data['push_topic'] = 'validation';
                     $data['message'] = $this->renderView('admin/templates/notification.template.html.twig', ['message' => $message]);
@@ -229,7 +231,8 @@ class EventController extends Controller
                 'form' => $form->createView(),
                 'event' => $event,
                 'publisher' => $publisher,
-                'success' => $success
+                'success' => $success,
+                'closed' => false
             ));
         }
 
