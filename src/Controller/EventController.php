@@ -97,7 +97,7 @@ class EventController extends Controller
                 $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $data['access_key']));
                 if ($publisher && $publisher->getEvent() === $event) {
                     $session->set('post_access_key/'.$eventID, $data['access_key']);
-                    return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
+                    return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
                 } else {
                     $error = true;
                 }
@@ -113,7 +113,7 @@ class EventController extends Controller
             $authKey = $session->get('post_access_key/'.$eventID);
             $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
-                return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
+                return $this->redirectToRoute('post_logout', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
             }
             return $this->render('event/brewery_portal.html.twig', array(
                 'event' => $event,
@@ -154,12 +154,12 @@ class EventController extends Controller
         }
         
         if (!$session->get('post_access_key/'.$eventID)) {
-            return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
+            return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
         } else {
             $authKey = $session->get('post_access_key/'.$eventID);
             $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
-                return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
+                return $this->redirectToRoute('post_logout', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
             }
             
             $message = new Message();
@@ -262,12 +262,12 @@ class EventController extends Controller
         $session = $request->getSession();
             
         if (!$session->get('post_access_key/'.$eventID)) {
-            return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
+            return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
         } else {
             $authKey = $session->get('post_access_key/'.$eventID);
             $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
-                return $this->redirectToRoute('post_logout', array('eventID' => $eventID));
+                return $this->redirectToRoute('post_logout', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
             }
             
             if ($form->isSubmitted() && $form->isValid()) {
@@ -309,7 +309,7 @@ class EventController extends Controller
         
         $session = $request->getSession();
         $session->remove('post_access_key/'.$eventID);
-        return $this->redirectToRoute('brewery_portal', array('eventID' => $eventID));
+        return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
     }
     
     /**

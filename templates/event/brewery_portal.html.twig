@@ -39,13 +39,13 @@
             <div class="card-body">
             	<strong>{{ 'event.brewery_portal.actions'|trans }}</strong>
             	<div>
-            		<a href="{{ path('brewery_taplist', {'eventID' : event.id}) }}">{{ 'event.brewery_portal.taplist'|trans }}</a>
+            		<a href="{{ path('brewery_taplist', {'eventID' : (event.slug?event.slug:event.id)}) }}">{{ 'event.brewery_portal.taplist'|trans }}</a>
             	</div>
             	<div>
-            		<a href="{{ path('post_message', {'eventID' : event.id}) }}">{{ 'event.brewery_portal.public_messages'|trans }}</a>
+            		<a href="{{ path('post_message', {'eventID' : (event.slug?event.slug:event.id)}) }}">{{ 'event.brewery_portal.public_messages'|trans }}</a>
             	</div>
             	<div>
-            		<a href="{{ path('post_logout', {'eventID' : event.id}) }}">{{ 'event.post.logout'|trans }}</a>
+            		<a href="{{ path('post_logout', {'eventID' : (event.slug?event.slug:event.id)}) }}">{{ 'event.post.logout'|trans }}</a>
             	</div>
             </div>
         </div>
