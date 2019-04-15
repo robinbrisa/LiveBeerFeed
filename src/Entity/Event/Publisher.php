@@ -83,6 +83,11 @@ class Publisher
      * @ORM\OneToMany(targetEntity="App\Entity\Beer\LocalBeer", mappedBy="owner", orphanRemoval=true)
      */
     private $local_beers;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $location;
     
      /**
      * Get $email
@@ -409,6 +414,18 @@ class Publisher
                 $localBeer->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
 
         return $this;
     }

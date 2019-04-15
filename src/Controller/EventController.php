@@ -83,7 +83,7 @@ class EventController extends Controller
         
         $session = $request->getSession();
         
-        if (!$session->get('post_access_key/'.$eventID)) {
+        if (!$session->get('post_access_key/'.$event->getId())) {
             $error = false;
             $form = $this->createFormBuilder()
             ->add('access_key', TextType::class, array('required' => true, 'label' => 'event.form.access_key'))
@@ -96,7 +96,7 @@ class EventController extends Controller
                 $data = $form->getData();
                 $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $data['access_key']));
                 if ($publisher && $publisher->getEvent() === $event) {
-                    $session->set('post_access_key/'.$eventID, $data['access_key']);
+                    $session->set('post_access_key/'.$event->getId(), $data['access_key']);
                     return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
                 } else {
                     $error = true;
@@ -110,7 +110,7 @@ class EventController extends Controller
                 'closed' => false
             ));
         } else {
-            $authKey = $session->get('post_access_key/'.$eventID);
+            $authKey = $session->get('post_access_key/'.$event->getId());
             $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
                 return $this->redirectToRoute('post_logout', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
@@ -153,10 +153,10 @@ class EventController extends Controller
             ));
         }
         
-        if (!$session->get('post_access_key/'.$eventID)) {
+        if (!$session->get('post_access_key/'.$event->getId())) {
             return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
         } else {
-            $authKey = $session->get('post_access_key/'.$eventID);
+            $authKey = $session->get('post_access_key/'.$event->getId());
             $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
                 return $this->redirectToRoute('post_logout', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
@@ -261,10 +261,10 @@ class EventController extends Controller
         
         $session = $request->getSession();
             
-        if (!$session->get('post_access_key/'.$eventID)) {
+        if (!$session->get('post_access_key/'.$event->getId())) {
             return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
         } else {
-            $authKey = $session->get('post_access_key/'.$eventID);
+            $authKey = $session->get('post_access_key/'.$event->getId());
             $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $event));
             if (!$publisher) {
                 return $this->redirectToRoute('post_logout', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
@@ -312,7 +312,7 @@ class EventController extends Controller
         }
         
         $session = $request->getSession();
-        $session->remove('post_access_key/'.$eventID);
+        $session->remove('post_access_key/'.$event->getId());
         return $this->redirectToRoute('brewery_portal', array('eventID' => ($event->getSlug()?$event->getSlug():$event->getId())));
     }
     
@@ -353,6 +353,9 @@ class EventController extends Controller
                     $publisher->setEmail($dataArray[1]);
                     if (count($dataArray) > 2 && ($dataArray[2] == "fr" || $dataArray[2] == "en")) {
                         $publisher->setLanguage($dataArray[2]);
+                        if (count($dataArray) > 3) {
+                            $publisher->setLocation(trim($dataArray[3]));
+                        }
                     }
                 }
                 $publisher->setEvent($event);

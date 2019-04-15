@@ -451,6 +451,12 @@ $(document).ready(function() {
 		var beerElement = $(this).parents('.taplist-beer');
 		$.post('/ajax/saveExtraInfo', { beerID: beerElement.data('beer-id'), sessionID: beerElement.data('session-id'), extraInfo: beerElement.find('.extra-info-field').val() }, function(data) {
 			if (data.success) {
+				button.find('.save-tick-icon').hide();
+				button.find('.save-ok-message').fadeIn();
+				setTimeout(function(){
+					button.find('.save-ok-message').hide();
+					button.find('.save-tick-icon').fadeIn();
+				},5000);
 				
 			} else {
 				alert('An error occured while trying to save')

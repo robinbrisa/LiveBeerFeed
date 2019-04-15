@@ -7,13 +7,13 @@
        
 {% block body %}
 <div class="container">
-    <div class="jumbotron" id="homepage-presentation">
-		<h1 class="display-3">Live Beer Feed</h1>
-		<p class="lead">Get live information and statistics during your favorite beer events. 
+    <div class="jumbotron pt-4" id="homepage-presentation">
+		<h1 class="display-3 alt-font">Live Beer Feed</h1>
+		<p class="lead">Get live information, tap lists and statistics for your favorite beer events. 
 		<br />Receive notifications from the organizers and brewers.
 		<br />Contact: <a href="mailto:robin@livebeerfeed.com">robin@livebeerfeed.com</a></p>
 		<hr class="my-2">
-		<h1 class="display-4">Current events</h3>
+		<h1 class="display-5 alt-font">Current events</h3>
         {% if currentEvents|length > 0 %}
 			<div class="clearfix">
 		    {% for event in currentEvents %}
@@ -25,7 +25,7 @@
         {% endif %}
         {% if upcomingEvents|length > 0 %}
     		<hr class="my-4">
-    		<h1 class="display-4">Upcoming events</h3>
+    		<h1 class="display-5 alt-font">Upcoming events</h3>
 			<div class="clearfix">
 		    {% for event in upcomingEvents %}
                 {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}
@@ -34,7 +34,7 @@
         {% endif %}
         {% if previousEvents|length > 0 %}
 			<hr class="my-4">
-			<h1 class="display-4">Previous events</h1>
+			<h1 class="display-5 alt-font">Previous events</h1>
 			<div class="clearfix">
 		    {% for event in previousEvents %}
                 {% include 'main/templates/event_card.template.html.twig' with { 'event': event  } %}

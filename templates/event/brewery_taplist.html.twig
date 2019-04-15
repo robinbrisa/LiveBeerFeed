@@ -86,42 +86,43 @@
         		</div>
         	</div>
         </div>
-
-        <div class="card mt-2">
-        	<div class="card-body">
-    			<h5 class="card-title">{{ 'event.taplist_management.beer_list'|trans }}</h5>
-    			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
-                {% for tapListItem in tapListItems %}
-                    <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">
-                    	<div class="beer-info">
-                    	    <div class="title">
-                    	    	<button type="button" class="btn btn-danger btn-xs float-right delete-beer"><i class="fa fa-times" aria-hidden="true"></i></button>
-                    	    	<div class="beer-name">{{ tapListItem.beer.name|trim }}</div> 
-                    	    </div>
-                    	    <div class="session-color" style="background-color:{{ tapListItem.session.color }}"></div>
-                    		<div class="content">
-                    			<div class="pull-right right-side">
-                    		    	<div class="beer-details">{% if tapListItem.beer.abv > 0 %}{{ tapListItem.beer.abv|round(2) }}%{% else %}N/A{% endif %} ABV</div>
-                    		   		<div class="beer-details" {% if tapListItem.beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ tapListItem.beer.ibu|round(2) }} IBU</div>
-                    		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ tapListItem.beer.slug }}/{{ tapListItem.beer.id }}">
-                    		    		<div class="checked-in"><i class="fa fa-check" aria-hidden="true"></i></div>
-                    		    		<img src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
-                    		    	</a>
-                    			</div>
-                    		    <div class="beer-details">{{ tapListItem.beer.brewery.countryName|country }} {{ tapListItem.beer.brewery.name|trim }}{% for brewery in tapListItem.beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>
-                    		    <div class="beer-details"><div class="style-color-square" style="background-color:{{ tapListItem.beer.style.color }}"></div> {{ tapListItem.beer.style.name }}</div>
-								<div class="beer-details">
-    								<form class="form-inline">
-    									<input class="form-control form-control-sm w-75 inline-block mr-0 extra-info-field" type="text" maxlength="255" placeholder="{{ 'event.taplist_management.extra_info'|trans }}" value="{{ tapListItem.beer.extraInfo }}">
-                        	    		<button type="button" class="btn btn-sm btn-success save-extra-info inline-block ml-2"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    	    		</form>
-								</div>
-                    		</div>
-                    	</div>
-                    </div>
-                {% endfor %}
-        	</div>
-        </div>
+		{% if publisher.tapListItems|length > 0 %}
+            <div class="card mt-2">
+            	<div class="card-body">
+        			<h5 class="card-title">{{ 'event.taplist_management.beer_list'|trans }}</h5>
+        			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
+                    {% for tapListItem in tapListItems %}
+                        <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">
+                        	<div class="beer-info">
+                        	    <div class="title">
+                        	    	<button type="button" class="btn btn-danger btn-xs float-right delete-beer"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        	    	<div class="beer-name">{{ tapListItem.beer.name|trim }}</div> 
+                        	    </div>
+                        	    <div class="session-color" style="background-color:{{ tapListItem.session.color }}"></div>
+                        		<div class="content">
+                        			<div class="pull-right right-side">
+                        		    	<div class="beer-details">{% if tapListItem.beer.abv > 0 %}{{ tapListItem.beer.abv|round(2) }}%{% else %}N/A{% endif %} ABV</div>
+                        		   		<div class="beer-details" {% if tapListItem.beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ tapListItem.beer.ibu|round(2) }} IBU</div>
+                        		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ tapListItem.beer.slug }}/{{ tapListItem.beer.id }}">
+                        		    		<div class="checked-in"><i class="fa fa-check" aria-hidden="true"></i></div>
+                        		    		<img src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
+                        		    	</a>
+                        			</div>
+                        		    <div class="beer-details">{{ tapListItem.beer.brewery.countryName|country }} {{ tapListItem.beer.brewery.name|trim }}{% for brewery in tapListItem.beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>
+                        		    <div class="beer-details"><div class="style-color-square rounded" style="background-color:{{ tapListItem.beer.style.color }}"></div> {{ tapListItem.beer.style.name }}</div>
+    								<div class="beer-details">
+        								<form class="form-inline">
+        									<input class="form-control form-control-sm w-75 inline-block mr-0 extra-info-field" type="text" maxlength="255" placeholder="{{ 'event.taplist_management.extra_info'|trans }}" value="{{ tapListItem.beer.extraInfo }}">
+                            	    		<button type="button" class="btn btn-sm btn-success save-extra-info inline-block ml-2"><i class="fa fa-check save-tick-icon" aria-hidden="true"></i><span class="save-ok-message" style="display:none;">OK!</span></button>
+                        	    		</form>
+    								</div>
+                        		</div>
+                        	</div>
+                        </div>
+                    {% endfor %}
+            	</div>
+            </div>
+        {% endif %}
         <div id="publisher-add-beer"></div>
     </div>
     

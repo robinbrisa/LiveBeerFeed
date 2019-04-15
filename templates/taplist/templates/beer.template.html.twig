@@ -3,24 +3,29 @@
 	    <div class="title">
 	    	<div class="tick"><i class="fa fa-check" aria-hidden="true"></i></div>
 	    	<div class="admin"><i class="fa fa-wrench" aria-hidden="true"></i></div>
-	    	<div class="beer-name"><div class="favorite"><i class="fa fa-star-o" aria-hidden="true"></i></div> {{ beer.name|trim }}</div> 
+	    	<div class="beer-name"><div class="favorite"><i class="fa fa-star-o" aria-hidden="true"></i></div> <span class="name">{{ beer.name|trim }}</span></div> 
 	    </div>
-	    <div class="session-color" style="background-color:{{ session.color }}"></div>
-		<div class="content">
-			<div class="pull-right right-side">
-		    	<div class="beer-details">{% if beer.abv > 0 %}{{ beer.abv|round(2) }}%{% else %}N/A{% endif %} ABV</div>
+	    <div class="taplist-flexbox">
+	        {% if session.event.sessions|length > 1 %}
+	    		<div class="session-color" style="background-color:{{ session.color }}"></div>
+	    	{% endif %}
+    	    <div class="beer-info-content">
+    			{% set location = beer.getLocationAtSession(session) %}
+    		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}{% for brewery in beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}{% if location %} <strong>[{{ location }}]</strong>{% endif %}</div>
+    		    <div class="beer-details"><div class="style-color-square rounded" style="background-color:{{ beer.style.color }}"></div> {{ beer.style.name }}</div>
+    		    <div class="beer-details mt-1">{{ beer.ratingScore|rating|raw }} <span class="rating-value"><strong>{% if beer.ratingScore == 0 %}N/A{% else %}{{ beer.ratingScore|round(2) }}{% endif %}</strong> Avg ({{ beer.ratingCount }} ratings)</span></div>
+        	</div>
+			<div class="right-side">
+		    	<div class="beer-details">{% if beer.abv > 0 %}{{ beer.abv|round(2) }}%{% else %}N/A{% endif %}</div>
 		   		<div class="beer-details" {% if beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ beer.ibu|round(2) }} IBU</div>
 		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ beer.slug }}/{{ beer.id }}">
 		    		<div class="checked-in"><i class="fa fa-check" aria-hidden="true"></i></div>
 		    		<img class="border rounded" src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
 		    	</a>
 			</div>
-		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}{% for brewery in beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>
-		    <div class="beer-details"><div class="style-color-square" style="background-color:{{ beer.style.color }}"></div> {{ beer.style.name }}</div>
-		    <div class="beer-details">{{ beer.ratingScore|rating|raw }} <span class="rating-value"><strong>{% if beer.ratingScore == 0 %}N/A{% else %}{{ beer.ratingScore|round(2) }}{% endif %}</strong> Avg ({{ beer.ratingCount }} ratings)</span></div>
-		    {% if beer.extraInfo is not null %}
-		    	<div class="beer-extra-info beer-details border rounded px-1 mt-1">{{ beer.extraInfo }}</div>  
-		    {% endif %}
-		</div>
+    	</div> 
+	    {% if beer.extraInfo is not null %}
+	    	<div class="beer-extra-info beer-details border rounded px-2 py-1 mb-1 mx-1">{{ beer.extraInfo }}</div>  
+	    {% endif %}
 	</div>
 </div>

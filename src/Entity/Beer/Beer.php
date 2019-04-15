@@ -799,4 +799,15 @@ class Beer
         return $this;
     }
 
+    public function getLocationAtSession($session) {
+        foreach ($this->tap_list_items as $tapListItem) {
+            if ($tapListItem->getSession() == $session) {
+                if ($tapListItem->getOwner()) {
+                    return $tapListItem->getOwner()->getLocation();
+                }
+            }
+        }
+        return false;
+    }
+    
 }
