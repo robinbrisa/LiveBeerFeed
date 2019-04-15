@@ -914,7 +914,7 @@ rating.small.r200{
 .open-untappd.active .checked-in {
 	display: block;
 	position: absolute;
-	top: 1px;
+	top: 4px;
 	right: 4px;;
 	font-size: 20px;
 	color: #fff;
