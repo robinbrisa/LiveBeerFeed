@@ -19,13 +19,15 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-    public function findCurrentEvents()
+    public function findCurrentEvents($all = false)
     {
-        return $this->createQueryBuilder('e')
+        $qb = $this->createQueryBuilder('e')
         ->where('e.start_date < :start_date')->setParameter('start_date', new \DateTime(''))
-        ->andWhere('e.end_date >= :end_date')->setParameter('end_date', new \DateTime(''))
-        ->andWhere('e.hidden != 1')
-        ->orderBy('e.start_date', 'DESC')
+        ->andWhere('e.end_date >= :end_date')->setParameter('end_date', new \DateTime(''));
+        if ($all) {
+            $qb->andWhere('e.hidden != 1');
+        }
+        return $qb->orderBy('e.start_date', 'DESC')
         ->getQuery()
         ->getResult();
     }

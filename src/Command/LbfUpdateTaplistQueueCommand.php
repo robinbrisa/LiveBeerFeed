@@ -42,7 +42,7 @@ class LbfUpdateTaplistQueueCommand extends Command
         if (count($queue) > 0) {
             $output->writeln(sprintf('[%s] %d beers left in taplist queue', date('H:i:s'), count($queue)));
             $apiKeyPool = $this->tools->getAPIKeysPool();
-            if (array_sum($apiKeyPool) < 40 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents()) {
+            if (array_sum($apiKeyPool) < 40 && $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents(true)) {
                 $output->writeln(sprintf('[%s] API Key pool is too low (%d), events are running.', date('H:i:s'), array_sum($apiKeyPool)));
             } elseif (array_sum($apiKeyPool) < 5) {
                 $output->writeln(sprintf('[%s] API Key pool is too low (%d)', date('H:i:s'), array_sum($apiKeyPool)));

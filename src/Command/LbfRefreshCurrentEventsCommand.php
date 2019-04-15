@@ -39,7 +39,7 @@ class LbfRefreshCurrentEventsCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {        
-        $events = $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents();
+        $events = $this->em->getRepository('\App\Entity\Event\Event')->findCurrentEvents(true);
         if (!$events) {
             $output->writeln(sprintf('[%s] No events are currently running', date('H:i:s')));
         } else {
