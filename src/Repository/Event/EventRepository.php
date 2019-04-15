@@ -24,7 +24,7 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e')
         ->where('e.start_date < :start_date')->setParameter('start_date', new \DateTime(''))
         ->andWhere('e.end_date >= :end_date')->setParameter('end_date', new \DateTime(''));
-        if ($all) {
+        if (!$all) {
             $qb->andWhere('e.hidden != 1');
         }
         return $qb->orderBy('e.start_date', 'DESC')
