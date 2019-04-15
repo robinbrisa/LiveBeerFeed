@@ -17,6 +17,7 @@ easy_admin:
                     - { property: 'locale', type: 'Symfony\Component\Form\Extension\Core\Type\LanguageType', type_options: { required: true, choices: { 'English': 'en', 'Français': 'fr' }, choice_loader: null } }
                     - moderated
                     - has_taplist
+                    - hidden
             list:
                 actions:
                     - { name: 'reload_clients', icon: 'refresh', type: 'route' }

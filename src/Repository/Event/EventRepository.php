@@ -24,30 +24,30 @@ class EventRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
         ->where('e.start_date < :start_date')->setParameter('start_date', new \DateTime(''))
         ->andWhere('e.end_date >= :end_date')->setParameter('end_date', new \DateTime(''))
-            ->orderBy('e.start_date', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
+        ->andWhere('e.hidden != 1')
+        ->orderBy('e.start_date', 'DESC')
+        ->getQuery()
+        ->getResult();
     }
     
     public function findPreviousEvents()
     {
         return $this->createQueryBuilder('e')
         ->where('e.end_date < :end_date')->setParameter('end_date', new \DateTime(''))
+        ->andWhere('e.hidden != 1')
         ->orderBy('e.end_date', 'DESC')
         ->getQuery()
-        ->getResult()
-        ;
+        ->getResult();
     }
     
     public function findUpcomingEvents()
     {
         return $this->createQueryBuilder('e')
         ->where('e.start_date > :start_date')->setParameter('start_date', new \DateTime(''))
+        ->andWhere('e.hidden != 1')
         ->orderBy('e.start_date', 'ASC')
         ->getQuery()
-        ->getResult()
-        ;
+        ->getResult();
     }
     
     public function getFutureOrCurrentEventsUserIsAttending($user) {

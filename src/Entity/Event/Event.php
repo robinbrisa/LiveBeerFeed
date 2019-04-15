@@ -118,7 +118,12 @@ class Event
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
      */
     private $updated_at;
-    
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $hidden = 0;
+
       /**
      * Get $has_taplist
      *
@@ -576,5 +581,17 @@ class Event
     public function getUsersAttending()
     {
         return $this->users_attending;
+    }
+
+    public function getHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
+
+        return $this;
     }
 }
