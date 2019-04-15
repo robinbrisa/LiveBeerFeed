@@ -243,7 +243,7 @@ a {
 }
 
 .info-major {
-	font-weight: bold;
+	font-weight: 500;
     color: #c60;
     border-color: #c60;
 }
