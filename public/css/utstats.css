@@ -822,6 +822,15 @@ rating.small.r200{
 	height:28px;
 }
 
+.title .beer-name-admin {
+	text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 0px 7px;
+    font-weight: 500;
+	width: calc(100% - 70px);
+	height:28px;
+} 
+
 .title .out-of-stock {
 	position: absolute;
 	right: 30px;
@@ -1317,9 +1326,10 @@ btn-group-xs > .btn, .btn-xs {
   border-radius: .2rem;
 }
 
-.delete-beer {
+.taplist-admin-action  {
 	margin-top: 3px;	
 	margin-right: 3px;
+	margin-left: 3px;
 }
 
 .alt-font {

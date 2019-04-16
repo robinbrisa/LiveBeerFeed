@@ -133,8 +133,8 @@ event:
             validation: '<strong>Note:</strong> Your message will be validated before being published, which could lightly postpone the time when it begins to display.'
     brewery_portal:
         title: 'Brewery portal'
-        actions: 'Available Actions:'
-        taplist: 'Taplist Management'
+        actions: 'Available actions:'
+        taplist: 'Tap list management'
         public_messages: 'Public message submission'
         back: 'Back'
     taplist_management:
@@ -153,7 +153,7 @@ event:
         extra_info: 'Use this field to indicate any additionnal info about this beer (255 characters max)'
         beer_list: 'Your beers'
         success: 'Your beer has successfully been saved. It will be reviewed shortly and will then appear in the tap list.'
-        beer_list_info: 'All the beers that you added are displayed here. You can delete a beer by clicking the <button type="button" class="btn btn-danger btn-xs"><i class="fa fa-times" aria-hidden="true"></i></button> button.<br />You also have the ability to add more information about the beer by writing it in the field provided. This information is limited to 255 characters and will be shown on the public tap list. You can use it to give more information about your beer (hop varieties, barrel aging, collabs, any oddities, ...). Do not forget to save after entering your text!<br />If any beer data is wrong or incomplete, please modify it on Untappd and it will automatically be updated.'
+        beer_list_info: 'Use the <button type="button" class="btn btn-danger btn-xs"><i class="fa fa-times" aria-hidden="true"></i></button> button to delete a beer.<br />During the event, you can use the <button type="button" class="btn btn-secondary btn-xs"><i class="fa fa-ban" aria-hidden="true"></i></button> button to flag a beer as out of stock (or <button type="button" class="btn btn-success btn-xs"><i class="fa fa-check" aria-hidden="true"></i></button> to make it available again).<br />You have the ability to add more information about the beer by writing it in the field provided. This information be shown on the tap list. You can use it to give more information about your beer (hop varieties, barrel aging, collabs, any oddities, ...). Do not forget to save with the <button type="button" class="btn btn-success btn-xs"><i class="fa fa-floppy-o" aria-hidden="true"></i></button> button to submit your changes!<br />If any beer data is wrong or incomplete, please modify it on Untappd and it will automatically be updated.'
         local_beer:
            extra_info: 'Extra information (will be displayed in the tap list)'    
            abv: 'ABV'

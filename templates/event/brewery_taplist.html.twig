@@ -93,10 +93,11 @@
         			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
                     {% for tapListItem in tapListItems %}
                         <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">
-                        	<div class="beer-info">
+                        	<div class="beer-info {% if tapListItem.outOfStock %}no-longer-available{% endif %}">
                         	    <div class="title">
-                        	    	<button type="button" class="btn btn-danger btn-xs float-right delete-beer"><i class="fa fa-times" aria-hidden="true"></i></button>
-                        	    	<div class="beer-name">{{ tapListItem.beer.name|trim }}</div> 
+                        	    	<button type="button" class="btn btn-danger btn-xs float-right taplist-admin-action delete-beer"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        	    	<button type="button" class="btn btn-secondary btn-xs float-right taplist-admin-action set-out-of-stock {% if tapListItem.outOfStock %}btn-success{% endif %}"><i class="fa {% if tapListItem.outOfStock %}fa-check{% else %}fa-ban{% endif %}" aria-hidden="true"></i></button>
+                        	    	<div class="beer-name-admin">{{ tapListItem.beer.name|trim }}</div> 
                         	    </div>
                         	    <div class="session-color" style="background-color:{{ tapListItem.session.color }}"></div>
                         		<div class="content">
@@ -113,7 +114,7 @@
     								<div class="beer-details">
         								<form class="form-inline">
         									<input class="form-control form-control-sm w-75 inline-block mr-0 extra-info-field" type="text" maxlength="255" placeholder="{{ 'event.taplist_management.extra_info'|trans }}" value="{{ tapListItem.beer.extraInfo }}">
-                            	    		<button type="button" class="btn btn-sm btn-success save-extra-info inline-block ml-2"><i class="fa fa-check save-tick-icon" aria-hidden="true"></i><span class="save-ok-message" style="display:none;">OK!</span></button>
+                            	    		<button type="button" class="btn btn-sm btn-success save-extra-info inline-block ml-2"><i class="fa fa-floppy-o save-tick-icon" aria-hidden="true"></i><span class="save-ok-message" style="display:none;">OK!</span></button>
                         	    		</form>
     								</div>
                         		</div>

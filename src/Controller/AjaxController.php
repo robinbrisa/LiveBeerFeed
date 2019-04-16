@@ -295,7 +295,6 @@ class AjaxController extends Controller
      */
     public function setOutOfStockAction(Request $request, UntappdAPI $untappdAPI)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $output = array('success' => true);
         $em = $this->getDoctrine()->getManager();
         
@@ -321,6 +320,29 @@ class AjaxController extends Controller
         if ($action != "ADD" && $action != "REMOVE") {
             $output['success'] = false;
             $output['error'] = 'INVALID_ACTION';
+        }
+        
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $sess = $request->getSession();
+            if (!$sess->get('post_access_key/'.$session->getEvent()->getId())) {
+                $this->denyAccessUnlessGranted('ROLE_ADMIN');
+            } else {
+                $authKey = $sess->get('post_access_key/'.$session->getEvent()->getId());
+                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $session->getEvent()));
+                if (!$publisher) {
+                    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+                } else {
+                    if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer, 'owner' => $publisher])) {
+                        $output['success'] = false;
+                        $output['error'] = 'INVALID_TAP_LIST_ITEM';
+                    }
+                }
+            }
+        } else {
+            if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer])) {
+                $output['success'] = false;
+                $output['error'] = 'INVALID_TAP_LIST_ITEM';
+            }
         }
         
         if ($output['success']) {
