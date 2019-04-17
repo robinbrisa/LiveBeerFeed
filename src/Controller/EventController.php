@@ -345,7 +345,7 @@ class EventController extends Controller
             $data = $form->getData();
             foreach (explode("\r\n", $data['publishers_list']) as $publisherData) {
                 $dataArray = explode("|", $publisherData);
-                if (!$publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('name' => trim($dataArray[0])))) {
+                if (!$publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('name' => trim($dataArray[0]), 'event' => $event))) {
                     $publisher = new Publisher();
                     $publisher->setName(trim($dataArray[0]));
                 }
