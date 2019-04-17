@@ -45,8 +45,10 @@
         	<div class="card-body">
         		<div id="import-untappd-beer" {{ ( local_mode ? 'style="display:none;"' : '' ) }}>
             		<form id="add-beer-form">
-                        <a href="javascript:void()" id="switch-to-local" class="float-right">{{ 'event.taplist_management.switch_to_local'|trans }}</a>
-        				<h5 class="card-title">{{ 'event.taplist_management.import'|trans }}</h5>
+            			<div class="row">
+            				<div class="col"><h5 class="card-title">{{ 'event.taplist_management.import'|trans }}</h5></div>
+            				<div class="col text-right"><a href="javascript:void()" id="switch-to-local" class="">({{ 'event.taplist_management.switch_to_local'|trans }})</a></div>
+                        </div>            				
                         <div class="form-group filter-group">
                         	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
                         	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
@@ -77,8 +79,10 @@
             		</form>
         		</div>
         		<div id="add-local-beer" {{ ( local_mode ? '' : 'style="display:none;"') }}>
-                    <a href="javascript:void()" id="switch-to-untappd" class="float-right">{{ 'event.taplist_management.switch_to_untappd'|trans }}</a>
-        			<h5 class="card-title">{{ 'event.taplist_management.add_local'|trans }}</h5>
+        			<div class="row">
+        				<div class="col"><h5 class="card-title">{{ 'event.taplist_management.add_local'|trans }}</h5></div>
+        				<div class="col text-right"><a href="javascript:void()" id="switch-to-untappd" class="">({{ 'event.taplist_management.switch_to_untappd'|trans }})</a></div>
+                    </div>                   			
                     {{ form_start(form) }}
                         {{ form_widget(form) }}
                         <button class="btn">{{ "event.taplist_management.local_beer.save"|trans }}</button>
