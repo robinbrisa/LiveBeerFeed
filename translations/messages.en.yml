@@ -177,6 +177,7 @@ taplist:
         checkins: 'Checkins'
         ibu: 'IBU'
         score: 'Score'
+        location: 'Location'
         low_to_high: 'Low to High'
         high_to_low: 'High to Low'
         a_to_z: 'A to Z'
