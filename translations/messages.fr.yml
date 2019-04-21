@@ -74,6 +74,8 @@ general:
 email:
     notify_title: 'Informations concernant l''accès à votre espace brasseur pour %event%'
     notify_title_batch: 'Informations concernant l''accès à vos espaces brasseur pour %event%'
+    reminder_title: 'N''oubliez pas d''envoyer votre liste de bières pour %event%'
+    reminder_title_batch: 'N''oubliez pas d''envoyer vos listes de bières pour %event%'
 tools:
     form:
         beers: 'Liste des bières'

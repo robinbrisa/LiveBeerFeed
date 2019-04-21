@@ -155,6 +155,8 @@ class MainController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('\App\Entity\Event\Event')->find($id);
+        $publishers = $em->getRepository('\App\Entity\Event\Publisher')->findPublishersToRemind($id);
+        dump($publishers);
         $venues = $event->getVenues();
         $me = $em->getRepository('\App\Entity\User\User')->find(2278575);
         $beer = $em->getRepository('\App\Entity\Beer\Beer')->find(3056740);

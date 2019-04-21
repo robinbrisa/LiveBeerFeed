@@ -190,6 +190,70 @@ class AdminController extends Controller
     }
     
     /**
+     * @Route("/admin/remind_publishers/{eventID}", name="remind_publishers")
+     */
+    public function remindPublishers($eventID, Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('\App\Entity\Event\Event')->find($eventID);
+        
+        if (is_null($event)) {
+            $event = $em->getRepository('\App\Entity\Event\Event')->findBySlug($eventID)[0];
+            if (is_null($event)) {
+                throw $this->createNotFoundException('Unknown event');
+            }
+        }
+        
+        $publishers = $em->getRepository('\App\Entity\Event\Publisher')->findPublishersToRemind($event);
+        
+        foreach ($publishers as $event) {
+            foreach ($event as $email => $attachedPublishers) {
+                if (count($attachedPublishers) > 1) {
+                    $message = (new \Swift_Message($translator->trans('email.reminder_title_batch', array('%event%' => $attachedPublishers[0]->getEvent()->getName()), null, $attachedPublishers[0]->getLanguage())))
+                    ->setFrom(array('robin@livebeerfeed.com' => 'Live Beer Feed'))
+                    ->setTo($email)
+                    ->setBody(
+                        $this->renderView(
+                            'email/'.$attachedPublishers[0]->getLanguage().'/taplist_reminder_batch.html.twig',
+                            array('publishers' => $attachedPublishers)
+                            ),
+                        'text/html'
+                        )
+                    ;
+                    $mailer->send($message);
+                    
+                    foreach ($attachedPublishers as $publisher) {
+                        $publisher->setNotified(true);
+                        $em->persist($publisher);
+                    }
+                    $em->flush();
+                } else {
+                    $publisher = $attachedPublishers[0];
+                    $message = (new \Swift_Message($translator->trans('email.reminder_title', array('%event%' => $publisher->getEvent()->getName()), null, $publisher->getLanguage())))
+                    ->setFrom(array('robin@livebeerfeed.com' => 'Live Beer Feed'))
+                    ->setTo($publisher->getEmail())
+                    ->setBody(
+                        $this->renderView(
+                            'email/'.$publisher->getLanguage().'/taplist_reminder.html.twig',
+                            array('publisher' => $publisher)
+                            ),
+                        'text/html'
+                        )
+                    ;
+                    $mailer->send($message);
+                }
+            }
+            
+            // redirect to the 'list' view of the given entity
+            return $this->redirectToRoute('easyadmin', array(
+                'action' => 'list',
+                'entity' => 'Publisher',
+            ));
+        }
+    }
+    
+    /**
      * @Route("/admin/login/{id}", name="force_untappd_login")
      */
     public function forceUntappdLogin($id)

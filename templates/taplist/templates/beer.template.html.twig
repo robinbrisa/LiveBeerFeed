@@ -1,3 +1,4 @@
+{% set location = beer.getLocationAtSession(session) %}
 <div class="taplist-beer" id="beer-{{ beer.id }}" data-id="{{ beer.id }}" data-abv="{{ beer.abv }}" data-ibu="{{ beer.ibu }}" data-score="{{ beer.ratingScore }}" data-brewery="{{ beer.brewery.name|trim }}" data-name="{{ beer.name|trim }}" data-session="{{ session.name }}" data-session-id="{{ session.id }}" data-session-date="{{ session.startDate|date('U') }}" data-style-category="{{ beer.style.category }}" data-ratings="{{ beer.ratingCount }}" data-checkins="{{ beer.totalCount }}" data-unique-checkins="{{ beer.uniqueCount }}" data-label="{{ beer.label }}" data-location="{% if location %}{{ location }}{% endif %}">
 	<div class="beer-info">
 	    <div class="title">
@@ -10,7 +11,6 @@
 	    		<div class="session-color" style="background-color:{{ session.color }}"></div>
 	    	{% endif %}
     	    <div class="beer-info-content">
-    			{% set location = beer.getLocationAtSession(session) %}
     		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}{% for brewery in beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}{% if location %} <strong>[{{ location }}]</strong>{% endif %}</div>
     		    <div class="beer-details"><div class="style-color-square rounded" style="background-color:{{ beer.style.color }}"></div> {{ beer.style.name }}</div>
     		    <div class="beer-details mt-1">{{ beer.ratingScore|rating|raw }} <span class="rating-value"><strong>{% if beer.ratingScore == 0 %}N/A{% else %}{{ beer.ratingScore|round(2) }}{% endif %}</strong> Avg ({{ beer.ratingCount }} ratings)</span></div>

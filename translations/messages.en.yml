@@ -74,6 +74,8 @@ general:
 email:
     notify_title: 'Information about your brewer portal access for %event%'
     notify_title_batch: 'Information about your brewer portals access for %event%'
+    reminder_title: 'Don''t forget to submit your tap list for %event%'
+    reminder_title_batch: 'Don''t forget to submit your tap lists for %event%'
 tools:
     form:
         beers: 'Beers list'

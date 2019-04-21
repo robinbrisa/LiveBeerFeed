@@ -33,6 +33,24 @@ class PublisherRepository extends ServiceEntityRepository
         return $publishers;
     }
     
+    public function findPublishersToRemind($event) {
+        $qb = $this->createQueryBuilder('p')
+        ->join('p.event', 'e')
+        ->andWhere('p.notified = :notified')->setParameter('notified', 1)
+        ->andWhere('p.email IS NOT NULL')
+        ->andWhere('e.id = :event')->setParameter('event', $event)
+        ->getQuery()
+        ->getResult();
+        
+        $publishers = array();
+        foreach ($qb as $publisher) {
+            if (count($publisher->getTaplistItems()) == 0) {
+                $publishers[$publisher->getEvent()->getId()][$publisher->getEmail()][] = $publisher;
+            }
+        }
+        return $publishers;
+    }
+    
 //    /**
 //     * @return Publisher[] Returns an array of Publisher objects
 //     */
