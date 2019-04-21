@@ -1,7 +1,7 @@
-{% if publisher.event.slug %}
-	{% set eventID = publisher.event.slug %}
+{% if publisher[0].event.slug %}
+	{% set eventID = publisher[0].event.slug %}
 {% else %}
-	{% set eventID = publisher.event.id %}
+	{% set eventID = publisher[0].event.id %}
 {% endif %}
 <div style="background-color:#f5f2e8; padding:20px 0;">
     <div id="logo-email" style="background-color:#3e444c; width:590px; margin-left:auto; margin-right:auto; padding-left:10px; line-height:50px;">
@@ -10,8 +10,8 @@
 	<div id="cont-mail" style=" width:600px; height:auto; margin-right:auto;	margin-left:auto;	background-color:#2e3338; padding-top:20px;">
         <div id="bonjour-email" style="font-family: Helvetica,Verdana,sans-serif; margin-left:20px; font-size:20px;	color:#c8c8c8; width:300px; font-weight:500;">Bonjour,</div>
         <div class="txt-email" style="font-family: Helvetica,Verdana,sans-serif;	margin-left:20px;	font-size:14px;	color:#c8c8c8;	width:550px; line-height:22px;">
-			<p>Vous avez reçu il y a quelques jours une liste de codes d'accès pour plusieurs brasseries que vous représentez à {{ publisher.event.name }}. Si vous ne l'avez pas encore fait, n'hésitez pas à envoyer dès que possible la liste des bières (et cidres) que vous allez proposer à {{ publisher.event.name }} afin que l'organisateur de l'évènement puisse communiquer aux visiteurs une tap list la plus complète possible.</p>
-			<p>Si vous avez une question, ou que vous rencontrez le moindre problème, vous pouvez m'envoyer un e-mail à <a href="mailto:robin@livebeerfeed.com" style="color:#dddddd; text-decoration:none;">robin@livebeerfeed.com</a>.</p> 
+			<p>Vous avez reçu il y a quelques jours une liste de codes d'accès pour plusieurs brasseries que vous représentez à {{ publisher[0].event.name }}. Si vous ne l'avez pas encore fait, n'hésitez pas à envoyer dès que possible la liste des bières (et cidres) que vous allez proposer à {{ publisher.event.name }} afin que l'organisateur de l'évènement puisse communiquer aux visiteurs une tap list la plus complète possible.</p>
+			<p>Si vous avez une question, ou si vous rencontrez le moindre problème, vous pouvez m'envoyer un e-mail à <a href="mailto:robin@livebeerfeed.com" style="color:#dddddd; text-decoration:none;">robin@livebeerfeed.com</a>.</p> 
 	        <p>Pour rappel, voici la liste des codes d'accès qui vous sont rattachés pour lesquels aucune bière n'a été saisie :</p>
 			<div id="box-commentaire" style="margin-top:20px;	margin-left:15px;	width:500px;	height:auto;	padding:15px; background-color:#1c1e22;	 border: 1px solid #0c0d0e; border-radius:4px; margin-bottom:20px;">
 				{% for publisher in publishers %} 
@@ -20,7 +20,7 @@
 			</div>
 			<p>Vous pouvez utiliser l'adresse suivante pour vous connecter aux espaces brasserie :<br />
 			<a href="{{ url('brewery_portal',{'eventID': eventID}) }}" style="color:#dddddd; text-decoration:none;">{{ url('brewery_portal',{'eventID': eventID}) }}</a></p> 
-			<p>La tap list de {{ publisher.event.name }} est accessible à l'adresse suivante :<br />
+			<p>La tap list de {{ publisher[0].event.name }} est accessible à l'adresse suivante :<br />
 			<a href="{{ url('taplist',{'eventID': eventID}) }}" style="color:#dddddd; text-decoration:none;">{{ url('taplist',{'eventID': eventID}) }}</a></p> 			
 			<p>Cheers,<br />Robin de <a href="{{ url('homepage') }}" style="color:#dddddd; text-decoration:none;">Live Beer Feed</a></p>
      	</div>
