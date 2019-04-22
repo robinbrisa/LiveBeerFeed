@@ -217,8 +217,8 @@ taplist:
         l1: 'Les données enregistrées localement pour vos bières tickées et favorites sont différentes de celles enregistrées sur le serveur pour votre compte Untappd.' 
         l2: 'Quelle source de données souhaitez-vous utiliser ?'
         l3: 'La source de données abandonnée sera perdue.'
-        keep_local: 'Garder les données locales'
-        keep_remote: 'Garder les données du serveur'
+        keep_local: 'Données locales'
+        keep_remote: 'Données distantes'
     info:
         title: 'Informations sur la Tap List'
         l1: 'Bienvenue sur la Tap List de %name% !'
