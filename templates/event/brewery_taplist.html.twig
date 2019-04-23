@@ -105,7 +105,7 @@
                         	    </div>
                         	    <div class="session-color" style="background-color:{{ tapListItem.session.color }}"></div>
                         		<div class="content">
-                        			<div class="pull-right right-side">
+                        			<div class="pull-right right-side text-right">
                         		    	<div class="beer-details">{% if tapListItem.beer.abv > 0 %}{{ tapListItem.beer.abv|round(2) }}%{% else %}N/A{% endif %} ABV</div>
                         		   		<div class="beer-details" {% if tapListItem.beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ tapListItem.beer.ibu|round(2) }} IBU</div>
                         		    	<a class="open-untappd pull-right" title="Open in Untappd" target="_blank" href="https://www.untappd.com/b/{{ tapListItem.beer.slug }}/{{ tapListItem.beer.id }}">
