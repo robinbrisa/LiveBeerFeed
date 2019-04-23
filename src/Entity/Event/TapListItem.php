@@ -4,6 +4,7 @@ namespace App\Entity\Event;
 
 use App\Entity\Beer\Beer;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Event\TapListItemRepository")
@@ -34,6 +35,18 @@ class TapListItem
      * @ORM\Column(type="boolean")
      */
     private $out_of_stock;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $created_at;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated_at;
 
     public function getSession(): ?Session
     {
@@ -79,6 +92,30 @@ class TapListItem
     public function setOutOfStock(bool $out_of_stock): self
     {
         $this->out_of_stock = $out_of_stock;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }
