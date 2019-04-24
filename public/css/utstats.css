@@ -1027,6 +1027,10 @@ rating.small.r200{
 	cursor: pointer;
 }
 
+#filters-modal {
+	font-size: 13px;
+}
+
 .fixed-button i {
 	margin-top: 13px;
 	font-size: 20px;

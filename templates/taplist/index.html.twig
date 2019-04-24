@@ -74,7 +74,7 @@
     		<div class="modal-content transparent-modal">
     			<div class="modal-body">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <form>
+                    <form class="mt-2">
                         <div class="form-group filter-group">
                             <label class="filters-title" for="search-beer"><i class="fa fa-search" aria-hidden="true"></i> {{ 'taplist.filters.search'|trans }}</label> <div id="clear-search"><i class="fa fa-ban" aria-hidden="true"></i> {{ 'taplist.filters.search_clear'|trans }}</div>
                             <input type="text" class="form-control form-control-sm" id="search-beer" placeholder="{{ 'taplist.filters.search_ph'|trans }}">
@@ -119,19 +119,19 @@
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="ticked" type="radio" value="" id="ignoreFavorites"  data-filter="favorites" checked>
-                                    <label class="form-check-label" for="ignoreFavorites">{{ 'taplist.filters.all'|trans }} <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="ignoreFavorites"><div class="favorite"><i class="fa fa-star-o" aria-hidden="true"></i></div> <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="ticked" type="radio" value="show" id="showFavorites" data-filter="favorites">
-                                    <label class="form-check-label" for="showFavorites">{{ 'taplist.filters.only'|trans }} <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="showFavorites"><div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="ticked" type="radio" value="hide" id="hideFavorites" data-filter="favorites">
-                                    <label class="form-check-label" for="hideFavorites">{{ 'taplist.filters.hide'|trans }} <div class="favorite active"><i class="fa fa-star" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="hideFavorites"><div class="favorite"><i class="fa fa-star-o" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                         </div>
@@ -139,19 +139,19 @@
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="favorites" type="radio" value="" id="ignoreTicked"  data-filter="ticked" checked>
-                                    <label class="form-check-label" for="ignoreTicked">{{ 'taplist.filters.all'|trans }} <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="ignoreTicked"><div class="tick"><i class="fa fa-check" aria-hidden="true"></i></div> <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="favorites" type="radio" value="show" id="showTicked" data-filter="ticked">
-                                    <label class="form-check-label" for="showTicked">{{ 'taplist.filters.only'|trans }} <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="showTicked"><div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="favorites" type="radio" value="hide" id="hideTicked" data-filter="ticked">
-                                    <label class="form-check-label" for="hideTicked">{{ 'taplist.filters.hide'|trans }} <div class="tick active"><i class="fa fa-check" aria-hidden="true"></i></div></label>
+                                    <label class="form-check-label" for="hideTicked"><div class="tick"><i class="fa fa-check" aria-hidden="true"></i></div></label>
                                 </div>
                             </div>
                         </div>
@@ -159,19 +159,19 @@
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="checked-in" type="radio" value="" id="ignoreCheckedIn"  data-filter="checkedIn" checked>
-                                    <label class="form-check-label" for="ignoreCheckedIn">{{ 'taplist.filters.all'|trans }} <img src="{{ asset('images/untappd_bottles.png') }}"></label>
+                                    <label class="form-check-label" for="ignoreCheckedIn"><img style="position:relative;bottom:2px;" src="{{ asset('images/untappd_bottles.png') }}"> <img style="position:relative;bottom:2px;"  src="{{ asset('images/untappd_bottles_yellow.png') }}"></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="checked-in" type="radio" value="show" id="showCheckedIn" data-filter="checkedIn">
-                                    <label class="form-check-label" for="showCheckedIn">{{ 'taplist.filters.only'|trans }} <img src="{{ asset('images/untappd_bottles.png') }}"></label>
+                                    <label class="form-check-label" for="showCheckedIn"><img style="position:relative;bottom:2px;"  src="{{ asset('images/untappd_bottles_yellow.png') }}"></label>
                                 </div>
                             </div>
                             <div class="third-size">
                 				<div class="input-group-chk">
                                     <input class="form-check-input filter-enabler" name="checked-in" type="radio" value="hide" id="hideCheckedIn" data-filter="checkedIn">
-                                    <label class="form-check-label" for="hideCheckedIn">{{ 'taplist.filters.hide'|trans }} <img src="{{ asset('images/untappd_bottles.png') }}"></label>
+                                    <label class="form-check-label" for="hideCheckedIn"><img style="position:relative;bottom:2px;"  src="{{ asset('images/untappd_bottles.png') }}"></label>
                                 </div>
                             </div>
                         </div>
