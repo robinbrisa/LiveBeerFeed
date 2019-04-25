@@ -1227,6 +1227,7 @@ div.filters-title {
 	border-radius: 8px;
 	padding: 0 4px;
 	text-align: center;
+	min-height: 24px;
 }
 
 .unlocked-badge img {
