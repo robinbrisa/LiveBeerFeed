@@ -808,18 +808,9 @@ rating.small.r200{
 }
 
 .beer-info .title {
-	background-color: #eaeaea;
-	white-space: nowrap;
-	border-bottom: 2px solid #e2e2e2;
 }
 
 .title .beer-name {
-	text-overflow: ellipsis;
-    overflow: hidden;
-    padding: 0px 7px;
-    font-weight: 500;
-	width: calc(100% - 30px);
-	height:28px;
 }
 
 .title .beer-name-admin {
@@ -864,13 +855,7 @@ rating.small.r200{
 }
 
 .title .tick {
-	background-color: #eaeaea;
-	margin-left: 4px;
 	font-size:18px;
-	display: inline-block;	
-	float: right;
-	height:30px;
-	width:26px;
 	color: #bbb;
 	cursor: pointer;
 }
@@ -955,9 +940,34 @@ rating.small.r200{
 	padding-right: 5px;
 }
 
+.taplist-title-flexbox {
+	height: 29px;
+	background-color: #eaeaea;
+	border-bottom: 2px solid #e2e2e2;
+	display: flex;
+	box-sizing: border-box;
+	padding: 0px 6px;
+}
+
+.taplist-title-flexbox .left-icons {
+	flex: 0 0;
+}
+
+.taplist-title-flexbox .beer-title {
+	flex: 1;
+	overflow-x: auto;
+	height: 29px;
+    font-weight: 500;
+    margin: 0px 6px;
+}
+
+.taplist-title-flexbox .right-icons {
+	flex: 0 0;
+	text-align: right;
+}
+
 .title .favorite {
 	font-size:18px;
-	margin-right: 4px;
 	display: inline-block;
 	color: #bbb;
 	cursor: pointer;
