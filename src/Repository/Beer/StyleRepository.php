@@ -16,7 +16,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
  */
 class StyleRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(\Doctrine\Common\Persistence\ManagerRegistry $registry)
     {
         parent::__construct($registry, Style::class);
     }

@@ -15,7 +15,7 @@ use DoctrineExtensions\Query\Mysql\Date;
  */
 class CheckinRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(\Doctrine\Common\Persistence\ManagerRegistry $registry)
     {
         parent::__construct($registry, Checkin::class);
     }
