@@ -62,6 +62,16 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if publisher.master and publishersList is not null %}
+                        <div class="form-group filter-group-table">
+                        	<select id="add-beer-publisher" name="add-beer-publisher" class="form-control form-control-sm filters-sort-select" required>
+                                <option value="">{{ 'event.taplist_management.attach_to_publisher'|trans }}</option>
+                                {% for selectablePublisher in publishersList %}
+                                    <option value="{{ selectablePublisher.id }}">{{ selectablePublisher.name }}{% if selectablePublisher.location %} [{{ selectablePublisher.location }}]{% endif %}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
             			<button id="add-beer-submit" type="submit" class="btn btn-secondary pull-right mt-1">{{ 'event.taplist_management.search'|trans }}</button>
             		</form>
             		<form id="select-beer-form">
@@ -115,6 +125,7 @@
                         			</div>
                         		    <div class="beer-details">{{ tapListItem.beer.brewery.countryName|country }} {{ tapListItem.beer.brewery.name|trim }}{% for brewery in tapListItem.beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>
                         		    <div class="beer-details"><div class="style-color-square rounded" style="background-color:{{ tapListItem.beer.style.color }}"></div> {{ tapListItem.beer.style.name }}</div>
+                        		    {% if tapListItem.owner and tapListItem.owner != publisher %}<div class="beer-details other-publisher"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ tapListItem.owner.name }}{% if tapListItem.owner.location %} [{{ tapListItem.owner.location }}]{% endif %}</div>{% endif %}
     								<div class="beer-details">
         								<form class="form-inline">
         									<input class="form-control form-control-sm w-75 inline-block mr-0 extra-info-field" type="text" maxlength="255" placeholder="{{ 'event.taplist_management.extra_info'|trans }}" value="{{ tapListItem.beer.extraInfo }}">

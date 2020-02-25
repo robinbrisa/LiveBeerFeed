@@ -281,11 +281,18 @@ class EventController extends Controller
                 $form = $this->createForm(LocalBeerType::class, $localBeer);
             }
             
-            $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event, $publisher);
-                        
+            $publishersList = null;
+            if ($publisher->getMaster()) {
+                $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event);
+                $publishersList = $em->getRepository('\App\Entity\Event\Publisher')->findNonMasterEventPublishers($event);
+            } else {
+                $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event, $publisher);
+            }
+            
             return $this->render('event/brewery_taplist.html.twig', array(
                 'event' => $event,
                 'publisher' => $publisher,
+                'publishersList' => $publishersList,
                 'tapListItems' => $tapListItems,
                 'success' => $success,
                 'local_beer' => $localBeer,

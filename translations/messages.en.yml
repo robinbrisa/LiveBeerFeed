@@ -152,6 +152,7 @@ event:
         add: 'Add'
         cancel: 'Cancel'
         all_sessions: 'All sessions'
+        attach_to_publisher: 'Attach to publisher (optional)'
         extra_info: 'Use this field to indicate any additionnal info about this beer (255 characters max)'
         beer_list: 'Your beers'
         success: 'Your beer has successfully been saved. It will be reviewed shortly and will then appear in the tap list.'

@@ -886,10 +886,12 @@ rating.small.r200{
 }
 
 .open-untappd {
-	position: relative;
-	width: 30px;
-	height: 30px;
-	display: block;
+	position: absolute;
+    width: 30px;
+    height: 30px;
+    display: block;
+    bottom: 3px;
+    right: 3px;
 }
 
 .open-untappd img {
@@ -1345,4 +1347,39 @@ btn-group-xs > .btn, .btn-xs {
 
 .alt-font {
 	font-family: 'Oswald', sans-serif;
+}
+
+.other-publisher {
+	color: red;
+	margin-left: 3px;
+}
+
+.rating-bar {
+	width: 160px;
+	height: 18px;
+	border: 1px solid;
+	border-radius: 5px;
+    display: inline-block;
+    /*background:repeating-linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 255, 255) 1%, rgb(255, 255, 255) 20%);*/
+}
+
+.rating-bar-progress {
+	height: 100%;
+	background: rgb(251,212,14);
+	background: linear-gradient(90deg, rgba(251,212,14,1) 0%, rgba(242,180,34,1) 100%);
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.rating-bar-value {
+	display: inline-block;
+    float: left;
+    width: 100%;
+    text-align: center;
+    line-height: 14px;
+    font-weight: 600;
+}
+
+.rating-bar-ratings {
+	font-weight: normal;
 }

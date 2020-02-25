@@ -88,6 +88,11 @@ class Publisher
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $location;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $master = false;
     
      /**
      * Get $email
@@ -426,6 +431,18 @@ class Publisher
     public function setLocation(?string $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getMaster(): ?bool
+    {
+        return $this->master;
+    }
+
+    public function setMaster(bool $master): self
+    {
+        $this->master = $master;
 
         return $this;
     }

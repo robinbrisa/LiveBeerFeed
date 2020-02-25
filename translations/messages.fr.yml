@@ -152,6 +152,7 @@ event:
         add: 'Ajouter'
         cancel: 'Annuler'
         all_sessions: 'Toutes les sessions'
+        attach_to_publisher: 'Attacher à un publicateur (optionnel)'
         extra_info: 'Utilisez ce champ pour indiquer des informations complémentaires sur cette bière (255 caractères maximum)'
         beer_list: 'Vos bières'
         success: 'Votre bière a bien été enregistrée. Celle-ci sera examinée très bientôt et apparaîtra ensuite dans la tap list.'

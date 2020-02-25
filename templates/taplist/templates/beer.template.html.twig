@@ -18,10 +18,11 @@
 	    		<div class="session-color" style="background-color:{{ session.color }}"></div>
 	    	{% endif %}
     	    <div class="beer-info-content">
-    		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}{% for brewery in beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}{% if location %} <strong>[{{ location }}]</strong>{% endif %}</div>
+    		    <div class="beer-details">{{ beer.brewery.countryName|country }} {{ beer.brewery.name|trim }}{% for brewery in beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>
     		    <div class="beer-details"><div class="style-color-square rounded" style="background-color:{{ beer.style.color }}"></div> {{ beer.style.name }}</div>
-    		    <div class="beer-details mt-1">{{ beer.ratingScore|rating|raw }} <span class="rating-value"><strong>{% if beer.ratingScore == 0 %}N/A{% else %}{{ beer.ratingScore|round(2) }}{% endif %}</strong> Avg ({{ beer.ratingCount }} ratings)</span></div>
-        	</div>
+    		    {% if location %}<div class="beer-details"><i class="fa fa-map-marker" aria-hidden="true" style="margin: 0 4px;"></i> {{ location }}</div>{% endif %}
+ 				<div class="beer-details mt-1"><div class="rating-bar"><div class="rating-bar-value">{% if beer.ratingScore == 0 %}N/A{% else %}{{beer.ratingScore|round(2)}}/5 <span class="rating-bar-ratings">({{ beer.ratingCount }} ratings)</span>{% endif %}</div><div class="rating-bar-progress" style="width:{{ (beer.ratingScore*100/5)|round(2) }}%"></div></div></div>
+     	 	</div>
 			<div class="right-side">
 		    	<div class="beer-details">{% if beer.abv > 0 %}{{ beer.abv|round(2) }}%{% else %}N/A{% endif %}</div>
 		   		<div class="beer-details" {% if beer.ibu == 0 %}style="visibility:hidden;"{% endif %}>{{ beer.ibu|round(2) }} IBU</div>

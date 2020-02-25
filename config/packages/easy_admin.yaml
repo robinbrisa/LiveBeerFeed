@@ -63,6 +63,7 @@ easy_admin:
                     - remaining_messages
                     - location
                     - event
+                    - master
         Beer:
             class: App\Entity\Beer\Beer
             form:

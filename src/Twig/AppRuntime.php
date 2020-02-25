@@ -13,6 +13,11 @@ class AppRuntime
 
     public function ratingFilter($number)
     {
+        return $this->tools->getRatingBar($number);
+    }
+        
+    public function untappdRatingFilter($number)
+    {
         return $this->tools->getRatingImage($number);
     }
     

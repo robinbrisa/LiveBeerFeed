@@ -51,6 +51,17 @@ class PublisherRepository extends ServiceEntityRepository
         return $publishers;
     }
     
+    public function findNonMasterEventPublishers($event)
+    {
+        return $this->createQueryBuilder('p')
+        ->join('p.event', 'e')
+        ->andWhere('e.id = :event')->setParameter('event', $event)
+        ->andWhere('p.master = false')
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+    
 //    /**
 //     * @return Publisher[] Returns an array of Publisher objects
 //     */

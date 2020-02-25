@@ -32,7 +32,12 @@ class Tools
         $rating = $rating * 100;
         return '<span class="rating small r' . $rating . '"></span>';
     }
-       
+    
+    public function getRatingBar($rating) {
+        $percentage = $rating*100/5;
+        return '<div class="rating-bar"><div class="rating-bar-value">'.$rating.'/5</div><div class="rating-bar-progress" style="width:'.$percentage.'%"></div></div>';
+    }
+    
     public function getAPIKeysPool() {
         $usedKeys = $this->em->getRepository('App\Entity\APIQueryLog')->findUsedAPIKeys();
         $userKeys = $this->em->getRepository('App\Entity\User\User')->getAPIKeys();
