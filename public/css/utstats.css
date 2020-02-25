@@ -1357,7 +1357,8 @@ btn-group-xs > .btn, .btn-xs {
 .rating-bar {
 	width: 160px;
 	height: 18px;
-	border: 1px solid;
+	border: 1px solid #d2d2d2;
+	background-color: #eaeaea;
 	border-radius: 5px;
     display: inline-block;
     /*background:repeating-linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 255, 255) 1%, rgb(255, 255, 255) 20%);*/
