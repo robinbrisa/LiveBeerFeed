@@ -65,7 +65,7 @@
                         {% if publisher.master and publishersList is not null %}
                         <div class="form-group filter-group-table">
                         	<select id="add-beer-publisher" name="add-beer-publisher" class="form-control form-control-sm filters-sort-select" required>
-                                <option value="">{{ 'event.taplist_management.attach_to_publisher'|trans }}</option>
+                                <option value="global">{{ 'event.taplist_management.attach_to_publisher'|trans }}</option>
                                 {% for selectablePublisher in publishersList %}
                                     <option value="{{ selectablePublisher.id }}">{{ selectablePublisher.name }}{% if selectablePublisher.location %} [{{ selectablePublisher.location }}]{% endif %}</option>
                                 {% endfor %}

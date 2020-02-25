@@ -389,9 +389,13 @@ $(document).ready(function() {
 	
 	$(document).on("submit", '#select-beer-form', function(e) {
 		e.preventDefault();
+		var publisher = null;
+		if ($('#add-beer-publisher').length && $('#add-beer-publisher').val() != "global") {
+			publisher = $('#add-beer-publisher').val();
+		}
 		$('#select-beer-submit').html('<i class="fa fa-spinner fa-pulse"></i>');
 		$('#select-beer-submit').prop('disabled', true);
-		$.post('/ajax/addBeerToTaplist', { 'beer-id': $('#select-beer-field').val(), 'session-id': $('#add-beer-session').val(), 'own' : $('#publisher-add-beer').length }, function(data) {
+		$.post('/ajax/addBeerToTaplist', { 'beer-id': $('#select-beer-field').val(), 'session-id': $('#add-beer-session').val(), 'own' : $('#publisher-add-beer').length, 'publisher' : publisher }, function(data) {
 			$('#select-beer-submit').prop('disabled', false);
 			$('#select-beer-submit').html('Submit');
 			if (data.success) {

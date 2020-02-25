@@ -453,28 +453,29 @@ class AjaxController extends Controller
             $output['success'] = false;
             $output['error'] = 'INVALID_SESSION';
         }
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            $sess = $request->getSession();
-            if (!$sess->get('post_access_key/'.$session->getEvent()->getId())) {
-                $this->denyAccessUnlessGranted('ROLE_ADMIN');
-            } else {
-                $authKey = $sess->get('post_access_key/'.$session->getEvent()->getId());
-                $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $session->getEvent()));
-                if (!$publisher) {
+        $tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer]);
+        if (!$tapListItem) {
+            $output['success'] = false;
+            $output['error'] = 'INVALID_TAP_LIST_ITEM';
+        } else {
+            if (!$this->isGranted('ROLE_ADMIN')) {
+                $sess = $request->getSession();
+                if (!$sess->get('post_access_key/'.$session->getEvent()->getId())) {
                     $this->denyAccessUnlessGranted('ROLE_ADMIN');
                 } else {
-                    if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer, 'owner' => $publisher])) {
-                        $output['success'] = false;
-                        $output['error'] = 'INVALID_TAP_LIST_ITEM';
+                    $authKey = $sess->get('post_access_key/'.$session->getEvent()->getId());
+                    $publisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneBy(array('access_key' => $authKey, 'event' => $session->getEvent()));
+                    if (!$publisher || ($publisher->getEvent() != $session->getEvent())) {
+                        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+                    } else {
+                        if ($tapListItem->getOwner() != $publisher && !($publisher->getMaster() && ($publisher->getEvent() == $tapListItem->getSession()->getEvent()))) {
+                            $output['success'] = false;
+                            $output['error'] = 'NOT_AUTHORIZED';
+                        }
                     }
                 }
             }
-        } else {
-            if (!$tapListItem = $em->getRepository('\App\Entity\Event\TapListItem')->findOneBy(['session' => $session, 'beer' => $beer])) {
-                $output['success'] = false;
-                $output['error'] = 'INVALID_TAP_LIST_ITEM';
-            }
-        }
+        } 
         
         if ($output['success']) {
             $em->remove($tapListItem);
@@ -594,6 +595,7 @@ class AjaxController extends Controller
         $beerID = $request->request->get('beer-id');
         $sessionID = $request->request->get('session-id');
         $storeOwner = $request->request->get('own');
+        $attachedPublisher = $request->request->get('publisher');
         
         if (!$session = $em->getRepository('\App\Entity\Event\Session')->find($sessionID)) {
             $output['success'] = false;
@@ -629,7 +631,15 @@ class AjaxController extends Controller
                                 $tapListItem->setBeer($beer);
                                 $tapListItem->setOutOfStock(0);
                                 if ($storeOwner && $publisher) {
-                                    $tapListItem->setOwner($publisher);
+                                    if ($attachedPublisher && $publisher->getMaster()) {
+                                        $attachedPublisher = $em->getRepository('\App\Entity\Event\Publisher')->findOneById($attachedPublisher);
+                                        // Make sure the selected publisher is from the same event
+                                        if ($attachedPublisher && $publisher->getEvent() == $attachedPublisher->getEvent()) {
+                                            $tapListItem->setOwner($attachedPublisher);
+                                        }
+                                    } else {
+                                        $tapListItem->setOwner($publisher);
+                                    }
                                 }
                                 $em->persist($tapListItem);
                                 $em->flush();
