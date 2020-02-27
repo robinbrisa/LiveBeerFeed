@@ -10,7 +10,9 @@
     	    </div>
 	    	<div class="right-icons">
     	    	<div class="tick"><i class="fa fa-check" aria-hidden="true"></i></div>
-    	    	<div class="admin"><i class="fa fa-wrench" aria-hidden="true"></i></div>
+    	    	{% if is_granted('ROLE_ADMIN') %}
+    	    		<div class="admin"><i class="fa fa-wrench" aria-hidden="true"></i></div>
+    	    	{% endif %}
     	    </div>
 	    </div>
 	    <div class="taplist-flexbox">
