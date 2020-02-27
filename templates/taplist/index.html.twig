@@ -6,6 +6,10 @@
     {% if event.eventLogoNotification %}
     	<meta property="og:image" content="{{ app.request.schemeAndHttpHost ~ asset("images/events/notification/") ~ event.eventLogoNotification }}">
     {% endif %}
+    
+    {% if is_granted('ROLE_ADMIN') %}
+    	<style>.wrench-icon { display: inline-block; }</style>
+    {% endif %}
 {% endblock %}
 
 {% block navbar %}
