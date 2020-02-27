@@ -437,7 +437,7 @@ class UntappdAPI
         }
         $headers = array('Accept' => 'application/json');
         $query = array(
-            'q' => $querystr,
+            'q' => str_replace("#", "", $querystr),
             'offset' => $offset,
             'limit' => $limit,
             'sort' => $sort
@@ -618,7 +618,7 @@ class UntappdAPI
         $log = new APIQueryLog();
         $log->setMethod($url);
         $log->setDate(new \DateTime());
-        $log->setRemainingQueries($response->headers['X-Ratelimit-Remaining']);
+        $log->setRemainingQueries($response->headers['x-ratelimit-remaining']);
         if ($accessToken) {
             $log->setUser($this->em->getRepository('\App\Entity\User\User')->findOneBy(array('internal_untappd_access_token' => $accessToken)));
         }
