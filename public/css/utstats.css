@@ -921,6 +921,7 @@ rating.small.r200{
 	font-size: 13px;
 	line-height: 20px;
 	display: flex;
+	position: relative;
 }
 
 .taplist-flexbox .session-color {
