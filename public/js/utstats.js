@@ -499,6 +499,16 @@ $(document).ready(function() {
 		$('#import-untappd-beer').hide();
 		$('#add-local-beer').show();
 	})
+	
+	$('#taplist-items-filter').keyup(function() {
+		var val = $('#taplist-items-filter').val();
+		if (val != "") {
+			$('#taplist-items-filter').css('border-color', 'red');
+		}
+		$('.taplist-beer:not(:Contains(' + val + '))').addClass("filtered"); 
+		$('.taplist-beer:Contains(' + val + ')').removeClass("filtered"); 
+	})
+	
 });
 
 function filterTapList() {
@@ -571,6 +581,7 @@ function filterTapList() {
 				break;
 		}
 	});
+	
 	refreshTaplistCounts();
 }
 

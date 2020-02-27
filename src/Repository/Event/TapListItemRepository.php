@@ -41,6 +41,7 @@ class TapListItemRepository extends ServiceEntityRepository
             $qb->andWhere('tli.owner = :publisher')
             ->setParameter('publisher', $publisher);
         }
+        $qb->orderBy('b.name');
         return $qb->getQuery()->getResult();
     }
 }

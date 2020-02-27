@@ -808,6 +808,8 @@ rating.small.r200{
 }
 
 .beer-info .title {
+    background-color: #eaeaea;
+    border-bottom: 2px solid #e2e2e2;
 }
 
 .title .beer-name {
@@ -818,7 +820,6 @@ rating.small.r200{
     overflow: hidden;
     padding: 0px 7px;
     font-weight: 500;
-	width: calc(100% - 70px);
 	height:28px;
 } 
 
@@ -1357,19 +1358,20 @@ btn-group-xs > .btn, .btn-xs {
 .rating-bar {
 	width: 200px;
 	height: 20px;
-	border: 2px solid #d2d2d2;
-	background:linear-gradient(90deg, rgb(234, 234, 234) 0px, rgb(234, 234, 234) 38px, rgb(210, 210, 210) 39px, rgb(210, 210, 210) 41px, rgb(234, 234, 234) 42px, rgb(234, 234, 234) 78px, rgb(210, 210, 210) 79px, rgb(210, 210, 210) 81px, rgb(234, 234, 234) 82px, rgb(234, 234, 234) 118px, rgb(210, 210, 210) 119px, rgb(210, 210, 210) 121px, rgb(234, 234, 234) 122px, rgb(234, 234, 234) 158px, rgb(210, 210, 210) 159px, rgb(210, 210, 210) 161px, rgb(234, 234, 234) 162px, rgb(234, 234, 234) 200px);
-	border-radius: 5px;
+	border: 1px solid #d2d2d2;
+	/*background:linear-gradient(90deg, rgb(234, 234, 234) 0px, rgb(234, 234, 234) 38px, rgb(210, 210, 210) 39px, rgb(210, 210, 210) 41px, rgb(234, 234, 234) 42px, rgb(234, 234, 234) 78px, rgb(210, 210, 210) 79px, rgb(210, 210, 210) 81px, rgb(234, 234, 234) 82px, rgb(234, 234, 234) 118px, rgb(210, 210, 210) 119px, rgb(210, 210, 210) 121px, rgb(234, 234, 234) 122px, rgb(234, 234, 234) 158px, rgb(210, 210, 210) 159px, rgb(210, 210, 210) 161px, rgb(234, 234, 234) 162px, rgb(234, 234, 234) 200px);*/
+	border-radius: 6px;
     display: inline-block;
 }
 
 .rating-bar-progress {
 	height: 100%;
 	background: rgb(251,212,14);
-	/*background: linear-gradient(90deg, rgba(251,212,14,1) 0%, rgba(242,180,34,1) 100%);*/
-	background:linear-gradient(90deg, rgb(251, 211, 14) 0px, rgb(250, 206, 18) 38px, rgb(210, 210, 210) 39px, rgb(210, 210, 210) 41px, rgb(250, 206, 18) 42px, rgb(247, 199, 21) 78px, rgb(210, 210, 210) 79px, rgb(210, 210, 210) 81px, rgb(247, 199, 21) 82px, rgb(246, 193, 26) 118px, rgb(210, 210, 210) 119px, rgb(210, 210, 210) 121px, rgb(246, 193, 26) 122px, rgb(244, 187, 30) 158px, rgb(210, 210, 210) 159px, rgb(210, 210, 210) 161px, rgb(244, 187, 30) 162px, rgb(242, 180, 34) 200px);
+	background: linear-gradient(90deg, rgba(251,212,14,1) 0%, rgba(242,180,34,1) 100%);
+	/*background:linear-gradient(90deg, rgb(251, 211, 14) 0px, rgb(250, 206, 18) 38px, rgb(210, 210, 210) 39px, rgb(210, 210, 210) 41px, rgb(250, 206, 18) 42px, rgb(247, 199, 21) 78px, rgb(210, 210, 210) 79px, rgb(210, 210, 210) 81px, rgb(247, 199, 21) 82px, rgb(246, 193, 26) 118px, rgb(210, 210, 210) 119px, rgb(210, 210, 210) 121px, rgb(246, 193, 26) 122px, rgb(244, 187, 30) 158px, rgb(210, 210, 210) 159px, rgb(210, 210, 210) 161px, rgb(244, 187, 30) 162px, rgb(242, 180, 34) 200px);*/
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
+	border-right: 1px solid #d2d2d2;
 }
 
 .rating-bar-value {
@@ -1377,7 +1379,7 @@ btn-group-xs > .btn, .btn-xs {
     float: left;
     width: 100%;
     text-align: center;
-    line-height: 14px;
+    line-height: 16px;
     font-weight: 600;
 }
 

@@ -105,6 +105,7 @@
             	<div class="card-body">
         			<h5 class="card-title">{{ 'event.taplist_management.beer_list'|trans }}</h5>
         			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
+        			<input type="text" id="taplist-items-filter" class="form-control form-control-sm mb-3" placeholder="🔍 Filter"/>
                     {% for tapListItem in tapListItems %}
                         <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">
                         	<div class="beer-info {% if tapListItem.outOfStock %}no-longer-available{% endif %}">
@@ -126,6 +127,7 @@
                         		    <div class="beer-details">{{ tapListItem.beer.brewery.countryName|country }} {{ tapListItem.beer.brewery.name|trim }}{% for brewery in tapListItem.beer.collaboratingBreweries %} <strong>&</strong> {{ brewery.name|trim }}{% endfor %}</div>
                         		    <div class="beer-details"><div class="style-color-square rounded" style="background-color:{{ tapListItem.beer.style.color }}"></div> {{ tapListItem.beer.style.name }}</div>
                         		    {% if tapListItem.owner and tapListItem.owner != publisher %}<div class="beer-details other-publisher"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ tapListItem.owner.name }}{% if tapListItem.owner.location %} [{{ tapListItem.owner.location }}]{% endif %}</div>{% endif %}
+                        		    <div class="beer-details"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ 'event.taplist_management.added'|trans }} {{ tapListItem.createdAt|date('d/m/Y H:i') }}</div>
     								<div class="beer-details">
         								<form class="form-inline">
         									<input class="form-control form-control-sm w-75 inline-block mr-0 extra-info-field" type="text" maxlength="255" placeholder="{{ 'event.taplist_management.extra_info'|trans }}" value="{{ tapListItem.beer.extraInfo }}">
