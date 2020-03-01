@@ -19,6 +19,10 @@ $(document).ready(function() {
 		moment.locale(locale);
 	}
 
+	$(".select2").select2({
+	    theme: 'bootstrap4',
+	});
+	
 	$(".modal").on("shown.bs.modal", function()  {
 	    var urlReplace = "#" + $(this).prop('id'); 
 	    history.pushState(null, null, urlReplace); 

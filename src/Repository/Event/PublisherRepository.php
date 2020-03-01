@@ -57,6 +57,7 @@ class PublisherRepository extends ServiceEntityRepository
         ->join('p.event', 'e')
         ->andWhere('e.id = :event')->setParameter('event', $event)
         ->andWhere('p.master = false')
+        ->orderBy('p.name', 'ASC')
         ->getQuery()
         ->getResult()
         ;

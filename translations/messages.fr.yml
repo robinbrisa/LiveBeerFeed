@@ -141,7 +141,8 @@ event:
         back: 'Retour'
     taplist_management:
         title: 'Gestion des bières proposées'
-        import: 'Importer une bière depuis Untappd (recommandé)'
+        import: 'Importer une bière depuis Untappd'
+        recommended: '(recommandé)'
         add_local: 'Ajouter une bière manuellement'
         switch_to_local: 'Ajouter une bière manuellement'
         switch_to_untappd: 'Importer une bière depuis Untappd'
@@ -152,6 +153,7 @@ event:
         add: 'Ajouter'
         cancel: 'Annuler'
         added: 'Ajouté le :'
+        filter: 'Filtrer'
         all_sessions: 'Toutes les sessions'
         attach_to_publisher: 'Attacher à un publicateur (optionnel)'
         extra_info: 'Informations complémentaires sur cette bière (255 caractères maximum)'

@@ -46,16 +46,18 @@
         		<div id="import-untappd-beer" {{ ( local_mode ? 'style="display:none;"' : '' ) }}>
             		<form id="add-beer-form">
             			<div class="row">
-            				<div class="col"><h5 class="card-title">{{ 'event.taplist_management.import'|trans }}</h5></div>
-            				<div class="col text-right"><a href="javascript:void()" id="switch-to-local" class="">({{ 'event.taplist_management.switch_to_local'|trans }})</a></div>
+            				<div class="col"><h5 class="card-title">{{ 'event.taplist_management.import'|trans }}{% if event.allowLocalBeer %} {{ 'event.taplist_management.recommended'|trans }}{% endif %}</h5></div>
+            				{% if event.allowLocalBeer %}
+            					<div class="col text-right"><a href="javascript:void()" id="switch-to-local" class="">({{ 'event.taplist_management.switch_to_local'|trans }})</a></div>
+            				{% endif %}
                         </div>            				
                         <div class="form-group filter-group">
                         	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
                         	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
-                            <input type="text" class="form-control form-control-sm" id="searchString" name="searchString" placeholder="{{ 'event.taplist_management.keywords'|trans }}" required>
+                            <input type="text" class="form-control" id="searchString" name="searchString" placeholder="{{ 'event.taplist_management.keywords'|trans }}" required>
                         </div>
                         <div class="form-group filter-group-table">
-                        	<select id="add-beer-session" name="add-beer-session" class="form-control form-control-sm filters-sort-select" required>
+                        	<select id="add-beer-session" name="add-beer-session" class="form-control filters-sort-select" required>
                                 {% if event.sessions|length > 1 %}<option value="all">{{ 'event.taplist_management.all_sessions'|trans }}</option>{% endif %}
                                 {% for session in event.sessions %}
                                     <option value="{{ session.id }}">{{ session.name }}</option>
@@ -63,8 +65,8 @@
                             </select>
                         </div>
                         {% if publisher.master and publishersList is not null %}
-                        <div class="form-group filter-group-table">
-                        	<select id="add-beer-publisher" name="add-beer-publisher" class="form-control form-control-sm filters-sort-select" required>
+                        <div class="form-group filter-group-table mt-2">
+                        	<select id="add-beer-publisher" name="add-beer-publisher" class="form-control filters-sort-select select2">
                                 <option value="global">{{ 'event.taplist_management.attach_to_publisher'|trans }}</option>
                                 {% for selectablePublisher in publishersList %}
                                     <option value="{{ selectablePublisher.id }}">{{ selectablePublisher.name }}{% if selectablePublisher.location %} [{{ selectablePublisher.location }}]{% endif %}</option>
@@ -80,7 +82,7 @@
                         	<div id="select-beer-warning" class="alert alert-warning" role="alert">{{ 'event.taplist_management.results'|trans|raw }}</div>
                         </div>
                         <div class="form-group filter-group-table">
-                        	<select id="select-beer-field" name="select-beer-field" class="form-control form-control-sm filters-sort-select" required>
+                        	<select id="select-beer-field" name="select-beer-field" class="form-control form-control-sm filters-sort-select select2" required>
                             	<option value="">{{ 'event.taplist_management.select'|trans }}</option>
                             </select>
                         </div>
@@ -105,7 +107,7 @@
             	<div class="card-body">
         			<h5 class="card-title">{{ 'event.taplist_management.beer_list'|trans }}</h5>
         			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
-        			<input type="text" id="taplist-items-filter" class="form-control form-control-sm mb-3" placeholder="🔍 Filter"/>
+        			<input type="text" id="taplist-items-filter" class="form-control form-control-sm mb-3" placeholder="🔍 {{ 'event.taplist_management.filter'|trans }}"/>
                     {% for tapListItem in tapListItems %}
                         <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">
                         	<div class="beer-info {% if tapListItem.outOfStock %}no-longer-available{% endif %}">

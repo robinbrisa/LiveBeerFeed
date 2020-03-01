@@ -16,8 +16,10 @@
         	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         	<link href="https://fonts.googleapis.com/css?family=Arima+Madurai|Oswald" rel="stylesheet">
+        	<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+        	<link href="{{ asset('css/select2-bootstrap4.min.css') }}" rel="stylesheet">
         	<link href="{{ asset('css/font-awesome-animation.min.css') }}" rel="stylesheet">
-        	<link href="{{ asset('css/utstats.css?v=0.9') }}" rel="stylesheet">
+        	<link href="{{ asset('css/utstats.css?v=0.10') }}" rel="stylesheet">
         {% endblock %}
         {% block head %}
         {% endblock %}
@@ -42,10 +44,11 @@
        		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" integrity="sha384-feJI7QwhOS+hwpX2zkaeJQjeiwlhOP+SdQDqhgvvo1DsjtiSQByFdThsxO669S2D" crossorigin="anonymous"></script>
        		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
        		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment-with-locales.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
         	<script src="{{ asset('js/autobahn.js') }}"></script>
         	<script src="{{ asset('js/jquery.animateNumber.js') }}"></script>
         	<script src="{{ asset('js/platform.js') }}"></script>
-        	<script src="{{ asset('js/utstats.js?v=0.9') }}"></script>
+        	<script src="{{ asset('js/utstats.js?v=0.10') }}"></script>
         {% endblock %}
     </body>
 </html>

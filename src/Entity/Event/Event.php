@@ -124,6 +124,11 @@ class Event
      */
     private $hidden = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $allowLocalBeer = 0;
+
       /**
      * Get $has_taplist
      *
@@ -591,6 +596,18 @@ class Event
     public function setHidden(bool $hidden): self
     {
         $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    public function getAllowLocalBeer(): ?bool
+    {
+        return $this->allowLocalBeer;
+    }
+
+    public function setAllowLocalBeer(bool $allowLocalBeer): self
+    {
+        $this->allowLocalBeer = $allowLocalBeer;
 
         return $this;
     }
