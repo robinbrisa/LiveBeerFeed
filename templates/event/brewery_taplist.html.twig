@@ -105,8 +105,9 @@
 		{% if tapListItems|length > 0 %}
             <div class="card mt-2">
             	<div class="card-body">
+        			<button type="button" class="btn btn-light btn-sm info-major pull-right" id="taplist-management-help-button">{{ 'event.taplist_management.help'|trans }}</button>
         			<h5 class="card-title">{{ 'event.taplist_management.beer_list'|trans }}</h5>
-        			<p class="card-text">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
+        			<p class="card-text" id="taplist-management-help" style="display:none;">{{ 'event.taplist_management.beer_list_info'|trans|raw }}</p>
         			<input type="text" id="taplist-items-filter" class="form-control form-control-sm mb-3" placeholder="🔍 {{ 'event.taplist_management.filter'|trans }}"/>
                     {% for tapListItem in tapListItems %}
                         <div class="taplist-beer" data-beer-id="{{ tapListItem.beer.id }}" data-session-id="{{ tapListItem.session.id }}">

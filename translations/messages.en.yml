@@ -154,6 +154,7 @@ event:
         cancel: 'Cancel'
         added: 'Added:'
         filter: 'Filter'
+        help: 'Show help'
         all_sessions: 'All sessions'
         attach_to_publisher: 'Attach to publisher (optional)'
         extra_info: 'Additionnal info about this beer (255 characters max)'

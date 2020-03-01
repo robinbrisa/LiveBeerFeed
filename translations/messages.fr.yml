@@ -154,6 +154,7 @@ event:
         cancel: 'Annuler'
         added: 'Ajouté le :'
         filter: 'Filtrer'
+        help: 'Afficher l''aide'
         all_sessions: 'Toutes les sessions'
         attach_to_publisher: 'Attacher à un publicateur (optionnel)'
         extra_info: 'Informations complémentaires sur cette bière (255 caractères maximum)'

@@ -23,6 +23,11 @@ $(document).ready(function() {
 	    theme: 'bootstrap4',
 	});
 	
+	$('#taplist-management-help-button').click(function() {
+		$('#taplist-management-help-button').hide();
+		$('#taplist-management-help').show();
+	});
+	
 	$(".modal").on("shown.bs.modal", function()  {
 	    var urlReplace = "#" + $(this).prop('id'); 
 	    history.pushState(null, null, urlReplace); 
