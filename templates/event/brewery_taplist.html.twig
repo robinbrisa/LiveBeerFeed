@@ -54,9 +54,11 @@
                         <div class="form-group filter-group">
                         	<div id="add-beer-success" class="alert alert-success" role="alert"></div>
                         	<div id="add-beer-error" class="alert alert-danger" role="alert"></div>
+    						<label for="add-beer-session">{{ 'event.taplist_management.keywords_label'|trans }}</label>
                             <input type="text" class="form-control" id="searchString" name="searchString" placeholder="{{ 'event.taplist_management.keywords'|trans }}" required>
                         </div>
                         <div class="form-group filter-group-table">
+    						<label for="add-beer-session">{{ 'event.taplist_management.session_label'|trans }}</label>
                         	<select id="add-beer-session" name="add-beer-session" class="form-control filters-sort-select" required>
                                 {% if event.sessions|length > 1 %}<option value="all">{{ 'event.taplist_management.all_sessions'|trans }}</option>{% endif %}
                                 {% for session in event.sessions %}
@@ -66,8 +68,9 @@
                         </div>
                         {% if publisher.master and publishersList is not null %}
                         <div class="form-group filter-group-table mt-2">
+    						<label for="add-beer-session">{{ 'event.taplist_management.attach_to_publisher'|trans }}</label>
                         	<select id="add-beer-publisher" name="add-beer-publisher" class="form-control filters-sort-select select2">
-                                <option value="global">{{ 'event.taplist_management.attach_to_publisher'|trans }}</option>
+                                <option value=""></option>
                                 {% for selectablePublisher in publishersList %}
                                     <option value="{{ selectablePublisher.id }}">{{ selectablePublisher.name }}{% if selectablePublisher.location %} [{{ selectablePublisher.location }}]{% endif %}</option>
                                 {% endfor %}
