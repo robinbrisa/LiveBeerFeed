@@ -213,6 +213,7 @@ taplist:
             fruits_herbs: 'Fruits / Herbs'
             pastry: 'Pastry'
             spicy: 'Spicy'
+            smoked: 'Smoked'
         style_none: 'None'
         style_all: 'All'
         untappd_button:
