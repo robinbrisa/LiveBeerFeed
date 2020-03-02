@@ -51,13 +51,16 @@ class PublisherRepository extends ServiceEntityRepository
         return $publishers;
     }
     
-    public function findNonMasterEventPublishers($event)
+    public function findNonMasterEventPublishers($event, $lengthSort = false)
     {
-        return $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('p')
         ->join('p.event', 'e')
         ->andWhere('e.id = :event')->setParameter('event', $event)
-        ->andWhere('p.master = false')
-        ->orderBy('p.name', 'ASC')
+        ->andWhere('p.master = false');
+        if ($lengthSort) {            
+            $qb->addOrderBy('LENGTH(p.name)', 'ASC');
+        }
+        return $qb->addOrderBy('p.name', 'ASC')
         ->getQuery()
         ->getResult()
         ;

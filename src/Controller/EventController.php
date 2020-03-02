@@ -284,7 +284,7 @@ class EventController extends Controller
             $publishersList = null;
             if ($publisher->getMaster()) {
                 $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event);
-                $publishersList = $em->getRepository('\App\Entity\Event\Publisher')->findNonMasterEventPublishers($event);
+                $publishersList = $em->getRepository('\App\Entity\Event\Publisher')->findNonMasterEventPublishers($event, $event->getLengthSort());
             } else {
                 $tapListItems = $em->getRepository('\App\Entity\Event\TapListItem')->getEventTapList($event, $publisher);
             }

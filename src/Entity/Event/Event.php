@@ -129,6 +129,11 @@ class Event
      */
     private $allowLocalBeer = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $lengthSort = 0;
+
       /**
      * Get $has_taplist
      *
@@ -608,6 +613,18 @@ class Event
     public function setAllowLocalBeer(bool $allowLocalBeer): self
     {
         $this->allowLocalBeer = $allowLocalBeer;
+
+        return $this;
+    }
+
+    public function getLengthSort(): ?bool
+    {
+        return $this->lengthSort;
+    }
+
+    public function setLengthSort(bool $lengthSort): self
+    {
+        $this->lengthSort = $lengthSort;
 
         return $this;
     }
