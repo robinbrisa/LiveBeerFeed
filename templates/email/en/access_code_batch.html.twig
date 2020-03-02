@@ -14,7 +14,7 @@
 			<p>This space allows brewers to submit the beers (and ciders) they will offer on the tap list, and will also be used to send notifications to the visitors during the event.</p> 
 			<div id="box-commentaire" style="margin-top:20px;	margin-left:15px;	width:500px;	height:auto;	padding:15px; background-color:#1c1e22;	 border: 1px solid #0c0d0e; border-radius:4px; margin-bottom:20px;">
 				{% for publisher in publishers %} 
-				    <strong>{{ publisher.name }}{% if publisher.master %} <span class="font-style:italic; font-weight:normal;"> (Master account)</span>{% endif %}:</strong> {{ publisher.accessKey }}<br />
+				    <strong>{{ publisher.name }}{% if publisher.master %} <span style="font-style:italic; font-weight:normal;"> (Master account)</span>{% endif %}:</strong> {{ publisher.accessKey }}<br />
 				{% endfor %}
 			</div>
 			<p>Please forward these codes as necessary.</p>
