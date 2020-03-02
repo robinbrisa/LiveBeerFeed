@@ -62,7 +62,12 @@ class LbfUpdateTaplistQueueCommand extends Command
                     $i++;
                     $output->writeln(sprintf('[%s] Adding beer %d', date('H:i:s'), $queueElement->getUntappdId()));
                     if ($response = $this->untappdAPI->getBeerInfo($queueElement->getUntappdId(), $apiKey)) {
-                        $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                        $rateLimitRemaining = 0;
+                        if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                            $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+                        } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                        }
                         if ($response == "DELETED") {
                             $this->em->remove($queueElement);
                             $this->em->flush();

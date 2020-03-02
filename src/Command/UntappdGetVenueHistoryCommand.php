@@ -84,7 +84,13 @@ class UntappdGetVenueHistoryCommand extends Command
             $venue->setInternalFullHistoryGathered(false);
         }
         if ($response = $this->untappdAPI->getVenueCheckins($vid, $apiKey, $maxID, null, 25)) {
-            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+            if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+            } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+            } else {
+                $rateLimitRemaining = 0;
+            }
             while ($rateLimitRemaining == 0 && $apiKey !== false) {
                 $poolKey = $apiKey;
                 if (is_null($apiKey)) {
@@ -93,7 +99,13 @@ class UntappdGetVenueHistoryCommand extends Command
                 $apiKeyPool[$poolKey] = intval($rateLimitRemaining);
                 $apiKey = $this->tools->getBestAPIKey($apiKeyPool);
                 $response = $this->untappdAPI->getVenueCheckins($vid, $apiKey, $maxID, null, 25);
-                $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                    $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+                } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                    $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                } else {
+                    $rateLimitRemaining = 0;
+                }
                 if ($apiKey === false) {
                     $output->writeln(sprintf('[%s] API query limit has been reached, please continue later.', date('H:i:s')));
                     return false;
@@ -135,7 +147,13 @@ class UntappdGetVenueHistoryCommand extends Command
                     $output->writeln(sprintf('[%s] (%d) Next page starting at %d.', date('H:i:s'), $i, $maxID));
                     $response = $this->untappdAPI->getVenueCheckins($vid, $apiKey, $maxID, null, 25);
                     $maxID = $response->body->response->pagination->max_id;
-                    $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                    if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                        $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+                    } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                        $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                    } else {
+                        $rateLimitRemaining = 0;
+                    }
                 }
             }
             $output->writeln(sprintf('[%s] Added %d checkins.', date('H:i:s'), $j));

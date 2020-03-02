@@ -70,9 +70,20 @@ class UntappdGetUserFriendlistCommand extends Command
             }
             $output->writeln(sprintf('[%s] Successfully received friendlist', date('H:i:s')));
             $i = 0;
-            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
-            while ($totalFriends > $offset && $rateLimitRemaining > 0) {
+            $rateLimitRemaining = 0;
+            if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+            } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
                 $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+            }
+            while ($totalFriends > $offset && $rateLimitRemaining > 0) {
+                if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                    $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+                } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                    $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                } else {
+                    $rateLimitRemaining = 0;
+                }
                 $output->writeln(sprintf('[%s] (%d) Handling %d friends. Remaining queries: %d.', date('H:i:s'), $i, $response->body->response->count, $rateLimitRemaining));
                 $friendsData = $response->body->response->items;
                 $this->untappdAPISerializer->handleFriendsArray($user, $friendsData);

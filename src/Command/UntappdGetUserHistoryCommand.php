@@ -84,7 +84,13 @@ class UntappdGetUserHistoryCommand extends Command
             $i = 0;
             $j = 0;
             $maxID = $response->body->response->pagination->max_id;
-            $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+            if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+            } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+            } else {
+                $rateLimitRemaining = 0;
+            }
             while ($maxID != "" && $rateLimitRemaining > 0 && !$found) {
                 $output->writeln(sprintf('[%s] (%d) Handling %d checkins. Remaining queries: %d.', date('H:i:s'), $i, $response->body->response->checkins->count, $rateLimitRemaining));
                 $checkinsData = $response->body->response->checkins->items;
@@ -129,7 +135,13 @@ class UntappdGetUserHistoryCommand extends Command
                     $output->writeln(sprintf('[%s] (%d) Next page starting at %d.', date('H:i:s'), $i, $maxID));
                     $response = $this->untappdAPI->getUserActivityFeed(null, $user->getInternalUntappdAccessToken(), $maxID, null, 50);
                     $maxID = $response->body->response->pagination->max_id;
-                    $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                    if (array_key_exists('x-ratelimit-remaining', $response->headers)) {
+                        $rateLimitRemaining = $response->headers['x-ratelimit-remaining'];
+                    } elseif (array_key_exists('X-Ratelimit-Remaining', $response->headers)) {
+                        $rateLimitRemaining = $response->headers['X-Ratelimit-Remaining'];
+                    } else {
+                        $rateLimitRemaining = 0;
+                    }
                 }
                 if ($maxID == "") {
                     $io->note(sprintf('[%s] History is now complete!', date('H:i:s')));
