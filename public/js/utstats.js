@@ -399,7 +399,7 @@ $(document).ready(function() {
 	$(document).on("submit", '#select-beer-form', function(e) {
 		e.preventDefault();
 		var publisher = null;
-		if ($('#add-beer-publisher').length && $('#add-beer-publisher').val() != "global") {
+		if ($('#add-beer-publisher').length && $('#add-beer-publisher').val() != "") {
 			publisher = $('#add-beer-publisher').val();
 		}
 		$('#select-beer-submit').html('<i class="fa fa-spinner fa-pulse"></i>');

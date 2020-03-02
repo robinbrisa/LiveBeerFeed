@@ -14,7 +14,7 @@
 			<p>Cet espace permet aux brasseries de saisir les bières (et cidres) qu'elles comptent proposer pour les ajouter à la tap list, ainsi que d'envoyer des notifications aux visiteurs durant l'évènement.</p> 
 			<div id="box-commentaire" style="margin-top:20px;	margin-left:15px;	width:500px;	height:auto;	padding:15px; background-color:#1c1e22;	 border: 1px solid #0c0d0e; border-radius:4px; margin-bottom:20px;">
 				{% for publisher in publishers %} 
-				    <strong>{{ publisher.name }}:</strong> {{ publisher.accessKey }}<br />
+				    <strong>{{ publisher.name }}{% if publisher.master %} <span class="font-style:italic; font-weight:normal;"> (Compte maître)</span>{% endif %}:</strong> {{ publisher.accessKey }}<br />
 				{% endfor %}
 			</div>
 			<p>Veuillez transmettre ces codes si nécessaire.</p>
