@@ -1,5 +1,9 @@
 {% set location = beer.getLocationAtSession(session) %}
-<div class="taplist-beer" id="beer-{{ beer.id }}" data-id="{{ beer.id }}" data-abv="{{ beer.abv }}" data-ibu="{{ beer.ibu }}" data-score="{{ beer.ratingScore }}" data-brewery="{{ beer.brewery.name|trim }}" data-name="{{ beer.name|trim }}" data-session="{{ session.name }}" data-session-id="{{ session.id }}" data-session-date="{{ session.startDate|date('U') }}" data-style-category="{{ beer.style.category }}" data-ratings="{{ beer.ratingCount }}" data-checkins="{{ beer.totalCount }}" data-unique-checkins="{{ beer.uniqueCount }}" data-label="{{ beer.label }}" data-location="{% if location %}{{ location }}{% endif %}">
+{% set categories = [] %}
+{% for category in beer.style.categories %}
+	{% set categories = categories|merge([category.name]) %}
+{% endfor %}
+<div class="taplist-beer" id="beer-{{ beer.id }}" data-id="{{ beer.id }}" data-abv="{{ beer.abv }}" data-ibu="{{ beer.ibu }}" data-score="{{ beer.ratingScore }}" data-brewery="{{ beer.brewery.name|trim }}" data-name="{{ beer.name|trim }}" data-session="{{ session.name }}" data-session-id="{{ session.id }}" data-session-date="{{ session.startDate|date('U') }}" data-style-category="{{ categories|json_encode }}" data-ratings="{{ beer.ratingCount }}" data-checkins="{{ beer.totalCount }}" data-unique-checkins="{{ beer.uniqueCount }}" data-label="{{ beer.label }}" data-location="{% if location %}{{ location }}{% endif %}">
 	<div class="beer-info">
 	    <div class="title taplist-title-flexbox">
 	    	<div class="left-icons">

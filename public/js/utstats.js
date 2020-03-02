@@ -554,7 +554,17 @@ function filterTapList() {
 			case "filteredStyles":
 				$.each(val, function(idx, category) {
 					$('.taplist-beer').filter(function() { 
-						  return $(this).data("style-category") == category
+						var filter = false;
+						if ($.inArray(category, $(this).data("style-category")) != -1) {
+							filter = true;
+							// Check if every style is filtered
+							$.each($(this).data("style-category"), function(ckey, cval){
+								if ($.inArray(cval, taplistFilters.filteredStyles) == -1) {
+									filter = false;
+								}
+							})
+						}
+						return filter;
 					}).addClass("filtered");
 				});
 				break;

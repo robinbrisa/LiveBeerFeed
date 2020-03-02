@@ -230,12 +230,10 @@
                         <div class="filters-title"><i class="fa fa-beer" aria-hidden="true"></i> {{ 'taplist.filters.style_categories'|trans }}</div>
                         <div class="center-checkboxes">
                             {% for category in styleCategories %}
-                            	{% if category != "" %}
-                                    <div class="form-check form-check-inline">
-                                    	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category }}" data-style="{{ category }}" checked>
-                                    	<label class="form-check-label" for="chk-style-{{ category }}">{{ ("taplist.filters.styles."~category)|trans }}</label>
-                                    </div>
-                                {% endif %}
+                                <div class="form-check form-check-inline">
+                                	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category.name }}" data-style="{{ category.name }}" checked>
+                                	<label class="form-check-label" for="chk-style-{{ category.name }}">{{ ("taplist.filters.styles."~category.name)|trans }}</label>
+                                </div>
                             {% endfor %}
                         </div>
             			<hr class="my-1">

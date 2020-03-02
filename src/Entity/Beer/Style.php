@@ -2,6 +2,8 @@
 
 namespace App\Entity\Beer;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -38,6 +40,12 @@ class Style
      * @JMS\Exclude()
      */
     private $beers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Category", inversedBy="styles")
+     * @ORM\JoinTable(name="rel_style_category")
+     */
+    private $categories;
     
     public function __toString()
     {
@@ -70,6 +78,7 @@ class Style
 
     public function __construct() {
         $this->beers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
     
     /**
@@ -128,6 +137,60 @@ class Style
     public function getColor()
     {
         return $this->color;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+        }
+
+        return $this;
+    }
+    
+    /**
+     * @return Collection|Beer[]
+     */
+    public function getBeers(): Collection
+    {
+        return $this->beers;
+    }
+    
+    public function addBeer(Beer $beer): self
+    {
+        if (!$this->beers->contains($beer)) {
+            $this->beers[] = $beer;
+            $beer->addCategory($this);
+        }
+        
+        return $this;
+    }
+    
+    public function removeBeer(Beer $beer): self
+    {
+        if ($this->beers->contains($beer)) {
+            $this->beers->removeElement($beer);
+            $beer->removeCategory($this);
+        }
+        
+        return $this;
     }
     
 }

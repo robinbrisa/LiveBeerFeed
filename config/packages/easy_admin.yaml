@@ -1,5 +1,17 @@
 easy_admin:
-    site_name: 'Event Configuration'
+    site_name: 'Live Beer Feed Data Admin'
+    design:
+        menu:
+            - { label : 'Events' }
+            - Event
+            - Session
+            - EventStyle
+            - Message
+            - Publisher
+            - { label : 'Beers' }
+            - Beer
+            - BeerStyle
+            - Category
     entities:
         Event:
             class: App\Entity\Event\Event
@@ -22,6 +34,17 @@ easy_admin:
             list:
                 actions:
                     - { name: 'reload_clients', icon: 'refresh', type: 'route' }
+        EventStyle:
+            class: App\Entity\Event\Style
+            label: 'Event Style'
+            form:
+                fields:
+                    - name
+                    - { property: 'header_background_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
+                    - { property: 'header_text_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
+                    - { property: 'link_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
+                    - { property: 'major_info_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
+                    - { property: 'untappd_logo_style', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Black': 'black', 'White': 'white' } } }
         Session:
             class: App\Entity\Event\Session
             form:
@@ -41,16 +64,6 @@ easy_admin:
                     - { property: 'startDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
                     - { property: 'endDate', type: 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', type_options: { required: false, date_widget: single_text, time_widget: single_text }  }
                     - event
-        Style:
-            class: App\Entity\Event\Style
-            form:
-                fields:
-                    - name
-                    - { property: 'header_background_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
-                    - { property: 'header_text_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
-                    - { property: 'link_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
-                    - { property: 'major_info_color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
-                    - { property: 'untappd_logo_style', type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', type_options: { required: true, choices: { 'Black': 'black', 'White': 'white' } } }
         Publisher:
             class: App\Entity\Event\Publisher
             form:
@@ -80,4 +93,19 @@ easy_admin:
                     - rating_count
                     - parent
                     - extra_info
+                    - categories
+        Category:
+            class: App\Entity\Beer\Category
+            form:
+                fields:
+                    - name
+                    - icon
+        BeerStyle:
+            class: App\Entity\Beer\Style
+            label: 'Beer Style'
+            form:
+                fields:
+                    - name
+                    - { property: 'color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
+                    - categories
                     

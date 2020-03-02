@@ -35,13 +35,7 @@ class TaplistController extends Controller
         
         $session = $request->getSession();
         $session->set('tlid', $eventID);
-        $styles = $em->getRepository('\App\Entity\Beer\Style')->findAll();
-        $styleCategories = array();
-        foreach ($styles as $style) {
-            if (!in_array($style->getCategory(), $styleCategories)) {
-                $styleCategories[] = $style->getCategory();
-            }
-        }
+        $styleCategories = $em->getRepository('\App\Entity\Beer\Category')->findAll();
         
         $user = null;
         $userData = null;

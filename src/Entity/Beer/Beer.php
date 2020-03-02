@@ -148,6 +148,12 @@ class Beer
     private $collaborating_breweries;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Beer\Category", inversedBy="beers")
+     * @ORM\JoinTable(name="rel_beer_category")
+     */
+    private $categories;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -157,6 +163,7 @@ class Beer
         $this->checkins = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tap_list_items = new ArrayCollection();
         $this->collaborating_breweries = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
     
     public function __toString()
@@ -808,6 +815,32 @@ class Beer
             }
         }
         return false;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+        }
+
+        return $this;
     }
     
 }
