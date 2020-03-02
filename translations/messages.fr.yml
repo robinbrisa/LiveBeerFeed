@@ -211,7 +211,9 @@ taplist:
             mead: 'Hydromel'
             barrel_aged: 'Barrique'
             fruits: 'Fruits'
-            pastry: 'Gourmand'
+            fruits_herbs: 'Fruits / Herbes'
+            pastry: 'Pastry'
+            spicy: 'Épicé'
         style_none: 'Aucun'
         style_all: 'Tous'
         untappd_button:

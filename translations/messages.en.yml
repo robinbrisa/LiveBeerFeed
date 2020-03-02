@@ -210,8 +210,9 @@ taplist:
             hoppy: 'Hoppy'
             mead: 'Mead'
             barrel_aged: 'Barrel Aged'
-            fruits: 'Fruits'
+            fruits_herbs: 'Fruits / Herbs'
             pastry: 'Pastry'
+            spicy: 'Spicy'
         style_none: 'None'
         style_all: 'All'
         untappd_button:
