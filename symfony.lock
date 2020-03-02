@@ -1,4 +1,7 @@
 {
+    "beberlei/doctrineextensions": {
+        "version": "v1.2.6"
+    },
     "behat/transliterator": {
         "version": "v1.2.0"
     },
@@ -148,6 +151,9 @@
     },
     "paragonie/sodium_compat": {
         "version": "v1.6.1"
+    },
+    "php": {
+        "version": "7.2"
     },
     "php-http/client-common": {
         "version": "1.7.0"

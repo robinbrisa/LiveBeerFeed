@@ -26,7 +26,7 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
         dql:
-            string_functions:
+            datetime_functions:
                 DATE: DoctrineExtensions\Query\Mysql\Date
                 DAY: DoctrineExtensions\Query\Mysql\Day
                 MONTH: DoctrineExtensions\Query\Mysql\Month
