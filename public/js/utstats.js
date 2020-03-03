@@ -992,6 +992,7 @@ function handleUpToDateTaplistBeer(data) {
 		initOutOfStock();
 	} else if (data.push_type == "remove") {
 		$('.taplist-beer[data-id="'+data.beer+'"][data-session-id="'+data.session+'"]').remove();
+		updateCategoryCounts();
 	} else if (data.push_type == "add") {
 		$('#taplist-content').append(data.html);
 		fullyRefreshTaplist();
@@ -1029,9 +1030,7 @@ function fullyRefreshTaplist() {
 	console.time('initOutOfStock');
 	initOutOfStock();
 	console.timeEnd('initOutOfStock');
-	console.time('updateCategoryCounts');
 	updateCategoryCounts();
-	console.timeEnd('updateCategoryCounts');
 }
 
 function handleNewCheckinData(data) {
@@ -1134,6 +1133,8 @@ function refreshTimes() {
 }
 
 function updateCategoryCounts() {
+	console.time('updateCategoryCounts');
+	$('.category-count').html(0);
 	$('.taplist-beer').each(function() {
 		$.each($(this).data('style-category'), function(idx, val) {
 			var element = $('.style-filter[data-style="'+val+'"]').parent().find('.category-count');
@@ -1153,6 +1154,7 @@ function updateCategoryCounts() {
 			$(this).parent().show();
 		}
 	});
+	console.timeEnd('updateCategoryCounts');
 }
 
 function scrollLatestNotifications() {
