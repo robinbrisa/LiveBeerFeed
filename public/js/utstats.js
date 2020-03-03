@@ -107,6 +107,8 @@ $(document).ready(function() {
 	}
 	
 	if ($('#taplist-content').length > 0) {
+		updateCategoryCounts();
+		
 		$(".taplist-loading").fadeOut("slow");
 		
 		pushServerTaplist();
@@ -1113,6 +1115,28 @@ function handleNewNotification(data) {
 function refreshTimes() {
 	$('.checkin-date').each(function() {
 		$(this).html("(" + moment($(this).data('date')).fromNow() + ")");
+	});
+}
+
+function updateCategoryCounts() {
+	$('.taplist-beer').each(function() {
+		$.each($(this).data('style-category'), function(idx, val) {
+			var element = $('.style-filter[data-style="'+val+'"]').parent().find('.category-count');
+			$(element).html(parseInt($(element).html()+1));
+		});
+	})
+	/* Same thing but slower
+	$('.style-filter').each(function() {
+		var elements = $('.taplist-beer[data-style-category*="'+$(this).data('style')+'"]').length;
+		$('.style-filter[data-style="'+$(this).data('style')+'"]').parent().find('.category-count').html(elements);
+	})
+	*/
+	$('.style-filter').each(function() {
+		if ($(this).parent().find('.category-count').html() <= 0) {
+			$(this).parent().hide();
+		} else {
+			$(this).parent().show();
+		}
 	});
 }
 

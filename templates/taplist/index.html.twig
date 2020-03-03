@@ -232,7 +232,7 @@
                             {% for category in styleCategories %}
                                 <div class="form-check form-check-inline">
                                 	<input class="form-check-input style-filter" type="checkbox" id="chk-style-{{ category.name }}" data-style="{{ category.name }}" checked>
-                                	<label class="form-check-label" for="chk-style-{{ category.name }}">{{ ("taplist.filters.styles."~category.name)|trans }}</label>
+                                	<label class="form-check-label" for="chk-style-{{ category.name }}">{{ ("taplist.filters.styles."~category.name)|trans }} <span class="badge badge-secondary category-count">0</span></label>
                                 </div>
                             {% endfor %}
                         </div>
