@@ -1122,7 +1122,7 @@ function updateCategoryCounts() {
 	$('.taplist-beer').each(function() {
 		$.each($(this).data('style-category'), function(idx, val) {
 			var element = $('.style-filter[data-style="'+val+'"]').parent().find('.category-count');
-			$(element).html(parseInt($(element).html()+1));
+			$(element).html(parseInt($(element).html())+1);
 		});
 	})
 	/* Same thing but slower
