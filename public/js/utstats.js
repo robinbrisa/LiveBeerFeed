@@ -1011,12 +1011,27 @@ function handleUpToDateTaplistBeer(data) {
 }
 
 function fullyRefreshTaplist() {
+	console.time('initFavorites');
 	initFavorites();
+	console.timeEnd('initFavorites');
+	console.time('initCheckedIn');
 	initCheckedIn();
+	console.timeEnd('initCheckedIn');
+	console.time('initTicks');
 	initTicks();
+	console.timeEnd('initTicks');
+	console.time('filterTapList');
 	filterTapList();
+	console.timeEnd('filterTapList');
+	console.time('sortTaplist');
 	sortTaplist();
+	console.timeEnd('sortTaplist');
+	console.time('initOutOfStock');
 	initOutOfStock();
+	console.timeEnd('initOutOfStock');
+	console.time('updateCategoryCounts');
+	updateCategoryCounts();
+	console.timeEnd('updateCategoryCounts');
 }
 
 function handleNewCheckinData(data) {
