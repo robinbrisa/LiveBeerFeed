@@ -40,6 +40,11 @@
 		    		<img class="border rounded" src="{{ asset('/images/square_untappd_logo.jpg') }}"/>
 		    	</a>
 			</div>
+	    	<div class="category-colors">
+            {% for category in beer.style.categories %}
+            	<div class="category-color" style="background-color:{{ category.color }};"></div>
+            {% endfor %}
+	    	</div>
     	</div> 
 	    {% if beer.extraInfo is not null %}
 	    	<div class="beer-extra-info beer-details border rounded px-2 py-1 mb-1 mx-1">{{ beer.extraInfo }}</div>  

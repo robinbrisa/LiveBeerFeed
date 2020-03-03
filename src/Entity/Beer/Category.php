@@ -42,6 +42,11 @@ class Category
      */
     private $beers;
 
+    /**
+     * @ORM\Column(type="string", length=7, nullable=true)
+     */
+    private $color;
+
     public function __construct()
     {
         $this->styles = new ArrayCollection();
@@ -134,6 +139,18 @@ class Category
             $this->beers->removeElement($beer);
             $beer->removeCategory($this);
         }
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

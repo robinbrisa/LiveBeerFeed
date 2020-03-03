@@ -100,6 +100,7 @@ easy_admin:
                 fields:
                     - name
                     - icon
+                    - { property: 'color', type: 'Symfony\Component\Form\Extension\Core\Type\ColorType' }
                     - styles
         BeerStyle:
             class: App\Entity\Beer\Style
